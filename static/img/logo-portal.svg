@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 420" role="img" aria-label="Logomarca do Portal">
+  <title>Instituto Meio do Mundo</title>
+  <g fill="#e2b800">
+    <path d="M640 8h120v280H640z"/>
+    <rect x="654" y="18" width="92" height="24"/>
+  </g>
+  <g fill="#fff">
+    <circle cx="700" cy="90" r="26"/>
+    <circle cx="700" cy="170" r="26"/>
+  </g>
+  <path d="M0 288c45 0 45 10 90 10s45-10 90-10 45 10 90 10 45-10 90-10 45 10 90 10 45-10 90-10 45 10 90 10 45-10 90-10 45 10 90 10 45-10 90-10 45 10 90 10 45-10 90-10 45 10 90 10 45-10 90-10 45 10 90 10 45-10 90-10" fill="none" stroke="#e2b800" stroke-width="14" stroke-linecap="round"/>
+  <g stroke="#e2b800" stroke-width="10" stroke-linecap="round">
+    <line x1="190" y1="255" x2="190" y2="287"/>
+    <line x1="340" y1="252" x2="340" y2="287"/>
+    <line x1="490" y1="255" x2="490" y2="287"/>
+    <line x1="910" y1="252" x2="910" y2="287"/>
+    <line x1="1060" y1="255" x2="1060" y2="287"/>
+    <line x1="1210" y1="255" x2="1210" y2="287"/>
+  </g>
+  <text x="700" y="360" text-anchor="middle" fill="#245623" font-family="Montserrat, Arial, sans-serif" font-size="70" font-weight="800" letter-spacing="10">INSTITUTO</text>
+  <text x="700" y="425" text-anchor="middle" fill="#245623" font-family="Montserrat, Arial, sans-serif" font-size="96" font-weight="900" letter-spacing="6">MEIO DO MUNDO</text>
+</svg>

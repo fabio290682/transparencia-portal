@@ -1,0 +1,85 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Lux | Meio do Mundo</title>
+    <link rel="stylesheet" href="{% static 'css/admin-dashboard.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-wrapper">
+        <aside class="glass-sidebar">
+            <div class="logo-container">
+                <img src="{% static 'img/logo-portal.svg' %}" alt="Logo">
+            </div>
+            <nav class="side-nav">
+                <p class="nav-label">SISTEMA</p>
+                <a href="{% url 'admin:index' %}" class="nav-item active"><i class="fa-solid fa-house"></i> Home</a>
+                <a href="{% url 'admin:auth_user_changelist' %}" class="nav-item"><i class="fa-solid fa-users"></i> Usuários</a>
+                <a href="{% url 'admin:core_licitacao_changelist' %}" class="nav-item"><i class="fa-solid fa-file-contract"></i> Licitações</a>
+
+                <p class="nav-label">PROJETOS</p>
+                <a href="{% url 'admin:core_portalinformacao_changelist' %}" class="nav-item"><i class="fa-solid fa-seedling"></i> Meio Ambiente</a>
+                <a href="{% url 'admin:core_esicpedido_changelist' %}" class="nav-item"><i class="fa-solid fa-hand-holding-heart"></i> Doações</a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="glass-header">
+                <div class="search-bar">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Pesquisar no sistema..." aria-label="Pesquisar no sistema">
+                </div>
+                <div class="user-profile">
+                    <div class="user-info">
+                        <span class="user-name">{{ request.user.get_full_name|default:request.user.username }}</span>
+                        <span class="user-role">Administrador</span>
+                    </div>
+                    <img src="https://ui-avatars.com/api/?name={{ request.user.username|urlencode }}&background=f2c811&color=1d4221" alt="Avatar">
+                </div>
+            </header>
+
+            <section class="dashboard-grid">
+                <div class="glass-card big-card">
+                    <h3><i class="fa-solid fa-rocket"></i> Ações Rápidas</h3>
+                    <div class="quick-actions-grid">
+                        <a href="{% url 'admin:core_portalinformacao_changelist' %}" class="action-btn">
+                            <div class="icon-box"><i class="fa-solid fa-chart-line"></i></div>
+                            <span>Relatório Financeiro</span>
+                        </a>
+                        <a href="{% url 'admin:core_esicpedido_changelist' %}" class="action-btn">
+                            <div class="icon-box"><i class="fa-solid fa-shield-halved"></i></div>
+                            <span>Pedidos e-SIC</span>
+                        </a>
+                        <a href="{% url 'admin:core_portalinformacao_importar_planilha' %}" class="action-btn">
+                            <div class="icon-box"><i class="fa-solid fa-envelope-open-text"></i></div>
+                            <span>Importar Planilha</span>
+                        </a>
+                        <a href="{% url 'admin:password_change' %}" class="action-btn">
+                            <div class="icon-box"><i class="fa-solid fa-gear"></i></div>
+                            <span>Configurações</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="glass-card small-card">
+                    <h3>Atividades Recentes</h3>
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="marker"></div>
+                            <p><strong>Área administrativa</strong> personalizada e ativa</p>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="marker"></div>
+                            <p><strong>Importação Excel</strong> disponível por seção</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
+

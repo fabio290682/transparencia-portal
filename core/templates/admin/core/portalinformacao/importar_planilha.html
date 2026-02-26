@@ -1,0 +1,21 @@
+﻿{% extends "admin/base_site.html" %}
+
+{% block content %}
+  <h1>Importar Planilha - Portal Informacoes</h1>
+  <p>Formato aceito: <strong>.xlsx</strong></p>
+  <p>Colunas obrigatorias: <code>secao</code>, <code>titulo</code>, <code>descricao</code></p>
+  <p>Colunas opcionais: <code>link</code>, <code>ordem</code>, <code>ativo</code></p>
+  <p>Valores validos em <code>secao</code>: FINANCEIROS, PRESTACAO, CONTRATACOES, POLITICAS</p>
+
+  <form method="post" enctype="multipart/form-data" novalidate>
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    <fieldset class="module aligned">
+      {{ form.as_p }}
+    </fieldset>
+    <div class="submit-row">
+      <input type="submit" class="default" value="Importar" />
+      <a href="{% url 'admin:core_portalinformacao_changelist' %}" class="button cancel-link">Cancelar</a>
+    </div>
+  </form>
+{% endblock %}

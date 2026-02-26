@@ -1,0 +1,16 @@
+{% extends "admin/base.html" %}
+{% load i18n %}
+
+{% block title %}Painel Administrativo | Instituto Meio do Mundo{% endblock %}
+
+{% block branding %}
+<a href="{% url 'admin:index' %}" style="display:inline-flex;align-items:center;">
+  <img
+    src="/static/img/logo-portal.svg"
+    alt="Instituto Meio do Mundo"
+    style="height:42px;width:auto;display:block;"
+  >
+</a>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}

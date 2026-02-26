@@ -1,0 +1,209 @@
+﻿{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block title %}Login | Painel Administrativo{% endblock %}
+{% block bodyclass %}login{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+  :root {
+    --imm-green: #1f4f22;
+    --imm-green-dark: #173d1a;
+    --imm-gold: #f3c400;
+    --imm-bg: #d9dde2;
+  }
+
+  body.login {
+    min-height: 100vh;
+    margin: 0;
+    background: var(--imm-bg);
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  #header,
+  .breadcrumbs,
+  #nav-sidebar {
+    display: none;
+  }
+
+  #container {
+    background: transparent;
+    min-height: 100vh;
+  }
+
+  #content {
+    width: 100%;
+    margin: 0;
+    padding: 32px 16px;
+  }
+
+  .imm-login-wrap {
+    min-height: calc(100vh - 64px);
+    display: grid;
+    place-items: center;
+  }
+
+  .imm-login-card {
+    width: min(560px, 94vw);
+    border-radius: 18px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 24px 55px rgba(0, 0, 0, 0.20);
+  }
+
+  .imm-login-top {
+    padding: 46px 24px 34px;
+    background: radial-gradient(circle at 50% 65%, #2f6f32 0%, var(--imm-green) 55%, var(--imm-green-dark) 100%);
+    display: flex;
+    justify-content: center;
+  }
+
+  .imm-login-top img {
+    width: min(300px, 80%);
+    height: auto;
+    display: block;
+  }
+
+  .imm-login-body {
+    padding: 30px 34px 26px;
+  }
+
+  .imm-login-title {
+    margin: 0 0 18px;
+    text-align: center;
+    color: #27482a;
+    font-size: 44px;
+    font-weight: 800;
+    line-height: 1.15;
+  }
+
+  .imm-form-row {
+    margin-bottom: 14px;
+  }
+
+  .imm-form-row input[type="text"],
+  .imm-form-row input[type="password"] {
+    width: 100%;
+    height: 56px;
+    border-radius: 9px;
+    border: 2px solid #d5dbe0;
+    background: #f4f6f8;
+    padding: 0 16px;
+    box-sizing: border-box;
+    font-size: 29px;
+    color: #1f2f22;
+    outline: none;
+    transition: border-color .2s, box-shadow .2s;
+  }
+
+  .imm-form-row input:focus {
+    border-color: var(--imm-green);
+    box-shadow: 0 0 0 3px rgba(31, 79, 34, 0.14);
+    background: #fff;
+  }
+
+  .imm-submit {
+    margin-top: 8px;
+  }
+
+  .imm-submit input[type="submit"] {
+    width: 100%;
+    height: 63px;
+    border: none;
+    border-radius: 9px;
+    background: linear-gradient(#ffd400, var(--imm-gold));
+    color: #234226;
+    font-size: 49px;
+    font-weight: 900;
+    cursor: pointer;
+    box-shadow: 0 6px 14px rgba(243, 196, 0, 0.35);
+  }
+
+  .imm-submit input[type="submit"]:hover {
+    filter: brightness(1.02);
+  }
+
+  .imm-login-help {
+    margin-top: 16px;
+    text-align: center;
+    font-size: 32px;
+  }
+
+  .imm-login-help a {
+    color: #315f34;
+    text-decoration: none;
+  }
+
+  .imm-errors {
+    margin: 0 0 14px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: #fff3f0;
+    border: 1px solid #eaa59b;
+    color: #7a241b;
+    font-size: 22px;
+    list-style: none;
+  }
+
+  @media (max-width: 640px) {
+    .imm-login-title {
+      font-size: 32px;
+    }
+    .imm-form-row input[type="text"],
+    .imm-form-row input[type="password"] {
+      font-size: 22px;
+      height: 50px;
+    }
+    .imm-submit input[type="submit"] {
+      font-size: 36px;
+      height: 56px;
+    }
+    .imm-login-help {
+      font-size: 24px;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="imm-login-wrap">
+  <div class="imm-login-card">
+    <div class="imm-login-top">
+      <img src="{% static 'img/logo-portal.svg' %}" alt="Instituto Meio do Mundo">
+    </div>
+    <div class="imm-login-body">
+      <h1 class="imm-login-title">Painel Administrativo</h1>
+
+      {% if form.errors %}
+      <ul class="imm-errors">
+        <li>{% trans "Usuário ou senha inválidos. Tente novamente." %}</li>
+      </ul>
+      {% endif %}
+
+      {% if user.is_authenticated %}
+      <ul class="imm-errors">
+        <li>{% blocktrans trimmed %}Você está autenticado como {{ username }} mas não tem permissão para acessar esta página.{% endblocktrans %}</li>
+      </ul>
+      {% endif %}
+
+      <form action="{{ app_path }}" method="post" id="login-form">
+        {% csrf_token %}
+        <div class="imm-form-row">{{ form.username }}</div>
+        <div class="imm-form-row">{{ form.password }}</div>
+        <div class="imm-submit">
+          <input type="submit" value="{% trans 'Acessar Sistema' %}">
+        </div>
+        <input type="hidden" name="next" value="{{ next }}">
+      </form>
+
+      {% if password_reset_url %}
+      <div class="imm-login-help">
+        <a href="{{ password_reset_url }}">{% trans 'Esqueceu a senha?' %}</a>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
+

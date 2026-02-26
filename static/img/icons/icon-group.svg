@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" role="img" aria-label="Beneficiarios">
+  <circle cx="400" cy="400" r="380" fill="#245623" stroke="#f5c800" stroke-width="14"/>
+  <g fill="#ececec">
+    <circle cx="400" cy="300" r="80"/>
+    <circle cx="238" cy="330" r="50"/>
+    <circle cx="562" cy="330" r="50"/>
+    <rect x="275" y="384" width="250" height="218" rx="56"/>
+    <rect x="164" y="412" width="96" height="160" rx="34"/>
+    <rect x="540" y="412" width="96" height="160" rx="34"/>
+  </g>
+</svg>

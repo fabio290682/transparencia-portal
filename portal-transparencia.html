@@ -1,0 +1,1142 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portal da Transparência — Instituto Meio do Mundo</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Open+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --verde:    #0d3318;
+  --verde-m:  #155224;
+  --verde-n:  #1a4a1a;
+  --verde-c:  #1e5420;
+  --dourado:  #f5c800;
+  --dou-lt:   #ffd700;
+  --branco:   #ffffff;
+  --bg:       #f5f8f5;
+  --cinza:    #e8ede8;
+  --texto:    #1a3020;
+  --texto-lt: #4a6550;
+  --FH: "Montserrat", sans-serif;
+  --FB: "Open Sans", sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--FB);background:var(--bg);color:var(--texto);-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{inline-size:5px}
+::-webkit-scrollbar-track{background:#f0f4f0}
+::-webkit-scrollbar-thumb{background:var(--verde-n);border-radius:3px}
+
+/* TOP BAR */
+.topbar{background:var(--verde);padding:5px 32px;display:flex;justify-content:space-between;font-size:11px;font-family:var(--FH);color:rgba(255,255,255,0.45)}
+.topbar a{color:var(--dourado);text-decoration:none}
+.topbar .admin-link{display:inline-block;margin-left:10px;padding:4px 10px;border:1px solid rgba(245,200,0,0.45);border-radius:999px;font-weight:700;color:#fff;background:rgba(245,200,0,0.12)}
+.topbar .admin-link:hover{background:rgba(245,200,0,0.24);color:#fff}
+
+/* LOGO */
+.logo-area{background:var(--verde-n);padding:14px 24px;display:flex;justify-content:center;align-items:center;border-block-end:3px solid var(--dourado)}
+.logo-img{inline-size:min(620px,92vw);block-size:auto;max-inline-size:100%;filter:drop-shadow(0 2px 8px rgba(0,0,0,0.3))}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,var(--verde) 0%,var(--verde-n) 60%,#1e5a20 100%);padding:44px 40px 52px;text-align:center;position:relative;overflow:hidden}
+.hero::after{content:'';position:absolute;inset-block-end:-1px;inset-inline-start:0;inset-inline-end:0;block-size:40px;background:var(--bg);clip-path:ellipse(52% 100% at 50% 100%)}
+.hero-icon{display:inline-flex;align-items:center;justify-content:center;inline-size:56px;block-size:56px;background:var(--dourado);border-radius:50%;margin-block-end:14px;font-size:26px;box-shadow:0 4px 20px rgba(245,200,0,0.4)}
+.hero h1{font-family:var(--FH);font-size:clamp(24px,4vw,40px);font-weight:800;color:#fff;letter-spacing:-0.5px;margin-block-end:10px}
+.hero p{font-size:15px;color:rgba(255,255,255,0.6);max-inline-size:520px;margin:0 auto 24px;line-height:1.65}
+.badges{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+.badge{background:rgba(255,255,255,0.09);border:1px solid rgba(245,200,0,0.25);border-radius:20px;padding:5px 14px;font-size:11.5px;font-family:var(--FH);font-weight:600;color:rgba(255,255,255,0.7);text-decoration:none;display:inline-block}
+.badge:hover{color:#fff;border-color:rgba(245,200,0,0.5)}
+
+/* NAV */
+nav{background:var(--verde-n);position:sticky;inset-block-start:0;z-index:100;box-shadow:0 2px 16px rgba(0,0,0,0.3)}
+.nav-inner{max-inline-size:1100px;margin:0 auto;display:flex;align-items:center;justify-content:center;padding:0 20px;gap:2px}
+.nav-item{padding:14px 16px;color:rgba(255,255,255,0.75);cursor:pointer;font-family:var(--FH);font-size:13px;font-weight:600;border-block-end:3px solid transparent;transition:all 0.2s;white-space:nowrap;text-decoration:none;display:inline-block}
+.nav-item:hover{color:var(--dourado);border-block-end-color:rgba(245,200,0,0.4)}
+.nav-item.active{color:var(--dourado);border-block-end-color:var(--dourado)}
+.nav-dd{position:relative;display:inline-block}
+.nav-dd .dd-menu{display:none;position:absolute;inset-block-start:100%;inset-inline-start:50%;transform:translateX(-50%);background:var(--verde);border-block-start:3px solid var(--dourado);border-radius:0 0 10px 10px;padding:8px 0;min-inline-size:230px;box-shadow:0 12px 40px rgba(0,0,0,0.4);z-index:200}
+.nav-dd:hover .dd-menu{display:block}
+.dd-item{display:block;padding:9px 20px;color:rgba(255,255,255,0.65);font-size:12.5px;font-family:var(--FH);font-weight:500;text-decoration:none;cursor:pointer;transition:all 0.15s}
+.dd-item:hover{background:rgba(245,200,0,0.08);color:var(--dourado);padding-inline-start:26px}
+.dd-sep{block-size:1px;background:rgba(255,255,255,0.07);margin:6px 0}
+.dd-head{padding:6px 20px 2px;font-size:9.5px;font-family:var(--FH);font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:rgba(255,255,255,0.3)}
+
+/* MAIN */
+.wrap{max-inline-size:1100px;margin:0 auto;padding:52px 24px 80px}
+.sec-label{display:flex;align-items:center;gap:10px;font-family:var(--FH);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.8px;color:var(--verde-c);margin-block-end:8px}
+.sec-label::before{content:'';inline-size:28px;block-size:3px;background:var(--dourado);border-radius:2px}
+.sec-title{font-family:var(--FH);font-size:26px;font-weight:800;color:var(--verde);letter-spacing:-0.5px;margin-block-end:6px}
+
+/* 6 ICON CARDS */
+.icon-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-block-end:60px}
+.icon-card{background:var(--verde-n);border-radius:16px;padding:32px 24px 28px;text-align:center;cursor:pointer;transition:all 0.25s;border:2px solid transparent;position:relative;overflow:hidden}
+.icon-card::before{content:'';position:absolute;inset-block-end:0;inset-inline-start:0;inset-inline-end:0;block-size:3px;background:var(--dourado);transform:scaleX(0);transform-origin:left;transition:transform 0.3s ease}
+.icon-card:hover{transform:translateY(-5px);border-color:var(--dourado);box-shadow:0 12px 40px rgba(0,0,0,0.25)}
+.icon-card:hover::before{transform:scaleX(1)}
+.icon-card img{inline-size:90px;block-size:90px;object-fit:contain;margin-block-end:16px;transition:transform 0.25s;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.3))}
+.icon-card:hover img{transform:scale(1.08)}
+.icon-card h3{font-family:var(--FH);font-size:15px;font-weight:700;color:#fff;margin-block-end:8px}
+.icon-card p{font-size:13px;color:rgba(255,255,255,0.55);line-height:1.55}
+.ic-link{display:inline-flex;align-items:center;gap:5px;margin-block-start:14px;font-size:12.5px;font-family:var(--FH);font-weight:700;color:var(--dourado);opacity:0.85;transition:opacity 0.2s}
+.icon-card:hover .ic-link{opacity:1}
+
+/* PROJETOS TABELA */
+.proj-table-wrap{margin-block-end:60px}
+.proj-header{display:flex;align-items:flex-end;justify-content:space-between;margin-block-end:22px;flex-wrap:wrap;gap:12px}
+.proj-filters{display:flex;gap:8px;flex-wrap:wrap;margin-block-end:20px}
+.filter-btn{padding:7px 16px;border-radius:20px;font-family:var(--FH);font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid var(--cinza);background:#fff;color:var(--texto-lt);transition:all 0.18s}
+.filter-btn:hover,.filter-btn.active{background:var(--verde-n);color:#fff;border-color:var(--verde-n)}
+.proj-list{display:flex;flex-direction:column;gap:12px}
+.proj-card{background:#fff;border-radius:14px;border:1.5px solid var(--cinza);overflow:hidden;transition:all 0.22s;cursor:pointer}
+.proj-card:hover{box-shadow:0 6px 28px rgba(21,82,36,0.13);border-color:rgba(26,74,26,0.3);transform:translateY(-2px)}
+.proj-card-head{padding:18px 22px;display:flex;align-items:center;gap:18px;justify-content:space-between;flex-wrap:wrap}
+.proj-card-left{display:flex;align-items:center;gap:16px;flex:1;min-inline-size:0}
+.proj-thumb-sm{inline-size:52px;block-size:52px;border-radius:12px;background:var(--verde-n);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.proj-info h3{font-family:var(--FH);font-size:15px;font-weight:700;color:var(--verde);margin-block-end:4px}
+.proj-info .proj-instr{font-size:12px;color:var(--texto-lt);font-family:var(--FH)}
+.proj-card-meta{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.proj-valor{font-family:var(--FH);font-size:16px;font-weight:800;color:var(--verde-c)}
+.proj-tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:11px;font-family:var(--FH);font-weight:700;letter-spacing:0.3px}
+.tag-a{background:#e6f9ef;color:#0a6030}
+.tag-f{background:#e3eeff;color:#1255a8}
+.proj-card-body{padding:0 22px 18px;display:none;border-block-start:1px solid var(--cinza);padding-block-start:16px;margin-block-start:0}
+.proj-card.open .proj-card-body{display:block}
+.proj-card-body table{inline-size:100%;border-collapse:collapse;font-size:13px}
+.proj-card-body table tr:nth-child(even){background:#f8faf8}
+.proj-card-body table td{padding:9px 14px;border-block-end:1px solid var(--cinza);vertical-align:top;line-height:1.55}
+.proj-card-body table td:first-child{font-family:var(--FH);font-weight:600;color:var(--verde-c);white-space:nowrap;min-inline-size:200px;inline-size:220px}
+.proj-dl-btn{display:inline-flex;align-items:center;gap:8px;margin-block-start:14px;padding:10px 18px;background:var(--verde-n);color:#fff;border-radius:9px;font-family:var(--FH);font-size:13px;font-weight:700;text-decoration:none;transition:all 0.18s}
+.proj-dl-btn:hover{background:var(--verde-c)}
+.chevron{font-size:12px;transition:transform 0.25s;flex-shrink:0}
+.proj-card.open .chevron{transform:rotate(180deg)}
+
+/* ACESSO LAI */
+.lai-layout{display:grid;grid-template-columns:1fr 1.2fr;gap:32px;margin-block-end:60px;align-items:start}
+.lai-features{display:flex;flex-direction:column;gap:14px;margin-block-start:24px}
+.feat{display:flex;gap:14px;align-items:flex-start}
+.feat-ico{inline-size:40px;block-size:40px;border-radius:10px;background:linear-gradient(135deg,#e6f4eb,#d0ecd9);border:1px solid rgba(26,74,26,0.1);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.feat-txt strong{font-size:13.5px;font-weight:600;color:var(--verde);display:block}
+.feat-txt span{font-size:12.5px;color:var(--texto-lt);line-height:1.5}
+.form-card{background:#fff;border-radius:18px;padding:36px 32px;box-shadow:0 4px 24px rgba(0,0,0,0.08);border:1.5px solid var(--cinza)}
+.form-title{font-family:var(--FH);font-size:20px;font-weight:800;color:var(--verde);margin-block-end:4px}
+.form-sub{font-size:13px;color:var(--texto-lt);margin-block-end:22px}
+.form-note{background:#edf7f0;border-inline-start:4px solid var(--verde-n);border-radius:0 8px 8px 0;padding:11px 14px;font-size:13px;color:var(--verde);margin-block-end:18px}
+.form-group{margin-block-end:16px}
+.form-label{display:block;font-size:11.5px;font-family:var(--FH);font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--verde-c);margin-bottom:6px}
+.form-ctrl{width:100%;border:1.5px solid var(--cinza);border-radius:9px;padding:10px 14px;font-family:var(--FB);font-size:13.5px;color:var(--texto);background:#f5f8f5;outline:none;transition:all 0.2s;resize:vertical;appearance:none;-webkit-appearance:none}
+.form-ctrl:focus{border-color:var(--verde-n);background:#fff;box-shadow:0 0 0 3px rgba(26,74,26,0.1)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-status{display:none;margin-top:12px;padding:10px 12px;border-radius:10px;font-size:13px;font-family:var(--FH);font-weight:600}
+.form-status.error{display:block;background:#fff1f0;color:#8a1f11;border:1px solid #f0b5ad}
+.form-status.success{display:block;background:#e9f8ef;color:#0f5e2d;border:1px solid #a6dfb8}
+.btn[disabled]{opacity:0.7;cursor:not-allowed}
+
+/* IMPACTO */
+.impact{background:linear-gradient(135deg,var(--verde) 0%,var(--verde-n) 100%);border-radius:20px;padding:52px 48px;margin-bottom:56px;border:1px solid rgba(245,200,0,0.15);position:relative;overflow:hidden}
+.impact::before{content:'';position:absolute;top:-80px;right:-80px;width:300px;height:300px;border-radius:50%;border:1px solid rgba(245,200,0,0.08)}
+.impact-inner{position:relative;z-index:1}
+.impact h2{font-family:var(--FH);font-size:22px;font-weight:800;color:#fff;margin-bottom:4px}
+.impact .sub{font-size:14px;color:rgba(255,255,255,0.5);margin-bottom:36px}
+.impact-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:0}
+.istat{padding:20px 24px;border-right:1px solid rgba(255,255,255,0.08)}
+.istat:last-child{border-right:none}
+.istat .num{font-family:var(--FH);font-size:34px;font-weight:900;color:#fff;letter-spacing:-2px;line-height:1;margin-bottom:5px}
+.istat .num em{color:var(--dourado);font-style:normal;font-size:18px}
+.istat .lbl{font-size:12.5px;color:rgba(255,255,255,0.5);line-height:1.4}
+
+/* CONTACT STRIP */
+.cstrip{background:var(--verde-n);border-radius:18px;padding:44px 48px;display:flex;justify-content:space-between;align-items:center;gap:28px;margin-bottom:56px;border:1px solid rgba(245,200,0,0.15)}
+.cstrip h2{font-family:var(--FH);font-size:22px;font-weight:800;color:#fff;margin-bottom:5px}
+.cstrip p{font-size:14px;color:rgba(255,255,255,0.5)}
+.cdetails{display:flex;flex-direction:column;gap:5px;margin-top:14px}
+.cline{font-size:13px;color:rgba(255,255,255,0.6);display:flex;align-items:center;gap:8px}
+.cline strong{color:#fff}
+.cbtns{display:flex;gap:12px;flex-shrink:0;flex-wrap:wrap}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:10px;font-family:var(--FH);font-size:13px;font-weight:700;cursor:pointer;border:none;transition:all 0.2s;text-decoration:none}
+.btn-gold{background:var(--dourado);color:var(--verde);box-shadow:0 4px 16px rgba(245,200,0,0.35)}
+.btn-gold:hover{background:var(--dou-lt);transform:translateY(-2px)}
+.btn-white{background:#fff;color:var(--verde);font-weight:800}
+.btn-white:hover{background:#f0ffe0;transform:translateY(-2px)}
+.btn-outline{background:none;border:2px solid var(--verde-n);color:var(--verde-n)}
+.btn-outline:hover{background:var(--verde-n);color:#fff}
+.btn-sm{padding:8px 14px;font-size:12px;border-radius:8px}
+
+/* FOOTER */
+footer{background:var(--verde);padding:48px 40px 24px}
+.ft-inner{max-width:1100px;margin:0 auto}
+.ft-top{display:grid;grid-template-columns:1.8fr 1fr 1fr 1fr;gap:40px;padding-bottom:36px;border-bottom:1px solid rgba(255,255,255,0.08);margin-bottom:24px}
+.ft-logo img{height:60px;width:auto;margin-bottom:12px}
+.ft-desc{font-size:13px;color:rgba(255,255,255,0.4);line-height:1.65;max-width:260px}
+.ft-col h4{font-family:var(--FH);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--dourado);margin-bottom:14px}
+.ft-col a{display:block;font-size:13px;color:rgba(255,255,255,0.45);text-decoration:none;margin-bottom:8px;cursor:pointer;transition:color 0.15s}
+.ft-col a:hover{color:rgba(255,255,255,0.85)}
+.ft-bottom{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:rgba(255,255,255,0.3);font-family:var(--FH);flex-wrap:wrap;gap:8px}
+.ft-bottom a{color:var(--dourado);text-decoration:none}
+
+/* PAGES */
+.page{display:none}
+.page.active{display:block;animation:fadeIn 0.3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .icon-grid{grid-template-columns:repeat(2,1fr)}
+  .impact-stats{grid-template-columns:repeat(2,1fr)}
+  .ft-top{grid-template-columns:1fr 1fr}
+  .lai-layout{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+  .icon-grid{grid-template-columns:1fr}
+  .cstrip{flex-direction:column;padding:32px 24px}
+  .ft-top{grid-template-columns:1fr;gap:20px}
+  .topbar{flex-direction:column;gap:4px;text-align:center}
+  .nav-inner{overflow-x:auto;justify-content:flex-start;scrollbar-width:none}
+  .form-row{grid-template-columns:1fr}
+  .proj-card-head{gap:12px}
+  .proj-card-body table td:first-child{min-width:140px;width:140px;white-space:normal}
+}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <span>OSCIP · Macapá – Amapá · CNPJ 05.799.397/0001-85</span>
+  <span><a href="tel:5596981134444">Fone: +55 96 98113-4444</a> &nbsp;·&nbsp; <a href="https://wa.me/5596984111856">WhatsApp: 55 96 98411-1856</a> &nbsp;·&nbsp; <a href="mailto:contato@institutomeiodomundo.org">contato@institutomeiodomundo.org</a> <a href="/admin/" class="admin-link">Acesso Administrativo</a></span>
+</div>
+
+<!-- LOGO -->
+<div class="logo-area">
+  <img src="/static/img/logo-portal.svg" alt="Instituto Meio do Mundo" class="logo-img">
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-icon">ℹ️</div>
+  <h1>Portal da Transparência</h1>
+  <p>Este espaço representa mais uma ação de promoção da transparência pública do Instituto Meio do Mundo.</p>
+  <div class="badges">
+    <a class="badge" href="https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2011/lei/l12527.htm" target="_blank" rel="noopener">Lei 12.527/2011 — LAI</a>
+    <a class="badge" href="https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/L13709.htm" target="_blank" rel="noopener">LGPD · Lei 13.709/2018</a>
+    <span class="badge">OSCIP · Amapá</span>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <span class="nav-item active" onclick="showPage('home')">Página Inicial</span>
+    <span class="nav-item" onclick="showPage('acesso')">Acesso a Informação</span>
+    <span class="nav-item nav-dd">Transparência ▾
+      <div class="dd-menu">
+        <div class="dd-head">Relatórios Financeiros</div>
+        <a class="dd-item" onclick="showPage('financeiros')">📊 Demonstrativos Contábeis</a>
+        <a class="dd-item" onclick="showPage('financeiros')">🔍 Auditorias</a>
+        <a class="dd-item" onclick="showPage('financeiros')">📅 Orçamento Anual</a>
+        <div class="dd-sep"></div>
+        <div class="dd-head">Prestação de Contas</div>
+        <a class="dd-item" onclick="showPage('prestacao')">📋 Relatório Contábil</a>
+        <a class="dd-item" onclick="showPage('prestacao')">🤝 Termo de Fomento e Patrocínio</a>
+        <a class="dd-item" onclick="showPage('prestacao')">📜 Ofício de Entrega</a>
+        <a class="dd-item" onclick="showPage('prestacao')">💝 Doações Recebidas</a>
+        <div class="dd-sep"></div>
+        <div class="dd-head">Outros</div>
+        <a class="dd-item" onclick="showPage('contratacoes')">📑 Contratações</a>
+        <a class="dd-item" onclick="showPage('contratacoes')">📋 Editais</a>
+        <a class="dd-item" onclick="showPage('contratacoes')">🏢 Fornecedores</a>
+        <a class="dd-item" onclick="showPage('politicas')">⚖️ Código de Ética</a>
+        <a class="dd-item" onclick="showPage('politicas')">🔒 LGPD</a>
+      </div>
+    </span>
+    <span class="nav-item nav-dd">Projetos ▾
+      <div class="dd-menu">
+        <a class="dd-item" onclick="showPage('projetos')">🌱 Em Andamento</a>
+        <a class="dd-item" onclick="showPage('projetos')">✅ Finalizados</a>
+        <a class="dd-item" onclick="showPage('projetos')">🤝 Parceiros</a>
+        <a class="dd-item" onclick="showPage('projetos')">📈 Impactos e Resultados</a>
+        <a class="dd-item" onclick="showPage('projetos')">📊 Indicadores de Impacto</a>
+      </div>
+    </span>
+    <span class="nav-item" onclick="showPage('acesso')">Fale Conosco</span>
+  </div>
+</nav>
+
+
+<!-- ═══════════════ HOME ═══════════════ -->
+<div id="page-home" class="page active">
+<div class="wrap">
+
+  <div style="text-align:center;margin-bottom:36px">
+    <div class="sec-label" style="justify-content:center">Acesso Rápido</div>
+    <div class="sec-title">O que você procura?</div>
+  </div>
+
+  <div class="icon-grid">
+    <div class="icon-card" onclick="showPage('acesso')">
+      <img src="/static/img/icons/icon-location.svg" alt="Localização">
+      <h3>Localização & Sede</h3>
+      <p>Rua Desidério Antonio Coelho, 511-A, Trem, Macapá – AP, CEP 68901-080.</p>
+      <span class="ic-link">Ver localização →</span>
+    </div>
+    <div class="icon-card" onclick="showPage('projetos')">
+      <img src="/static/img/icons/icon-group.svg" alt="Beneficiários">
+      <h3>Beneficiários & Comunidades</h3>
+      <p>Conheça as comunidades e pessoas impactadas pelos projetos do Instituto.</p>
+      <span class="ic-link">Ver projetos →</span>
+    </div>
+    <div class="icon-card" onclick="showPage('acesso')">
+      <img src="/static/img/icons/icon-chat.svg" alt="Fale Conosco">
+      <h3>Fale Conosco</h3>
+      <p>Envie pedidos de informação, sugestões e solicitações via e-SIC / LAI.</p>
+      <span class="ic-link">Fazer solicitação →</span>
+    </div>
+    <div class="icon-card" onclick="showPage('projetos')">
+      <img src="/static/img/icons/icon-impact.svg" alt="Resultados">
+      <h3>Impactos e Resultados</h3>
+      <p>Indicadores de desempenho e relatórios de avaliação de impacto social.</p>
+      <span class="ic-link">Ver indicadores →</span>
+    </div>
+    <div class="icon-card" onclick="showPage('prestacao')">
+      <img src="/static/img/icons/icon-partnership.svg" alt="Parcerias">
+      <h3>Parcerias & Termos de Fomento</h3>
+      <p>Termos de fomento, patrocínio e contratos com órgãos públicos e privados.</p>
+      <span class="ic-link">Ver termos →</span>
+    </div>
+    <div class="icon-card" onclick="showPage('acesso')">
+      <img src="/static/img/icons/icon-tower.svg" alt="Acesso à Informação">
+      <h3>Acesso à Informação</h3>
+      <p>Solicite informações e acompanhe seu protocolo — Lei 12.527/2011 (LAI).</p>
+      <span class="ic-link">Solicitar informação →</span>
+    </div>
+  </div>
+
+  <!-- Projetos recentes em lista rápida -->
+  <div style="margin-bottom:52px">
+    <div class="proj-header">
+      <div>
+        <div class="sec-label">Últimos registros</div>
+        <div class="sec-title">Projetos Recentes</div>
+      </div>
+      <button class="btn btn-outline btn-sm" onclick="showPage('projetos')">Ver todos os projetos →</button>
+    </div>
+    <div class="proj-list">
+
+      <div class="proj-card" onclick="toggleProj(this)">
+        <div class="proj-card-head">
+          <div class="proj-card-left">
+            <div class="proj-thumb-sm">🏃</div>
+            <div class="proj-info">
+              <h3>I CORRIDA DO SERVIDOR PÚBLICO DO ESTADO DO AMAPÁ</h3>
+              <div class="proj-instr">Instrumento nº 027/2025 – SEDEL &nbsp;·&nbsp; Início: 28/10/2025</div>
+            </div>
+          </div>
+          <div class="proj-card-meta">
+            <span class="proj-valor">R$ 700.000,00</span>
+            <span class="proj-tag tag-a">Em Andamento</span>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="proj-card-body">
+          <table>
+            <tr><td>Número do Instrumento</td><td>027/2025 – SEDEL</td></tr>
+            <tr><td>Recurso Financeiro</td><td>R$ 700.000,00</td></tr>
+            <tr><td>Fonte de Recurso</td><td>Estadual (500)</td></tr>
+            <tr><td>Autoria da Emenda</td><td>Emenda Parlamentar Impositiva I0371 – Dep. Rodolfo Vale (R$ 200.000,00) + Tesouro Estadual (R$ 500.000,00)</td></tr>
+            <tr><td>Valor Repassado</td><td>R$ 700.000,00</td></tr>
+            <tr><td>Objeto</td><td>Execução do Projeto "CORRIDA DO SERVIDOR PÚBLICO DO ESTADO DO AMAPÁ", incluindo pré-produção, produção e pós-produção do evento esportivo para 4.000 participantes, com percursos de 3 km, 5 km e 7 km, premiações e estrutura geral necessária.</td></tr>
+            <tr><td>Data de Início</td><td>28/10/2025</td></tr>
+            <tr><td>Data de Finalização</td><td>28/01/2026</td></tr>
+            <tr><td>Justificativa</td><td>Promover esporte, lazer, qualidade de vida e integração social por meio da realização da Corrida do Servidor Público, incentivando práticas saudáveis e fortalecendo políticas públicas voltadas ao esporte no Estado do Amapá.</td></tr>
+            <tr><td>Dados Orçamentários</td><td>UG: SEDEL – Secretaria de Estado do Desporto e Lazer · Programa: 27.812.0016 · Ação: 2239 · Elemento de Despesa: 335041 · Fonte: 500 · Valor Total: R$ 700.000,00</td></tr>
+          </table>
+          <a href="https://institutomeiodomundo.org/transparencia/wp-content/uploads/2025/12/FOMENTO-No-027-2025-IMM-CORRIDA-DO-SERVIDOR-assinado.pdf" target="_blank" class="proj-dl-btn">⬇ Baixar Documento PDF</a>
+        </div>
+      </div>
+
+      <div class="proj-card" onclick="toggleProj(this)">
+        <div class="proj-card-head">
+          <div class="proj-card-left">
+            <div class="proj-thumb-sm">🎖️</div>
+            <div class="proj-info">
+              <h3>PROJETO DESFILE DA INDEPENDÊNCIA 2025</h3>
+              <div class="proj-instr">Instrumento nº 001/2025 – PMAP &nbsp;·&nbsp; Início: 05/09/2025</div>
+            </div>
+          </div>
+          <div class="proj-card-meta">
+            <span class="proj-valor">R$ 1.291.050,00</span>
+            <span class="proj-tag tag-a">Em Andamento</span>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="proj-card-body">
+          <table>
+            <tr><td>Número do Instrumento</td><td>001/2025 – PMAP</td></tr>
+            <tr><td>Recurso Financeiro</td><td>R$ 1.291.050,00</td></tr>
+            <tr><td>Fonte de Recurso</td><td>Estadual (500)</td></tr>
+            <tr><td>Autoria da Emenda</td><td>Dispensa de Chamamento Público – Processo Administrativo nº 0336/2025/CMDO/PMAP, Parecer Jurídico nº 469/2025 – GAB/PGE/AP</td></tr>
+            <tr><td>Valor Repassado</td><td>R$ 1.291.050,00</td></tr>
+            <tr><td>Objeto</td><td>Execução do projeto "PROJETO DESFILE DA INDEPENDÊNCIA 2025", por meio de ações formativas, conforme plano de trabalho.</td></tr>
+            <tr><td>Data de Início</td><td>05/09/2025</td></tr>
+            <tr><td>Data de Finalização</td><td>13/10/2025</td></tr>
+            <tr><td>Justificativa</td><td>O projeto visa promover a valorização cívica, cultural e social por meio do Desfile da Independência, fortalecendo a integração entre instituições militares, civis e a comunidade, fomentando práticas formativas e educativas que reforçam o sentimento de pertencimento e cidadania no Estado do Amapá.</td></tr>
+            <tr><td>Dados Orçamentários</td><td>UG: 340101 – Polícia Militar do Amapá · Programa de Trabalho: 1341010612200062277 · Natureza da Despesa: 335041 · Fonte: 500 · Valor: R$ 1.291.050,00</td></tr>
+          </table>
+          <a href="https://institutomeiodomundo.org/transparencia/wp-content/uploads/2025/09/TERMO-DE-FOMENTO_PMAP-X-IMM-2025-1.pdf" target="_blank" class="proj-dl-btn">⬇ Baixar Documento PDF</a>
+        </div>
+      </div>
+
+      <div class="proj-card" onclick="toggleProj(this)">
+        <div class="proj-card-head">
+          <div class="proj-card-left">
+            <div class="proj-thumb-sm">🎵</div>
+            <div class="proj-info">
+              <h3>SHOW MUSICAL 4 CANTOS DA FLORESTA</h3>
+              <div class="proj-instr">Instrumento nº 014/2025 – SECULT &nbsp;·&nbsp; Início: 08/08/2025</div>
+            </div>
+          </div>
+          <div class="proj-card-meta">
+            <span class="proj-valor">R$ 100.000,00</span>
+            <span class="proj-tag tag-a">Em Andamento</span>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="proj-card-body">
+          <table>
+            <tr><td>Número do Instrumento</td><td>014/2025 – SECULT</td></tr>
+            <tr><td>Recurso Financeiro</td><td>R$ 100.000,00</td></tr>
+            <tr><td>Fonte de Recurso</td><td>Estadual (500)</td></tr>
+            <tr><td>Autoria da Emenda</td><td>Emenda Parlamentar nº I0100 – Dep. Jack JK</td></tr>
+            <tr><td>Valor Repassado</td><td>R$ 100.000,00</td></tr>
+            <tr><td>Objeto</td><td>Execução do Projeto "SHOW MUSICAL 4 CANTOS DA FLORESTA", por meio de ações culturais, conforme plano de trabalho.</td></tr>
+            <tr><td>Data de Início</td><td>08/08/2025</td></tr>
+            <tr><td>Data de Finalização</td><td>15/12/2025</td></tr>
+            <tr><td>Justificativa</td><td>Promover ações culturais por meio do projeto "Show Musical 4 Cantos da Floresta", alcançando a população amapaense com atividades artístico-culturais previstas no plano de trabalho.</td></tr>
+            <tr><td>Dados Orçamentários</td><td>UG: 380101 – SECULT · Programa: 13.392.0059.2202 · Natureza: 33.50.43 – Subvenções Sociais · Fonte: 500 · Nota de Empenho: 2025NE00541 · Valor: R$ 100.000,00</td></tr>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Impacto -->
+  <div class="impact">
+    <div class="impact-inner">
+      <div class="sec-label" style="color:rgba(255,255,255,0.5)">Transparência pública</div>
+      <h2>Instituto Meio do Mundo</h2>
+      <div class="sub">OSCIP comprometida com o desenvolvimento social no Amapá</div>
+      <div class="impact-stats">
+        <div class="istat"><div class="num">10<em>+</em></div><div class="lbl">Projetos registrados no portal</div></div>
+        <div class="istat"><div class="num">R$5<em>M+</em></div><div class="lbl">Em recursos gerenciados (2024–2025)</div></div>
+        <div class="istat"><div class="num">5<em>órgãos</em></div><div class="lbl">Parceiros governamentais ativos</div></div>
+        <div class="istat"><div class="num">100<em>%</em></div><div class="lbl">Documentos publicados com acesso livre</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contato -->
+  <div class="cstrip">
+    <div>
+      <h2>Informações de Contato</h2>
+      <p>Este espaço representa mais uma ação de promoção da transparência pública.</p>
+      <div class="cdetails">
+        <div class="cline">📞 <strong>Fone: +55 96 98113-4444</strong></div>
+        <div class="cline">💬 <strong>WhatsApp: 55 96 98411-1856</strong></div>
+        <div class="cline">📧 <strong>contato@institutomeiodomundo.org</strong></div>
+        <div class="cline">📍 <strong>Rua Desidério Antonio Coelho, 511-A, Trem, Macapá – AP, CEP: 68901-080</strong></div>
+      </div>
+    </div>
+    <div class="cbtns">
+      <button class="btn btn-gold" onclick="showPage('acesso')">📬 Solicitar via e-SIC</button>
+      <a href="https://wa.me/5596984111856" target="_blank" class="btn btn-white">💬 WhatsApp</a>
+    </div>
+  </div>
+
+</div>
+</div><!-- /home -->
+
+
+<!-- ═══════════════ PROJETOS ═══════════════ -->
+<div id="page-projetos" class="page">
+<div class="wrap">
+  <div class="sec-label">Termos de Fomento e Patrocínio</div>
+  <div class="sec-title" style="margin-bottom:6px">Projetos</div>
+  <p style="font-size:14px;color:var(--texto-lt);margin-bottom:28px">Todos os projetos executados pelo Instituto Meio do Mundo com recursos públicos e privados.</p>
+
+  <div class="proj-filters" id="proj-filter">
+    <button class="filter-btn active" onclick="filtrarProjetos('todos',this)">Todos</button>
+    <button class="filter-btn" onclick="filtrarProjetos('Em Andamento',this)">Em Andamento</button>
+    <button class="filter-btn" onclick="filtrarProjetos('Finalizado',this)">Finalizados</button>
+  </div>
+
+  <div class="proj-list" id="proj-lista">
+
+    <div class="proj-card" data-status="Em Andamento" onclick="toggleProj(this)">
+      <div class="proj-card-head">
+        <div class="proj-card-left">
+          <div class="proj-thumb-sm">🏃</div>
+          <div class="proj-info">
+            <h3>I CORRIDA DO SERVIDOR PÚBLICO DO ESTADO DO AMAPÁ</h3>
+            <div class="proj-instr">027/2025 – SEDEL &nbsp;·&nbsp; 28/10/2025 a 28/01/2026</div>
+          </div>
+        </div>
+        <div class="proj-card-meta">
+          <span class="proj-valor">R$ 700.000,00</span>
+          <span class="proj-tag tag-a">Em Andamento</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="proj-card-body">
+        <table>
+          <tr><td>Número do Instrumento</td><td>027/2025 – SEDEL</td></tr>
+          <tr><td>Recurso Financeiro</td><td>R$ 700.000,00</td></tr>
+          <tr><td>Fonte de Recurso Estadual (500)</td><td>500</td></tr>
+          <tr><td>Fonte de Recurso Federal (706)</td><td>N/S</td></tr>
+          <tr><td>Autoria da Emenda</td><td>Emenda Parlamentar Impositiva I0371 – Dep. Rodolfo Vale (R$ 200.000,00) + Tesouro Estadual (R$ 500.000,00)</td></tr>
+          <tr><td>Valor Repassado</td><td>R$ 700.000,00</td></tr>
+          <tr><td>Valor Global</td><td>R$ 700.000,00</td></tr>
+          <tr><td>Objeto</td><td>Execução do Projeto "CORRIDA DO SERVIDOR PÚBLICO DO ESTADO DO AMAPÁ", incluindo pré-produção, produção e pós-produção do evento esportivo para 4.000 participantes, com percursos de 3 km, 5 km e 7 km, premiações e estrutura geral necessária.</td></tr>
+          <tr><td>Data de Início</td><td>28/10/2025</td></tr>
+          <tr><td>Data de Finalização</td><td>28/01/2026</td></tr>
+          <tr><td>Justificativa</td><td>Promover esporte, lazer, qualidade de vida e integração social por meio da realização da Corrida do Servidor Público, incentivando práticas saudáveis e fortalecendo políticas públicas voltadas ao esporte no Estado do Amapá.</td></tr>
+          <tr><td>Dados Orçamentários</td><td>UG: SEDEL – Secretaria de Estado do Desporto e Lazer · Programa: 27.812.0016 · Projeto/Atividade/Ação: 2239 – Apoiar a prática do esporte para toda a vida de jovens e adultos · Elemento de Despesa: 335041 · Fonte: 500 · Valor Total: R$ 700.000,00 · Origem: Emenda Impositiva I0371 (R$ 200.000,00) + Tesouro Estadual (R$ 500.000,00)</td></tr>
+        </table>
+        <a href="https://institutomeiodomundo.org/transparencia/wp-content/uploads/2025/12/FOMENTO-No-027-2025-IMM-CORRIDA-DO-SERVIDOR-assinado.pdf" target="_blank" class="proj-dl-btn">⬇ FOMENTO Nº 027/2025 – IMM – CORRIDA DO SERVIDOR (PDF)</a>
+      </div>
+    </div>
+
+    <div class="proj-card" data-status="Em Andamento" onclick="toggleProj(this)">
+      <div class="proj-card-head">
+        <div class="proj-card-left">
+          <div class="proj-thumb-sm">🎖️</div>
+          <div class="proj-info">
+            <h3>PROJETO DESFILE DA INDEPENDÊNCIA 2025</h3>
+            <div class="proj-instr">001/2025 – PMAP &nbsp;·&nbsp; 05/09/2025 a 13/10/2025</div>
+          </div>
+        </div>
+        <div class="proj-card-meta">
+          <span class="proj-valor">R$ 1.291.050,00</span>
+          <span class="proj-tag tag-a">Em Andamento</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="proj-card-body">
+        <table>
+          <tr><td>Número do Instrumento</td><td>001/2025 – PMAP</td></tr>
+          <tr><td>Recurso Financeiro</td><td>R$ 1.291.050,00</td></tr>
+          <tr><td>Fonte de Recurso Estadual (500)</td><td>500</td></tr>
+          <tr><td>Fonte de Recurso Federal (706)</td><td>N/S</td></tr>
+          <tr><td>Autoria da Emenda</td><td>Dispensa de Chamamento Público – Processo Administrativo nº 0336/2025/CMDO/PMAP, Parecer Jurídico nº 469/2025 – GAB/PGE/AP</td></tr>
+          <tr><td>Valor Repassado</td><td>R$ 1.291.050,00</td></tr>
+          <tr><td>Valor Global</td><td>R$ 1.291.050,00</td></tr>
+          <tr><td>Objeto</td><td>Execução do projeto "PROJETO DESFILE DA INDEPENDÊNCIA 2025", por meio de ações formativas, conforme plano de trabalho.</td></tr>
+          <tr><td>Data de Início</td><td>05/09/2025</td></tr>
+          <tr><td>Data de Finalização</td><td>13/10/2025</td></tr>
+          <tr><td>Justificativa</td><td>O projeto visa promover a valorização cívica, cultural e social por meio do Desfile da Independência, fortalecendo a integração entre instituições militares, civis e a comunidade, fomentando práticas formativas e educativas que reforçam o sentimento de pertencimento e cidadania no Estado do Amapá.</td></tr>
+          <tr><td>Dados Orçamentários</td><td>UG: 340101 – Polícia Militar do Amapá · Programa de Trabalho: 1341010612200062277 · Natureza da Despesa: 335041 · Fonte: 500 · Valor: R$ 1.291.050,00</td></tr>
+        </table>
+        <a href="https://institutomeiodomundo.org/transparencia/wp-content/uploads/2025/09/TERMO-DE-FOMENTO_PMAP-X-IMM-2025-1.pdf" target="_blank" class="proj-dl-btn">⬇ TERMO DE FOMENTO – PMAP X IMM 2025 (PDF)</a>
+      </div>
+    </div>
+
+    <div class="proj-card" data-status="Finalizado" onclick="toggleProj(this)">
+      <div class="proj-card-head">
+        <div class="proj-card-left">
+          <div class="proj-thumb-sm">🌴</div>
+          <div class="proj-info">
+            <h3>FÉRIAS SOLIDÁRIAS</h3>
+            <div class="proj-instr">005/2025 – SEAS &nbsp;·&nbsp; 14/09/2025 a 31/12/2025</div>
+          </div>
+        </div>
+        <div class="proj-card-meta">
+          <span class="proj-valor">R$ 1.490.000,00</span>
+          <span class="proj-tag tag-f">Finalizado</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="proj-card-body">
+        <table>
+          <tr><td>Número do Instrumento</td><td>005/2025 – SEAS</td></tr>
+          <tr><td>Recurso Financeiro</td><td>R$ 1.490.000,00</td></tr>
+          <tr><td>Fonte de Recurso Estadual (500)</td><td>500</td></tr>
+          <tr><td>Fonte de Recurso Federal (706)</td><td>N/S</td></tr>
+          <tr><td>Autoria da Emenda</td><td>Emenda Parlamentar Impositiva nº 10250</td></tr>
+          <tr><td>Valor Repassado</td><td>R$ 1.490.000,00</td></tr>
+          <tr><td>Valor Global</td><td>R$ 1.490.000,00</td></tr>
+          <tr><td>Objeto</td><td>Execução do Projeto Social "FÉRIAS SOLIDÁRIAS", visando assegurar direitos de pessoas em situação de risco e vulnerabilidade social, promovendo segurança alimentar, bem-estar e inclusão social durante o período de férias em comunidades carentes do Estado do Amapá.</td></tr>
+          <tr><td>Data de Início</td><td>14/09/2025</td></tr>
+          <tr><td>Data de Finalização</td><td>31/12/2025</td></tr>
+          <tr><td>Justificativa</td><td>O projeto visa assegurar suporte nutricional e promover inclusão social e bem-estar para famílias em vulnerabilidade durante o período de férias, atendendo comunidades carentes do Estado do Amapá.</td></tr>
+          <tr><td>Dados Orçamentários</td><td>UG: 550301 – SEAS · Programa de Trabalho: 0077 · Ação: 2345 – Rede Socioassistencial / SUAS · Natureza da Despesa: 3.3.50.43 – Subvenções Sociais · Fonte: 500 · Valor: R$ 1.490.000,00</td></tr>
+        </table>
+        <a href="https://institutomeiodomundo.org/transparencia/wp-content/uploads/2025/12/TERMO_DE_FOMENTO_-_005-2025-SEAS_-_INSTITUTO_MEIO_DO_MUNDO_assinado.pdf" target="_blank" class="proj-dl-btn">⬇ TERMO DE FOMENTO 005/2025 – SEAS (PDF)</a>
+      </div>
+    </div>
+
+    <div class="proj-card" data-status="Em Andamento" onclick="toggleProj(this)">
+      <div class="proj-card-head">
+        <div class="proj-card-left">
+          <div class="proj-thumb-sm">🎵</div>
+          <div class="proj-info">
+            <h3>SHOW MUSICAL 4 CANTOS DA FLORESTA</h3>
+            <div class="proj-instr">014/2025 – SECULT &nbsp;·&nbsp; 08/08/2025 a 15/12/2025</div>
+          </div>
+        </div>
+        <div class="proj-card-meta">
+          <span class="proj-valor">R$ 100.000,00</span>
+          <span class="proj-tag tag-a">Em Andamento</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="proj-card-body">
+        <table>
+          <tr><td>Número do Instrumento</td><td>014/2025 – SECULT</td></tr>
+          <tr><td>Recurso Financeiro</td><td>R$ 100.000,00</td></tr>
+          <tr><td>Fonte de Recurso Estadual (500)</td><td>500</td></tr>
+          <tr><td>Fonte de Recurso Federal (706)</td><td>N/S</td></tr>
+          <tr><td>Autoria da Emenda</td><td>Emenda Parlamentar nº I0100 – Dep. Jack JK</td></tr>
+          <tr><td>Valor Repassado</td><td>R$ 100.000,00</td></tr>
+          <tr><td>Valor Global</td><td>R$ 100.000,00</td></tr>
+          <tr><td>Objeto</td><td>Execução do Projeto "SHOW MUSICAL 4 CANTOS DA FLORESTA", por meio de ações culturais, conforme plano de trabalho.</td></tr>
+          <tr><td>Data de Início</td><td>08/08/2025</td></tr>
+          <tr><td>Data de Finalização</td><td>15/12/2025</td></tr>
+          <tr><td>Justificativa</td><td>Promover ações culturais por meio do projeto "Show Musical 4 Cantos da Floresta", alcançando a população amapaense com atividades artístico-culturais previstas no plano de trabalho.</td></tr>
+          <tr><td>Dados Orçamentários</td><td>UG: 380101 – SECULT · Programa de Trabalho: 13.392.0059.2202 – Projetos e Produções/Eventos da Cultura Popular/Tradicionais do Estado do Amapá · Natureza da Despesa: 33.50.43 – Subvenções Sociais · Fonte: 500 · Plano Orçamentário: 000001 · Cadastro SIAFE/AP: 250127 · Nota de Empenho: 2025NE00541 – 07/08/2025 · Valor: R$ 100.000,00</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="proj-card" data-status="Finalizado" onclick="toggleProj(this)">
+      <div class="proj-card-head">
+        <div class="proj-card-left">
+          <div class="proj-thumb-sm">🎭</div>
+          <div class="proj-info">
+            <h3>ESPETÁCULO TEATRAL "O CORPO DE CRISTO – ELE RESSUSCITOU"</h3>
+            <div class="proj-instr">002/2025 – SECULT &nbsp;·&nbsp; R$ 69.000,00</div>
+          </div>
+        </div>
+        <div class="proj-card-meta">
+          <span class="proj-valor">R$ 69.000,00</span>
+          <span class="proj-tag tag-f">Finalizado</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="proj-card-body">
+        <table>
+          <tr><td>Número do Instrumento</td><td>002/2025 – SECULT</td></tr>
+          <tr><td>Recurso Financeiro</td><td>R$ 69.000,00</td></tr>
+          <tr><td>Fonte de Recurso Estadual (500)</td><td>500</td></tr>
+          <tr><td>Fonte de Recurso Federal (706)</td><td>N/S</td></tr>
+          <tr><td>Autoria da Emenda</td><td>Não se aplica (recurso direto da SECULT)</td></tr>
+          <tr><td>Valor Repassado</td><td>R$ 69.000,00</td></tr>
+          <tr><td>Valor Global</td><td>R$ 69.000,00</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="proj-card" data-status="Finalizado" onclick="toggleProj(this)">
+      <div class="proj-card-head">
+        <div class="proj-card-left">
+          <div class="proj-thumb-sm">🏖️</div>
+          <div class="proj-info">
+            <h3>CALÇOENE VERÃO 2025</h3>
+            <div class="proj-instr">005/2025-SECULT &nbsp;·&nbsp; Processo 0054.1402.2361.0007/2025</div>
+          </div>
+        </div>
+        <div class="proj-card-meta">
+          <span class="proj-valor">R$ 267.000,00</span>
+          <span class="proj-tag tag-f">Finalizado</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="proj-card-body">
+        <table>
+          <tr><td>Número do Instrumento</td><td>005/2025-SECULT</td></tr>
+          <tr><td>Recurso Financeiro</td><td>R$ 267.000,00</td></tr>
+          <tr><td>Fonte de Recurso Estadual (500)</td><td>500</td></tr>
+          <tr><td>Autoria da Emenda</td><td>Processo Administrativo nº 0054.1402.2361.0007/2025 – URDD/SECULT</td></tr>
+          <tr><td>Valor Repassado</td><td>R$ 267.000,00</td></tr>
+          <tr><td>Valor Global</td><td>R$ 267.000,00</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="proj-card" data-status="Finalizado" onclick="toggleProj(this)">
+      <div class="proj-card-head">
+        <div class="proj-card-left">
+          <div class="proj-thumb-sm">🏅</div>
+          <div class="proj-info">
+            <h3>V CORRIDA DE RUA DA POLÍCIA CIVIL DO AMAPÁ</h3>
+            <div class="proj-instr">014/2025 – SEDEL &nbsp;·&nbsp; Instrumento SEDEL</div>
+          </div>
+        </div>
+        <div class="proj-card-meta">
+          <span class="proj-valor">R$ 969.185,00</span>
+          <span class="proj-tag tag-f">Finalizado</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="proj-card-body">
+        <table>
+          <tr><td>Número do Instrumento</td><td>014/2025 – SEDEL</td></tr>
+          <tr><td>Recurso Financeiro</td><td>R$ 969.185,00</td></tr>
+          <tr><td>Fonte de Recurso Estadual (500)</td><td>500</td></tr>
+          <tr><td>Autoria da Emenda</td><td>Emenda Parlamentar Impositiva I0179 – Dep. Estadual</td></tr>
+          <tr><td>Valor Repassado</td><td>R$ 969.185,00</td></tr>
+          <tr><td>Valor Global</td><td>R$ 969.185,00</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="proj-card" data-status="Finalizado" onclick="toggleProj(this)">
+      <div class="proj-card-head">
+        <div class="proj-card-left">
+          <div class="proj-thumb-sm">👩</div>
+          <div class="proj-info">
+            <h3>I CORRIDA DA VISIBILIDADE FEMININA EM SANTANA</h3>
+            <div class="proj-instr">Termo de Fomento nº 008/2025 SEDEL-GEA &nbsp;·&nbsp; Emenda Parlamentar</div>
+          </div>
+        </div>
+        <div class="proj-card-meta">
+          <span class="proj-valor">R$ 350.000,00</span>
+          <span class="proj-tag tag-f">Finalizado</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="proj-card-body">
+        <table>
+          <tr><td>Número do Instrumento</td><td>Termo de Fomento nº 008/2025 SEDEL-GEA</td></tr>
+          <tr><td>Recurso Financeiro</td><td>R$ 350.000,00</td></tr>
+          <tr><td>Fonte de Recurso Estadual (500)</td><td>500</td></tr>
+          <tr><td>Autoria da Emenda</td><td>Emenda Parlamentar Impositiva</td></tr>
+          <tr><td>Valor Repassado</td><td>R$ 350.000,00</td></tr>
+          <tr><td>Valor Global</td><td>R$ 350.000,00</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="proj-card" data-status="Finalizado" onclick="toggleProj(this)">
+      <div class="proj-card-head">
+        <div class="proj-card-left">
+          <div class="proj-thumb-sm">🎄</div>
+          <div class="proj-info">
+            <h3>NATAL SOLIDÁRIO – Bairro das Pedrinhas 2024</h3>
+            <div class="proj-instr">Termo de Fomento 021/2024 – SEAS &nbsp;·&nbsp; Emenda Parlamentar</div>
+          </div>
+        </div>
+        <div class="proj-card-meta">
+          <span class="proj-valor">R$ 250.000,00</span>
+          <span class="proj-tag tag-f">Finalizado</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="proj-card-body">
+        <table>
+          <tr><td>Número do Instrumento</td><td>Termo de Fomento 021/2024 – SEAS</td></tr>
+          <tr><td>Recurso Financeiro</td><td>R$ 250.000,00</td></tr>
+          <tr><td>Fonte de Recurso Estadual (500)</td><td>500</td></tr>
+          <tr><td>Autoria da Emenda</td><td>Emenda Parlamentar</td></tr>
+          <tr><td>Valor Repassado</td><td>R$ 250.000,00</td></tr>
+          <tr><td>Valor Global</td><td>R$ 250.000,00</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="proj-card" data-status="Finalizado" onclick="toggleProj(this)">
+      <div class="proj-card-head">
+        <div class="proj-card-left">
+          <div class="proj-thumb-sm">🌿</div>
+          <div class="proj-info">
+            <h3>CONEXÃO AMAZÔNIA</h3>
+            <div class="proj-instr">037/2024 – SECULT &nbsp;·&nbsp; Emenda Camilo Capiberibe</div>
+          </div>
+        </div>
+        <div class="proj-card-meta">
+          <span class="proj-valor">R$ 251.200,00</span>
+          <span class="proj-tag tag-f">Finalizado</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="proj-card-body">
+        <table>
+          <tr><td>Número do Instrumento</td><td>037/2024 – SECULT</td></tr>
+          <tr><td>Recurso Financeiro</td><td>R$ 251.200,00</td></tr>
+          <tr><td>Fonte de Recurso Federal (706)</td><td>706</td></tr>
+          <tr><td>Autoria da Emenda</td><td>Camilo Capiberibe</td></tr>
+          <tr><td>Valor Repassado</td><td>R$ 251.200,00</td></tr>
+          <tr><td>Valor Global</td><td>R$ 251.200,00</td></tr>
+        </table>
+      </div>
+    </div>
+
+  </div><!-- /proj-lista -->
+</div>
+</div><!-- /projetos -->
+
+
+<!-- ═══════════════ ACESSO À INFORMAÇÃO ═══════════════ -->
+<div id="page-acesso" class="page">
+<div class="wrap">
+  <div class="lai-layout">
+    <div>
+      <div class="sec-label">Lei 12.527/2011</div>
+      <div class="sec-title">Acesso a Informação</div>
+      <p style="font-size:15px;color:var(--texto-lt);line-height:1.75;margin:14px 0 28px;font-weight:300">
+        O acesso à informação pública é um direito fundamental garantido a todos os cidadãos pela <strong style="color:var(--verde)">Lei Federal 12.527</strong>, sancionada em 18 de novembro de 2011, conhecida como <strong style="color:var(--verde)">Lei de Acesso à Informação (LAI)</strong>. Essa legislação assegura que, desde 16 de maio de 2012, qualquer cidadão pode solicitar informações junto a órgãos e entidades públicas, fortalecendo os pilares da transparência, responsabilidade e participação cidadã.
+      </p>
+      <p style="font-size:14px;color:var(--texto-lt);line-height:1.7;margin-bottom:24px">
+        Em alinhamento com sua missão de promover o desenvolvimento social e a transparência em suas ações, o <strong style="color:var(--verde)">Instituto Meio do Mundo</strong> disponibiliza o <strong style="color:var(--verde)">Portal de Transparência e Acesso à Informação</strong>, uma ferramenta prática e eficiente que permite a qualquer pessoa — física ou jurídica — acessar informações e acompanhar a tramitação de suas solicitações de maneira ágil e segura.
+      </p>
+      <div class="lai-features">
+        <div class="feat"><div class="feat-ico">📋</div><div class="feat-txt"><strong>Especificar a unidade ou área</strong><span>do Instituto Meio do Mundo que deseja contatar.</span></div></div>
+        <div class="feat"><div class="feat-ico">✍️</div><div class="feat-txt"><strong>Inserir descrição detalhada</strong><span>do pedido de informação desejado.</span></div></div>
+        <div class="feat"><div class="feat-ico">📎</div><div class="feat-txt"><strong>Anexar documentos em PDF</strong><span>relevantes ao pedido (até 3MB).</span></div></div>
+        <div class="feat"><div class="feat-ico">📬</div><div class="feat-txt"><strong>Escolher a forma preferida</strong><span>para receber a resposta ao pedido.</span></div></div>
+        <div class="feat"><div class="feat-ico">🔄</div><div class="feat-txt"><strong>Acompanhar em tempo real</strong><span>o andamento via protocolo único enviado por e-mail.</span></div></div>
+        <div class="feat"><div class="feat-ico">⚖️</div><div class="feat-txt"><strong>Recursos administrativos</strong><span>caso a resposta não seja satisfatória, o sistema permite registrar recursos.</span></div></div>
+        <div class="feat"><div class="feat-ico">📊</div><div class="feat-txt"><strong>Relatórios estatísticos</strong><span>dados consolidados sobre pedidos realizados, promovendo transparência ativa.</span></div></div>
+      </div>
+    </div>
+    <div class="form-card">
+      <div class="form-title">📬 Fazer Solicitação — e-SIC</div>
+      <div class="form-sub">Resposta em até 20 dias úteis, conforme a LAI.</div>
+      <div class="form-note">✅ A identificação <strong>não é obrigatória</strong> para pedidos de acesso à informação.</div>
+      <form id="esic-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Tipo de Pedido *</label>
+          <select id="esic-tipo" class="form-ctrl"><option>Acesso à Informação</option><option>Reclamação</option><option>Denúncia</option><option>Sugestão</option><option>Elogio</option></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Setor / Área</label>
+          <select id="esic-setor" class="form-ctrl"><option>Selecione...</option><option>Financeiro</option><option>Projetos</option><option>RH / Contratações</option><option>Gestão Geral</option></select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Descrição do Pedido *</label>
+        <textarea id="esic-descricao" class="form-ctrl" rows="4" placeholder="Descreva detalhadamente as informações que deseja obter..." required></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Nome (opcional)</label>
+          <input id="esic-nome" type="text" class="form-ctrl" placeholder="Seu nome completo">
+        </div>
+        <div class="form-group">
+          <label class="form-label">E-mail para Protocolo</label>
+          <input id="esic-email" type="email" class="form-ctrl" placeholder="seu@email.com">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Formato de Resposta Preferido</label>
+        <select id="esic-resposta" class="form-ctrl"><option>E-mail</option><option>Carta física</option><option>Atendimento presencial</option></select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Anexar Documento (PDF, até 3MB)</label>
+        <input id="esic-anexo" type="file" class="form-ctrl" accept=".pdf">
+      </div>
+      <button id="esic-submit" type="submit" class="btn btn-gold" style="width:100%;justify-content:center;padding:14px;font-size:15px">📤 Enviar Solicitação</button>
+      <div id="esic-status" class="form-status" role="status" aria-live="polite"></div>
+      </form>
+    </div>
+  </div>
+</div>
+</div><!-- /acesso -->
+
+
+<!-- ═══════════════ FINANCEIROS ═══════════════ -->
+<div id="page-financeiros" class="page">
+<div class="wrap">
+  <div class="sec-label">Transparência Financeira</div>
+  <div class="sec-title" style="margin-bottom:6px">Relatórios Financeiros</div>
+  <p style="font-size:14px;color:var(--texto-lt);margin-bottom:32px">Conteúdo gerenciado no painel administrativo.</p>
+  {% for info in infos_por_secao.FINANCEIROS %}
+  <div style="background:#fff;border-radius:14px;border:1.5px solid var(--cinza);padding:24px 28px;margin-bottom:20px">
+    <div style="font-family:var(--FH);font-size:13px;font-weight:700;color:var(--verde-c);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">{{ info.titulo }}</div>
+    <p style="font-size:13.5px;color:var(--texto-lt);">{{ info.descricao }}</p>
+    {% if info.url_documento %}
+    <a href="{{ info.url_documento }}" target="_blank" rel="noopener" class="proj-dl-btn">{% if info.possui_arquivo %}Baixar arquivo{% else %}Abrir documento{% endif %}</a>
+    {% endif %}
+  </div>
+  {% empty %}
+  <div style="background:#fff;border-radius:14px;border:1.5px solid var(--cinza);padding:24px 28px;margin-bottom:20px">
+    <p style="font-size:13.5px;color:var(--texto-lt);font-style:italic">Nenhuma informação cadastrada nesta seção.</p>
+  </div>
+  {% endfor %}
+</div>
+</div><!-- /financeiros -->
+
+
+<!-- ═══════════════ PRESTAÇÃO ═══════════════ -->
+<div id="page-prestacao" class="page">
+<div class="wrap">
+  <div class="sec-label">Prestação de Contas</div>
+  <div class="sec-title" style="margin-bottom:6px">Prestação de Contas</div>
+  <p style="font-size:14px;color:var(--texto-lt);margin-bottom:32px">Documentos e informações cadastrados pelo administrador.</p>
+  {% for info in infos_por_secao.PRESTACAO %}
+  <div style="background:#fff;border-radius:14px;border:1.5px solid var(--cinza);padding:24px 28px;margin-bottom:20px">
+    <div style="font-family:var(--FH);font-size:13px;font-weight:700;color:var(--verde-c);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">{{ info.titulo }}</div>
+    <p style="font-size:13.5px;color:var(--texto-lt);">{{ info.descricao }}</p>
+    {% if info.url_documento %}
+    <a href="{{ info.url_documento }}" target="_blank" rel="noopener" class="proj-dl-btn">{% if info.possui_arquivo %}Baixar arquivo{% else %}Abrir documento{% endif %}</a>
+    {% endif %}
+  </div>
+  {% empty %}
+  <div style="background:#fff;border-radius:14px;border:1.5px solid var(--cinza);padding:24px 28px;margin-bottom:20px">
+    <p style="font-size:13.5px;color:var(--texto-lt);font-style:italic">Nenhuma informação cadastrada nesta seção.</p>
+  </div>
+  {% endfor %}
+</div>
+</div><!-- /prestacao -->
+
+
+<!-- ═══════════════ CONTRATAÇÕES ═══════════════ -->
+<div id="page-contratacoes" class="page">
+<div class="wrap">
+  <div class="sec-label">Processos e Editais</div>
+  <div class="sec-title" style="margin-bottom:6px">Contratações</div>
+  <p style="font-size:14px;color:var(--texto-lt);margin-bottom:32px">Editais, processos e fornecedores cadastrados pelo administrador.</p>
+  {% for info in infos_por_secao.CONTRATACOES %}
+  <div style="background:#fff;border-radius:14px;border:1.5px solid var(--cinza);padding:24px 28px;margin-bottom:20px">
+    <div style="font-family:var(--FH);font-size:13px;font-weight:700;color:var(--verde-c);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">{{ info.titulo }}</div>
+    <p style="font-size:13.5px;color:var(--texto-lt);">{{ info.descricao }}</p>
+    {% if info.url_documento %}
+    <a href="{{ info.url_documento }}" target="_blank" rel="noopener" class="proj-dl-btn">{% if info.possui_arquivo %}Baixar arquivo{% else %}Abrir documento{% endif %}</a>
+    {% endif %}
+  </div>
+  {% empty %}
+  <div style="background:#fff;border-radius:14px;border:1.5px solid var(--cinza);padding:24px 28px;margin-bottom:20px">
+    <p style="font-size:13.5px;color:var(--texto-lt);font-style:italic">Nenhuma informação cadastrada nesta seção.</p>
+  </div>
+  {% endfor %}
+</div>
+</div><!-- /contratacoes -->
+
+
+<!-- ═══════════════ POLÍTICAS ═══════════════ -->
+<div id="page-politicas" class="page">
+<div class="wrap">
+  <div class="sec-label">Governança</div>
+  <div class="sec-title" style="margin-bottom:6px">Políticas e Regulamentos</div>
+  <p style="font-size:14px;color:var(--texto-lt);margin-bottom:32px">Políticas e regulamentos cadastrados no painel administrativo.</p>
+
+  <div style="background:#fff;border-radius:14px;border:1.5px solid var(--cinza);padding:24px 28px;margin-bottom:20px">
+    <div style="font-family:var(--FH);font-size:13px;font-weight:700;color:var(--verde-c);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Lei Geral de Proteção de Dados (LGPD)</div>
+    <p style="font-size:13.5px;color:var(--texto-lt);">Lei nº 13.709/2018 (LGPD) - proteção de dados pessoais.</p>
+    <a href="https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/L13709.htm" target="_blank" rel="noopener" class="proj-dl-btn">Abrir LGPD no Planalto</a>
+  </div>
+
+  <div style="background:#fff;border-radius:14px;border:1.5px solid var(--cinza);padding:24px 28px;margin-bottom:20px">
+    <div style="font-family:var(--FH);font-size:13px;font-weight:700;color:var(--verde-c);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Lei de Acesso à Informação (LAI)</div>
+    <p style="font-size:13.5px;color:var(--texto-lt);">Lei nº 12.527/2011 - acesso à informação pública.</p>
+    <a href="https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2011/lei/l12527.htm" target="_blank" rel="noopener" class="proj-dl-btn">Abrir LAI no Planalto</a>
+  </div>
+
+  {% for info in infos_por_secao.POLITICAS %}
+  <div style="background:#fff;border-radius:14px;border:1.5px solid var(--cinza);padding:24px 28px;margin-bottom:20px">
+    <div style="font-family:var(--FH);font-size:13px;font-weight:700;color:var(--verde-c);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">{{ info.titulo }}</div>
+    <p style="font-size:13.5px;color:var(--texto-lt);">{{ info.descricao }}</p>
+    {% if info.url_documento %}
+    <a href="{{ info.url_documento }}" target="_blank" rel="noopener" class="proj-dl-btn">{% if info.possui_arquivo %}Baixar arquivo{% else %}Abrir documento{% endif %}</a>
+    {% endif %}
+  </div>
+  {% empty %}
+  <div style="background:#fff;border-radius:14px;border:1.5px solid var(--cinza);padding:24px 28px;margin-bottom:20px">
+    <p style="font-size:13.5px;color:var(--texto-lt);font-style:italic">Nenhuma informação cadastrada nesta seção.</p>
+  </div>
+  {% endfor %}
+</div>
+</div><!-- /politicas -->
+
+
+<!-- FOOTER -->
+<footer>
+  <div class="ft-inner">
+    <div class="ft-top">
+      <div class="ft-logo">
+        <img src="/static/img/logo-portal.svg" alt="Instituto Meio do Mundo">
+        <p class="ft-desc">Este espaço representa mais uma ação de promoção da transparência pública.</p>
+      </div>
+      <div class="ft-col">
+        <h4>Transparência</h4>
+        <a onclick="showPage('financeiros')">Relatórios Financeiros</a>
+        <a onclick="showPage('prestacao')">Prestação de Contas</a>
+        <a onclick="showPage('contratacoes')">Contratações</a>
+        <a onclick="showPage('politicas')">Código de Ética</a>
+        <a onclick="showPage('politicas')">LGPD</a>
+      </div>
+      <div class="ft-col">
+        <h4>Projetos</h4>
+        <a onclick="showPage('projetos')">Em Andamento</a>
+        <a onclick="showPage('projetos')">Finalizados</a>
+        <a onclick="showPage('projetos')">Parceiros</a>
+        <a onclick="showPage('projetos')">Indicadores de Impacto</a>
+      </div>
+      <div class="ft-col">
+        <h4>Informações de Contato</h4>
+        <a href="tel:5596981134444">Fone: +55 96 98113-4444</a>
+        <a href="https://wa.me/5596984111856">Whatsapp: 55 96 98411-1856</a>
+        <a href="mailto:contato@institutomeiodomundo.org">contato@institutomeiodomundo.org</a>
+        <a>End. Desidério Antonio Coelho, 511-A</a>
+        <a>Trem, Macapá – AP, CEP: 68901-080</a>
+      </div>
+    </div>
+    <div class="ft-bottom">
+      <span>©2025. Todos os Direitos Reservados</span>
+      <span><a href="https://institutomeiodomundo.org" target="_blank">institutomeiodomundo.org</a></span>
+    </div>
+  </div>
+</footer>
+
+<script>
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const page = document.getElementById('page-' + id);
+  if (page) page.classList.add('active');
+  window.scrollTo({top: 0, behavior: 'smooth'});
+  const map = {home:'Página Inicial', acesso:'Acesso', financeiros:'Transparência', prestacao:'Transparência', contratacoes:'Transparência', projetos:'Projetos', politicas:'Transparência'};
+  document.querySelectorAll('.nav-item').forEach(n => {
+    if (map[id] && n.textContent.trim().startsWith(map[id])) n.classList.add('active');
+  });
+}
+
+function toggleProj(card) {
+  const wasOpen = card.classList.contains('open');
+  document.querySelectorAll('.proj-card.open').forEach(c => c.classList.remove('open'));
+  if (!wasOpen) card.classList.add('open');
+}
+
+function filtrarProjetos(status, btn) {
+  document.querySelectorAll('#proj-filter .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('#proj-lista .proj-card').forEach(card => {
+    if (status === 'todos' || card.dataset.status === status) {
+      card.style.display = '';
+    } else {
+      card.style.display = 'none';
+    }
+  });
+}
+
+function setEsicStatus(type, message) {
+  const statusEl = document.getElementById('esic-status');
+  if (!statusEl) return;
+  statusEl.className = 'form-status ' + type;
+  statusEl.textContent = message;
+}
+
+function getPortalUrl(path) {
+  if (window.location.protocol === 'file:') {
+    return 'http://127.0.0.1:8000' + path;
+  }
+  return path;
+}
+async function submitEsicForm(event) {
+  event.preventDefault();
+  const tipo = document.getElementById('esic-tipo').value.trim();
+  const setor = document.getElementById('esic-setor').value.trim();
+  const formatoResposta = document.getElementById('esic-resposta').value.trim();
+  const nome = document.getElementById('esic-nome').value.trim();
+  const email = document.getElementById('esic-email').value.trim();
+  const descricao = document.getElementById('esic-descricao').value.trim();
+  const anexoInput = document.getElementById('esic-anexo');
+  const anexo = anexoInput && anexoInput.files ? anexoInput.files[0] : null;
+  const submitBtn = document.getElementById('esic-submit');
+  const form = document.getElementById('esic-form');
+
+  if (!descricao) {
+    setEsicStatus('error', 'Preencha a descrição do pedido antes de enviar.');
+    return;
+  }
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Enviando...';
+  setEsicStatus('success', 'Processando solicitação...');
+
+  try {
+    const body = new FormData();
+    body.append('tipo', tipo);
+    body.append('setor', setor);
+    body.append('descricao', descricao);
+    body.append('nome', nome);
+    body.append('email', email);
+    body.append('formato_resposta', formatoResposta);
+    if (anexo) {
+      body.append('anexo', anexo);
+    }
+
+    const response = await fetch(getPortalUrl('/api/esic/submit/'), {
+      method: 'POST',
+      body: body,
+    });
+
+    let payload = {};
+    try {
+      payload = await response.json();
+    } catch (_err) {}
+
+    if (!response.ok) {
+      const message = payload.error || 'Nao foi possivel enviar. Tente novamente.';
+      setEsicStatus('error', message);
+      return;
+    }
+
+    setEsicStatus(
+      'success',
+      'Solicitação registrada com sucesso. Protocolo: ' + (payload.protocolo || '-')
+    );
+    form.reset();
+  } catch (_err) {
+    setEsicStatus('error', 'Falha de conexão com o servidor.');
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = '📤 Enviar Solicitação';
+  }
+}
+
+function enhanceInteractiveAccessibility() {
+  const clickable = document.querySelectorAll('[onclick]');
+  clickable.forEach(function (el) {
+    const isAnchor = el.tagName === 'A';
+    const hasHref = isAnchor && el.hasAttribute('href');
+    if (!hasHref) {
+      el.setAttribute('role', 'button');
+      el.setAttribute('tabindex', '0');
+      el.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          el.click();
+        }
+      });
+    }
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  if (window.location.protocol === 'file:') {
+    document.querySelectorAll('.admin-link').forEach(function (el) {
+      el.setAttribute('href', 'http://127.0.0.1:8000/admin/');
+      el.setAttribute('target', '_blank');
+      el.setAttribute('rel', 'noopener');
+    });
+  }
+  const form = document.getElementById('esic-form');
+  if (form) {
+    form.addEventListener('submit', submitEsicForm);
+  }
+  enhanceInteractiveAccessibility();
+});
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
