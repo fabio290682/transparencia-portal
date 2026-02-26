@@ -41,8 +41,10 @@ def _env_int(name, default=0):
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# Default: enabled for local dev and automated tests.
-_DEFAULT_DEBUG = any(cmd in sys.argv for cmd in ('runserver', 'test'))
+# Default local (safe for dev commands without .env). Production must set DJANGO_DEBUG=false.
+_DEFAULT_DEBUG = any(
+    cmd in sys.argv for cmd in ("runserver", "test", "check", "makemigrations", "showmigrations", "shell")
+)
 DEBUG = _env_bool('DJANGO_DEBUG', default=_DEFAULT_DEBUG)
 
 # SECURITY WARNING: keep the secret key used in production secret!

@@ -205,12 +205,12 @@ footer{background:var(--verde);padding:48px 40px 24px}
 <!-- TOP BAR -->
 <div class="topbar">
   <span>OSCIP · Macapá – Amapá · CNPJ 08.962.333/0001-03</span>
-  <span><a href="tel:5596981134444">Fone: +55 96 98113-4444</a> &nbsp;·&nbsp; <a href="https://wa.me/5596984111856">WhatsApp: 55 96 98411-1856</a> &nbsp;·&nbsp; <a href="mailto:contato@institutomeiodomundo.org">contato@institutomeiodomundo.org</a> <a href="/admin/" class="admin-link">Acesso Administrativo</a></span>
+  <span><a href="tel:5596981134444">Fone: +55 96 98113-4444</a> &nbsp;·&nbsp; <a href="https://wa.me/5596984111856">WhatsApp: 55 96 98411-1856</a> &nbsp;·&nbsp; <a href="mailto:contato@institutomeiodomundo.org">contato@institutomeiodomundo.org</a> <a href="#" class="admin-link">Acesso Administrativo</a></span>
 </div>
 
 <!-- LOGO -->
 <div class="logo-area">
-  <img src="/static/img/logo-portal.svg" alt="Instituto Meio do Mundo" class="logo-img">
+  <img src="static/img/logo-portal.svg" alt="Instituto Meio do Mundo" class="logo-img">
 </div>
 
 <!-- HERO -->
@@ -276,37 +276,37 @@ footer{background:var(--verde);padding:48px 40px 24px}
 
   <div class="icon-grid">
     <div class="icon-card" onclick="showPage('acesso')">
-      <img src="/static/img/icons/icon-location.svg" alt="Localização">
+      <img src="static/img/icons/icon-location.svg" alt="Localização">
       <h3>Localização & Sede</h3>
       <p>Rua Desidério Antonio Coelho, 511-A, Trem, Macapá – AP, CEP 68901-080.</p>
       <span class="ic-link">Ver localização →</span>
     </div>
     <div class="icon-card" onclick="showPage('projetos')">
-      <img src="/static/img/icons/icon-group.svg" alt="Beneficiários">
+      <img src="static/img/icons/icon-group.svg" alt="Beneficiários">
       <h3>Beneficiários & Comunidades</h3>
       <p>Conheça as comunidades e pessoas impactadas pelos projetos do Instituto.</p>
       <span class="ic-link">Ver projetos →</span>
     </div>
     <div class="icon-card" onclick="showPage('acesso')">
-      <img src="/static/img/icons/icon-chat.svg" alt="Fale Conosco">
+      <img src="static/img/icons/icon-chat.svg" alt="Fale Conosco">
       <h3>Fale Conosco</h3>
       <p>Envie pedidos de informação, sugestões e solicitações via e-SIC / LAI.</p>
       <span class="ic-link">Fazer solicitação →</span>
     </div>
     <div class="icon-card" onclick="showPage('projetos')">
-      <img src="/static/img/icons/icon-impact.svg" alt="Resultados">
+      <img src="static/img/icons/icon-impact.svg" alt="Resultados">
       <h3>Impactos e Resultados</h3>
       <p>Indicadores de desempenho e relatórios de avaliação de impacto social.</p>
       <span class="ic-link">Ver indicadores →</span>
     </div>
     <div class="icon-card" onclick="showPage('prestacao')">
-      <img src="/static/img/icons/icon-partnership.svg" alt="Parcerias">
+      <img src="static/img/icons/icon-partnership.svg" alt="Parcerias">
       <h3>Parcerias & Termos de Fomento</h3>
       <p>Termos de fomento, patrocínio e contratos com órgãos públicos e privados.</p>
       <span class="ic-link">Ver termos →</span>
     </div>
     <div class="icon-card" onclick="showPage('acesso')">
-      <img src="/static/img/icons/icon-tower.svg" alt="Acesso à Informação">
+      <img src="static/img/icons/icon-tower.svg" alt="Acesso à Informação">
       <h3>Acesso à Informação</h3>
       <p>Solicite informações e acompanhe seu protocolo — Lei 12.527/2011 (LAI).</p>
       <span class="ic-link">Solicitar informação →</span>
@@ -852,19 +852,11 @@ footer{background:var(--verde);padding:48px 40px 24px}
   <div class="sec-label">Transparência Financeira</div>
   <div class="sec-title" style="margin-bottom:6px">Relatórios Financeiros</div>
   <p style="font-size:14px;color:var(--texto-lt);margin-bottom:32px">Conteúdo gerenciado no painel administrativo.</p>
-  {% for info in infos_por_secao.FINANCEIROS %}
   <div style="background:#fff;border-radius:14px;border:1.5px solid var(--cinza);padding:24px 28px;margin-bottom:20px">
-    <div style="font-family:var(--FH);font-size:13px;font-weight:700;color:var(--verde-c);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">{{ info.titulo }}</div>
-    <p style="font-size:13.5px;color:var(--texto-lt);">{{ info.descricao }}</p>
-    {% if info.url_documento %}
-    <a href="{{ info.url_documento }}" target="_blank" rel="noopener" class="proj-dl-btn">{% if info.possui_arquivo %}Baixar arquivo{% else %}Abrir documento{% endif %}</a>
-    {% endif %}
   </div>
-  {% empty %}
   <div style="background:#fff;border-radius:14px;border:1.5px solid var(--cinza);padding:24px 28px;margin-bottom:20px">
     <p style="font-size:13.5px;color:var(--texto-lt);font-style:italic">Nenhuma informação cadastrada nesta seção.</p>
   </div>
-  {% endfor %}
 </div>
 </div><!-- /financeiros -->
 
@@ -875,19 +867,11 @@ footer{background:var(--verde);padding:48px 40px 24px}
   <div class="sec-label">Prestação de Contas</div>
   <div class="sec-title" style="margin-bottom:6px">Prestação de Contas</div>
   <p style="font-size:14px;color:var(--texto-lt);margin-bottom:32px">Documentos e informações cadastrados pelo administrador.</p>
-  {% for info in infos_por_secao.PRESTACAO %}
   <div style="background:#fff;border-radius:14px;border:1.5px solid var(--cinza);padding:24px 28px;margin-bottom:20px">
-    <div style="font-family:var(--FH);font-size:13px;font-weight:700;color:var(--verde-c);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">{{ info.titulo }}</div>
-    <p style="font-size:13.5px;color:var(--texto-lt);">{{ info.descricao }}</p>
-    {% if info.url_documento %}
-    <a href="{{ info.url_documento }}" target="_blank" rel="noopener" class="proj-dl-btn">{% if info.possui_arquivo %}Baixar arquivo{% else %}Abrir documento{% endif %}</a>
-    {% endif %}
   </div>
-  {% empty %}
   <div style="background:#fff;border-radius:14px;border:1.5px solid var(--cinza);padding:24px 28px;margin-bottom:20px">
     <p style="font-size:13.5px;color:var(--texto-lt);font-style:italic">Nenhuma informação cadastrada nesta seção.</p>
   </div>
-  {% endfor %}
 </div>
 </div><!-- /prestacao -->
 
@@ -898,19 +882,11 @@ footer{background:var(--verde);padding:48px 40px 24px}
   <div class="sec-label">Processos e Editais</div>
   <div class="sec-title" style="margin-bottom:6px">Contratações</div>
   <p style="font-size:14px;color:var(--texto-lt);margin-bottom:32px">Editais, processos e fornecedores cadastrados pelo administrador.</p>
-  {% for info in infos_por_secao.CONTRATACOES %}
   <div style="background:#fff;border-radius:14px;border:1.5px solid var(--cinza);padding:24px 28px;margin-bottom:20px">
-    <div style="font-family:var(--FH);font-size:13px;font-weight:700;color:var(--verde-c);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">{{ info.titulo }}</div>
-    <p style="font-size:13.5px;color:var(--texto-lt);">{{ info.descricao }}</p>
-    {% if info.url_documento %}
-    <a href="{{ info.url_documento }}" target="_blank" rel="noopener" class="proj-dl-btn">{% if info.possui_arquivo %}Baixar arquivo{% else %}Abrir documento{% endif %}</a>
-    {% endif %}
   </div>
-  {% empty %}
   <div style="background:#fff;border-radius:14px;border:1.5px solid var(--cinza);padding:24px 28px;margin-bottom:20px">
     <p style="font-size:13.5px;color:var(--texto-lt);font-style:italic">Nenhuma informação cadastrada nesta seção.</p>
   </div>
-  {% endfor %}
 </div>
 </div><!-- /contratacoes -->
 
@@ -934,19 +910,11 @@ footer{background:var(--verde);padding:48px 40px 24px}
     <a href="https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2011/lei/l12527.htm" target="_blank" rel="noopener" class="proj-dl-btn">Abrir LAI no Planalto</a>
   </div>
 
-  {% for info in infos_por_secao.POLITICAS %}
   <div style="background:#fff;border-radius:14px;border:1.5px solid var(--cinza);padding:24px 28px;margin-bottom:20px">
-    <div style="font-family:var(--FH);font-size:13px;font-weight:700;color:var(--verde-c);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">{{ info.titulo }}</div>
-    <p style="font-size:13.5px;color:var(--texto-lt);">{{ info.descricao }}</p>
-    {% if info.url_documento %}
-    <a href="{{ info.url_documento }}" target="_blank" rel="noopener" class="proj-dl-btn">{% if info.possui_arquivo %}Baixar arquivo{% else %}Abrir documento{% endif %}</a>
-    {% endif %}
   </div>
-  {% empty %}
   <div style="background:#fff;border-radius:14px;border:1.5px solid var(--cinza);padding:24px 28px;margin-bottom:20px">
     <p style="font-size:13.5px;color:var(--texto-lt);font-style:italic">Nenhuma informação cadastrada nesta seção.</p>
   </div>
-  {% endfor %}
 </div>
 </div><!-- /politicas -->
 
@@ -956,7 +924,7 @@ footer{background:var(--verde);padding:48px 40px 24px}
   <div class="ft-inner">
     <div class="ft-top">
       <div class="ft-logo">
-        <img src="/static/img/logo-portal.svg" alt="Instituto Meio do Mundo">
+        <img src="static/img/logo-portal.svg" alt="Instituto Meio do Mundo">
         <p class="ft-desc">Este espaço representa mais uma ação de promoção da transparência pública.</p>
       </div>
       <div class="ft-col">
@@ -1029,6 +997,10 @@ function setEsicStatus(type, message) {
 }
 
 function getPortalUrl(path) {
+  const isGithubPages = window.location.hostname.endsWith('github.io');
+  if (isGithubPages) {
+    return null;
+  }
   if (window.location.protocol === 'file:') {
     return 'http://127.0.0.1:8000' + path;
   }
@@ -1057,6 +1029,15 @@ async function submitEsicForm(event) {
   setEsicStatus('success', 'Processando solicitação...');
 
   try {
+    const apiUrl = getPortalUrl('/api/esic/submit/');
+    if (!apiUrl) {
+      setEsicStatus(
+        'error',
+        'No GitHub Pages o formulario e-SIC e somente demonstrativo. Use o servidor backend para envio.'
+      );
+      return;
+    }
+
     const body = new FormData();
     body.append('tipo', tipo);
     body.append('setor', setor);
@@ -1068,7 +1049,7 @@ async function submitEsicForm(event) {
       body.append('anexo', anexo);
     }
 
-    const response = await fetch(getPortalUrl('/api/esic/submit/'), {
+    const response = await fetch(apiUrl, {
       method: 'POST',
       body: body,
     });
@@ -1116,11 +1097,21 @@ function enhanceInteractiveAccessibility() {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-  if (window.location.protocol === 'file:') {
+  const isFile = window.location.protocol === 'file:';
+  const isGithubPages = window.location.hostname.endsWith('github.io');
+  if (isFile) {
     document.querySelectorAll('.admin-link').forEach(function (el) {
       el.setAttribute('href', 'http://127.0.0.1:8000/admin/');
       el.setAttribute('target', '_blank');
       el.setAttribute('rel', 'noopener');
+    });
+  } else if (isGithubPages) {
+    document.querySelectorAll('.admin-link').forEach(function (el) {
+      el.setAttribute('href', '#');
+      el.addEventListener('click', function (event) {
+        event.preventDefault();
+        alert('Area administrativa indisponivel no GitHub Pages.');
+      });
     });
   }
   const form = document.getElementById('esic-form');
@@ -1133,6 +1124,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
 </body>
 </html>
+
+
 
 
 
