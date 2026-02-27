@@ -85,7 +85,7 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 SECURE_SSL_REDIRECT = _env_bool(
     'DJANGO_SECURE_SSL_REDIRECT',
-    default=not DEBUG,
+    default=False,
 )
 SESSION_COOKIE_SECURE = _env_bool(
     'DJANGO_SESSION_COOKIE_SECURE',
