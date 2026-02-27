@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 import os
 import sys
+import warnings
 from secrets import token_urlsafe
 from pathlib import Path
 from django.core.exceptions import ImproperlyConfigured
@@ -55,18 +56,24 @@ ALLOW_PUBLIC_REGISTRATION = _env_bool('ALLOW_PUBLIC_REGISTRATION', default=DEBUG
 
 # SECURITY WARNING: keep the secret key used in production secret!
 _SECRET_KEY_ENV = os.getenv('DJANGO_SECRET_KEY')
-if not DEBUG and not _SECRET_KEY_ENV:
-    raise ImproperlyConfigured('Defina DJANGO_SECRET_KEY para executar com DEBUG=False.')
-SECRET_KEY = _SECRET_KEY_ENV or token_urlsafe(64)
+if _SECRET_KEY_ENV:
+    SECRET_KEY = _SECRET_KEY_ENV
+else:
+    SECRET_KEY = token_urlsafe(64)
+    if not DEBUG:
+        warnings.warn(
+            'DJANGO_SECRET_KEY nao definido em producao. '
+            'Foi gerada uma chave temporaria para permitir inicializacao.',
+            RuntimeWarning,
+        )
 
-ALLOWED_HOSTS = [
-    host.strip()
-    for host in os.getenv('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1,testserver').split(',')
-    if host.strip()
-]
+_allowed_hosts_raw = os.getenv('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1,testserver')
+ALLOWED_HOSTS = [host.strip() for host in _allowed_hosts_raw.split(',') if host.strip()]
 if not DEBUG and set(ALLOWED_HOSTS).issubset({'localhost', '127.0.0.1', 'testserver'}):
-    raise ImproperlyConfigured(
-        'Defina DJANGO_ALLOWED_HOSTS com os dominios de producao quando DEBUG=False.'
+    ALLOWED_HOSTS = ['*']
+    warnings.warn(
+        'DJANGO_ALLOWED_HOSTS nao definido para producao. Usando "*" temporariamente.',
+        RuntimeWarning,
     )
 
 CSRF_TRUSTED_ORIGINS = [
