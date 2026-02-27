@@ -188,6 +188,35 @@ def health(request):
     return Response({'status': 'ok'}, status=status.HTTP_200_OK)
 
 
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def public_portal_info(request):
+    infos = PortalInformacao.objects.filter(ativo=True).order_by('secao', 'ordem', 'titulo')
+
+    payload = {
+        'FINANCEIROS': [],
+        'PRESTACAO': [],
+        'CONTRATACOES': [],
+        'POLITICAS': [],
+    }
+
+    for info in infos:
+        payload[info.secao].append(
+            {
+                'id': info.id,
+                'secao': info.secao,
+                'titulo': info.titulo,
+                'descricao': info.descricao,
+                'ordem': info.ordem,
+                'possui_arquivo': info.possui_arquivo,
+                'url_documento': info.url_documento,
+                'atualizado_em': info.atualizado_em.isoformat(),
+            }
+        )
+
+    return Response({'items': payload}, status=status.HTTP_200_OK)
+
+
 class UnidadeGestoraViewSet(viewsets.ModelViewSet):
     queryset = UnidadeGestora.objects.all()
     serializer_class = UnidadeGestoraSerializer

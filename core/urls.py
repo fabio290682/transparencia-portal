@@ -12,6 +12,7 @@ router.register(r'esic', views.EsicPedidoViewSet)
 urlpatterns = [
     path('', views.home, name='home'),
     path('health/', views.health, name='health'),
+    path('api/public/portal-info/', views.public_portal_info, name='public_portal_info'),
     path('api/esic/submit/', views.submit_esic_request, name='submit_esic_request'),
     path('api/', include(router.urls)),
     path('api/register/', views.register_user, name='register_user'),

@@ -1,5 +1,6 @@
 ﻿from io import BytesIO
 
+from django.core.management import call_command
 from django.core.exceptions import ValidationError
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase, override_settings
@@ -106,6 +107,70 @@ class HealthAndRegisterApiTests(APITestCase):
         }
         response = self.client.post('/api/register/', payload, format='json')
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+
+class PublicPortalInfoApiTests(APITestCase):
+    def test_public_portal_info_returns_grouped_items(self):
+        PortalInformacao.objects.create(
+            secao='POLITICAS',
+            titulo='Lei Geral de Protecao de Dados (LGPD)',
+            descricao='Lei no 13.709/2018.',
+            link='https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/L13709.htm',
+            ordem=1,
+            ativo=True,
+        )
+        PortalInformacao.objects.create(
+            secao='FINANCEIROS',
+            titulo='Relatorio Financeiro 2025',
+            descricao='Balanco anual.',
+            ordem=1,
+            ativo=True,
+        )
+
+        response = self.client.get('/api/public/portal-info/')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn('items', response.data)
+        self.assertIn('POLITICAS', response.data['items'])
+        self.assertIn('FINANCEIROS', response.data['items'])
+        self.assertEqual(len(response.data['items']['POLITICAS']), 1)
+        self.assertEqual(len(response.data['items']['FINANCEIROS']), 1)
+
+    def test_public_portal_info_does_not_return_inactive_items(self):
+        PortalInformacao.objects.create(
+            secao='POLITICAS',
+            titulo='Documento inativo',
+            descricao='Nao deve aparecer.',
+            ordem=5,
+            ativo=False,
+        )
+
+        response = self.client.get('/api/public/portal-info/')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data['items']['POLITICAS']), 0)
+
+
+class SeedPortalInfoCommandTests(TestCase):
+    def test_seed_portal_info_creates_default_items_idempotently(self):
+        call_command('seed_portal_info')
+        self.assertEqual(PortalInformacao.objects.filter(secao='POLITICAS').count(), 2)
+
+        call_command('seed_portal_info')
+        self.assertEqual(PortalInformacao.objects.filter(secao='POLITICAS').count(), 2)
+
+        self.assertTrue(
+            PortalInformacao.objects.filter(
+                titulo='Lei Geral de Protecao de Dados (LGPD)',
+                ativo=True,
+            ).exists()
+        )
+        self.assertTrue(
+            PortalInformacao.objects.filter(
+                titulo='Lei de Acesso a Informacao (LAI)',
+                ativo=True,
+            ).exists()
+        )
 
 
 class PortalInformacaoArquivoTests(APITestCase):
