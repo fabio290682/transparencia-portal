@@ -51,6 +51,7 @@ _DEFAULT_DEBUG = any(
     cmd in sys.argv for cmd in ("runserver", "test", "check", "makemigrations", "showmigrations", "shell")
 )
 DEBUG = _env_bool('DJANGO_DEBUG', default=_DEFAULT_DEBUG)
+ALLOW_PUBLIC_REGISTRATION = _env_bool('ALLOW_PUBLIC_REGISTRATION', default=DEBUG)
 
 # SECURITY WARNING: keep the secret key used in production secret!
 _SECRET_KEY_ENV = os.getenv('DJANGO_SECRET_KEY')
@@ -122,6 +123,9 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ],
+    'DEFAULT_THROTTLE_RATES': {
+        'register': os.getenv('REGISTER_THROTTLE_RATE', '5/hour'),
+    },
 }
 
 MIDDLEWARE = [

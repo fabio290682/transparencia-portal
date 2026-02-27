@@ -2,16 +2,18 @@
 from datetime import timedelta
 
 from django.contrib.auth.models import User
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from django.shortcuts import render
 from django.utils import timezone
 from rest_framework import status, viewsets
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, throttle_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
 from .models import UnidadeGestora, Despesa, Licitacao, Servidor, EsicPedido, PortalInformacao
+from .throttles import RegisterAnonThrottle
 from .serializers import (
     UnidadeGestoraSerializer,
     DespesaSerializer,
@@ -64,7 +66,14 @@ def _generate_protocolo():
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
+@throttle_classes([RegisterAnonThrottle])
 def register_user(request):
+    if not settings.ALLOW_PUBLIC_REGISTRATION:
+        return Response(
+            {'error': 'Cadastro publico desabilitado.'},
+            status=status.HTTP_403_FORBIDDEN,
+        )
+
     username = (request.data.get('username') or '').strip()
     password = request.data.get('password') or ''
     email = (request.data.get('email') or '').strip()
@@ -171,6 +180,12 @@ def home(request):
         'POLITICAS': infos.filter(secao='POLITICAS'),
     }
     return render(request, 'portal_transparencia.html', {'infos_por_secao': infos_por_secao})
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def health(request):
+    return Response({'status': 'ok'}, status=status.HTTP_200_OK)
 
 
 class UnidadeGestoraViewSet(viewsets.ModelViewSet):

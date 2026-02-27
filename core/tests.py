@@ -2,7 +2,7 @@
 
 from django.core.exceptions import ValidationError
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.urls import reverse
 from openpyxl import Workbook
 from rest_framework import status
@@ -89,6 +89,23 @@ class EsicSubmitApiTests(APITestCase):
         response = self.client.post('/api/esic/submit/', payload, format='multipart')
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+
+class HealthAndRegisterApiTests(APITestCase):
+    def test_health_endpoint_returns_ok(self):
+        response = self.client.get('/health/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data.get('status'), 'ok')
+
+    @override_settings(ALLOW_PUBLIC_REGISTRATION=False)
+    def test_register_user_disabled_returns_403(self):
+        payload = {
+            'username': 'qa_user',
+            'password': 'SenhaTeste123!',
+            'email': 'qa@example.com',
+        }
+        response = self.client.post('/api/register/', payload, format='json')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
 
 class PortalInformacaoArquivoTests(APITestCase):
