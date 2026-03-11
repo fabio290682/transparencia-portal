@@ -7,13 +7,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0004_alter_despesa_id_alter_esicpedido_id_and_more'),
+        ("core", "0004_alter_despesa_id_alter_esicpedido_id_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='portalinformacao',
-            name='arquivo',
-            field=models.FileField(blank=True, null=True, upload_to='portal_documentos/', validators=[django.core.validators.FileExtensionValidator(allowed_extensions=['pdf', 'xls', 'xlsx'])]),
+            model_name="portalinformacao",
+            name="arquivo",
+            field=models.FileField(blank=True, null=True, upload_to="portal_documentos/", validators=[django.core.validators.FileExtensionValidator(allowed_extensions=["pdf", "xls", "xlsx"])]),
         ),
     ]

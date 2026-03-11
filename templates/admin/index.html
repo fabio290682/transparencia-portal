@@ -1,85 +1,181 @@
-﻿{% load static %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Lux | Meio do Mundo</title>
+    <title>Painel Administrativo | Instituto Meio do Mundo</title>
     <link rel="stylesheet" href="{% static 'css/admin-dashboard.css' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <div class="app-wrapper">
-        <aside class="glass-sidebar">
-            <div class="logo-container">
-                <img src="{% static 'img/logo-portal.svg' %}" alt="Logo">
+    <div class="admin-shell">
+        <aside class="admin-sidebar">
+            <div class="brand-box">
+                <div class="brand-mark">IMM</div>
+                <div>
+                    <p class="eyebrow">Portal Admin</p>
+                    <h1>Instituto Meio do Mundo</h1>
+                </div>
             </div>
-            <nav class="side-nav">
-                <p class="nav-label">SISTEMA</p>
-                <a href="{% url 'admin:index' %}" class="nav-item active"><i class="fa-solid fa-house"></i> Home</a>
-                <a href="{% url 'admin:auth_user_changelist' %}" class="nav-item"><i class="fa-solid fa-users"></i> Usuários</a>
-                <a href="{% url 'admin:core_licitacao_changelist' %}" class="nav-item"><i class="fa-solid fa-file-contract"></i> Licitações</a>
 
-                <p class="nav-label">PROJETOS</p>
-                <a href="{% url 'admin:core_portalinformacao_changelist' %}" class="nav-item"><i class="fa-solid fa-seedling"></i> Meio Ambiente</a>
-                <a href="{% url 'admin:core_esicpedido_changelist' %}" class="nav-item"><i class="fa-solid fa-hand-holding-heart"></i> Doações</a>
+            <nav class="sidebar-nav">
+                <a href="#visao-geral" class="sidebar-link is-active">Dashboard</a>
+                <a href="#gerenciamento" class="sidebar-link">Gerenciamento</a>
+                <a href="#projetos" class="sidebar-link">Projetos</a>
+                <a href="#documentos" class="sidebar-link">Documentos</a>
+                <a href="#esic" class="sidebar-link">e-SIC</a>
+                <a href="{{ portal_public_url }}" class="sidebar-link" target="_blank" rel="noopener">Portal Publico</a>
             </nav>
+
+            <div class="sidebar-footer">
+                <p>Logado como</p>
+                <strong>{{ request.user.get_full_name|default:request.user.username }}</strong>
+            </div>
         </aside>
 
-        <main class="main-content">
-            <header class="glass-header">
-                <div class="search-bar">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" placeholder="Pesquisar no sistema..." aria-label="Pesquisar no sistema">
+        <main class="admin-main">
+            <header class="topbar">
+                <div>
+                    <p class="eyebrow">Area Administrativa</p>
+                    <h2>Gerenciador do Portal da Transparencia</h2>
                 </div>
-                <div class="user-profile">
-                    <div class="user-info">
-                        <span class="user-name">{{ request.user.get_full_name|default:request.user.username }}</span>
-                        <span class="user-role">Administrador</span>
-                    </div>
-                    <img src="https://ui-avatars.com/api/?name={{ request.user.username|urlencode }}&background=f2c811&color=1d4221" alt="Avatar">
+                <div class="topbar-actions">
+                    <a href="{{ portal_public_url }}" class="btn btn-outline" target="_blank" rel="noopener">Ver portal</a>
+                    <a href="{% url 'admin:password_change' %}" class="btn btn-gold">Configuracoes</a>
                 </div>
             </header>
 
-            <section class="dashboard-grid">
-                <div class="glass-card big-card">
-                    <h3><i class="fa-solid fa-rocket"></i> Ações Rápidas</h3>
-                    <div class="quick-actions-grid">
-                        <a href="{% url 'admin:core_portalinformacao_changelist' %}" class="action-btn">
-                            <div class="icon-box"><i class="fa-solid fa-chart-line"></i></div>
-                            <span>Relatório Financeiro</span>
-                        </a>
-                        <a href="{% url 'admin:core_esicpedido_changelist' %}" class="action-btn">
-                            <div class="icon-box"><i class="fa-solid fa-shield-halved"></i></div>
-                            <span>Pedidos e-SIC</span>
-                        </a>
-                        <a href="{% url 'admin:core_portalinformacao_importar_planilha' %}" class="action-btn">
-                            <div class="icon-box"><i class="fa-solid fa-envelope-open-text"></i></div>
-                            <span>Importar Planilha</span>
-                        </a>
-                        <a href="{% url 'admin:password_change' %}" class="action-btn">
-                            <div class="icon-box"><i class="fa-solid fa-gear"></i></div>
-                            <span>Configurações</span>
-                        </a>
+            <section id="visao-geral" class="section">
+                <div class="section-head">
+                    <div>
+                        <p class="eyebrow">Visao Geral</p>
+                        <h3>Resumo operacional</h3>
                     </div>
                 </div>
+                <div class="stats-grid">
+                    <article class="stat-card">
+                        <span class="stat-icon">Projetos</span>
+                        <strong>{{ project_count }}</strong>
+                        <p>cadastros de projetos e termos no portal</p>
+                    </article>
+                    <article class="stat-card">
+                        <span class="stat-icon">Documentos</span>
+                        <strong>{{ document_count }}</strong>
+                        <p>arquivos e links publicados nas secoes</p>
+                    </article>
+                    <article class="stat-card">
+                        <span class="stat-icon">e-SIC</span>
+                        <strong>{{ esic_count }}</strong>
+                        <p>solicitacoes registradas no sistema</p>
+                    </article>
+                    <article class="stat-card stat-card-alert">
+                        <span class="stat-icon">Pendentes</span>
+                        <strong>{{ pending_esic_count }}</strong>
+                        <p>pedidos e-SIC aguardando tratamento</p>
+                    </article>
+                </div>
+            </section>
 
-                <div class="glass-card small-card">
-                    <h3>Atividades Recentes</h3>
-                    <div class="timeline">
-                        <div class="timeline-item">
-                            <div class="marker"></div>
-                            <p><strong>Área administrativa</strong> personalizada e ativa</p>
-                        </div>
-                        <div class="timeline-item">
-                            <div class="marker"></div>
-                            <p><strong>Importação Excel</strong> disponível por seção</p>
-                        </div>
+            <section id="gerenciamento" class="section">
+                <div class="section-head">
+                    <div>
+                        <p class="eyebrow">Gerenciamento</p>
+                        <h3>Acessos rapidos</h3>
                     </div>
                 </div>
+                <div class="action-grid">
+                    {% for item in dashboard_links %}
+                    <article class="action-card">
+                        <div>
+                            <h4>{{ item.label }}</h4>
+                            <p>{{ item.hint }}</p>
+                        </div>
+                        <div class="action-row">
+                            <a href="{{ item.url }}" class="btn btn-gold"{% if item.label == 'Portal Público' %} target="_blank" rel="noopener"{% endif %}>Abrir</a>
+                            <a href="{{ item.add_url }}" class="btn btn-outline"{% if item.label == 'Portal Público' %} target="_blank" rel="noopener"{% endif %}>Ir direto</a>
+                        </div>
+                    </article>
+                    {% endfor %}
+                </div>
+            </section>
+
+            <div class="content-grid">
+                <section id="projetos" class="panel-card">
+                    <div class="section-head">
+                        <div>
+                            <p class="eyebrow">Projetos</p>
+                            <h3>Atualizados recentemente</h3>
+                        </div>
+                        <a href="{% url 'admin:core_projeto_changelist' %}" class="text-link">Gerenciar todos</a>
+                    </div>
+                    {% if recent_projects %}
+                        <div class="record-list">
+                            {% for projeto in recent_projects %}
+                            <a href="{% url 'admin:core_projeto_change' projeto.id %}" class="record-item">
+                                <div>
+                                    <strong>{{ projeto.titulo }}</strong>
+                                    <p>{{ projeto.instrumento }}{% if projeto.data_inicio %} · {{ projeto.data_inicio }}{% endif %}</p>
+                                </div>
+                                <span class="pill">{{ projeto.get_status_display }}</span>
+                            </a>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="empty-state">Nenhum projeto encontrado.</p>
+                    {% endif %}
+                </section>
+
+                <section id="esic" class="panel-card">
+                    <div class="section-head">
+                        <div>
+                            <p class="eyebrow">e-SIC</p>
+                            <h3>Solicitacoes recentes</h3>
+                        </div>
+                        <a href="{% url 'admin:core_esicpedido_changelist' %}" class="text-link">Abrir fila</a>
+                    </div>
+                    {% if recent_esic %}
+                        <div class="record-list">
+                            {% for pedido in recent_esic %}
+                            <a href="{% url 'admin:core_esicpedido_change' pedido.id %}" class="record-item">
+                                <div>
+                                    <strong>#{{ pedido.protocolo }}</strong>
+                                    <p>{{ pedido.email|default:'Sem e-mail' }}</p>
+                                </div>
+                                <span class="pill pill-muted">{{ pedido.get_status_display }}</span>
+                            </a>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="empty-state">Nenhuma solicitacao registrada.</p>
+                    {% endif %}
+                </section>
+            </div>
+
+            <section id="documentos" class="section panel-card">
+                <div class="section-head">
+                    <div>
+                        <p class="eyebrow">Documentos</p>
+                        <h3>Publicacoes recentes</h3>
+                    </div>
+                    <a href="{% url 'admin:core_portalinformacao_changelist' %}" class="text-link">Gerenciar documentos</a>
+                </div>
+                {% if recent_documents %}
+                    <div class="record-list">
+                        {% for documento in recent_documents %}
+                        <a href="{% url 'admin:core_portalinformacao_change' documento.id %}" class="record-item">
+                            <div>
+                                <strong>{{ documento.titulo }}</strong>
+                                <p>{{ documento.get_secao_display }}</p>
+                            </div>
+                            <span class="pill pill-gold">{% if documento.arquivo %}Arquivo{% elif documento.link %}Link{% else %}Cadastro{% endif %}</span>
+                        </a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="empty-state">Nenhum documento publicado.</p>
+                {% endif %}
             </section>
         </main>
     </div>
 </body>
 </html>
-

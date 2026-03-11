@@ -2,8 +2,9 @@
 
 import os
 import uuid
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from tempfile import gettempdir
 
 from flask import Flask, jsonify, render_template, request
 from flask_sqlalchemy import SQLAlchemy
@@ -11,7 +12,7 @@ from werkzeug.utils import secure_filename
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 IS_VERCEL = os.getenv("VERCEL") == "1"
-RUNTIME_DIR = Path("/tmp") if IS_VERCEL else BASE_DIR
+RUNTIME_DIR = Path(gettempdir()) if IS_VERCEL else BASE_DIR
 
 MEDIA_DIR = RUNTIME_DIR / "media"
 UPLOAD_DIR = MEDIA_DIR / "esic_anexos"
@@ -67,8 +68,13 @@ class PortalInformacao(db.Model):
     arquivo = db.Column(db.String(500), nullable=True)
     ordem = db.Column(db.Integer, nullable=False, default=0)
     ativo = db.Column(db.Boolean, nullable=False, default=True)
-    criado_em = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    atualizado_em = db.Column(db.DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow)
+    criado_em = db.Column(db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))
+    atualizado_em = db.Column(
+        db.DateTime,
+        nullable=False,
+        default=lambda: datetime.now(timezone.utc),
+        onupdate=lambda: datetime.now(timezone.utc),
+    )
 
     @property
     def possui_arquivo(self) -> bool:
@@ -117,7 +123,7 @@ def get_or_create_default_unidade() -> UnidadeGestora:
 def generate_protocolo() -> str:
     while True:
         suffix = str(uuid.uuid4().int)[:8]
-        protocolo = f"ESIC-{datetime.utcnow():%Y%m%d}-{suffix}"
+        protocolo = f"ESIC-{datetime.now(timezone.utc):%Y%m%d}-{suffix}"
         if not EsicPedido.query.filter_by(protocolo=protocolo).first():
             return protocolo
 
@@ -131,7 +137,7 @@ def is_valid_email(value: str) -> bool:
 @app.get("/")
 def home():
     infos = PortalInformacao.query.filter_by(ativo=True).order_by(
-        PortalInformacao.secao, PortalInformacao.ordem, PortalInformacao.titulo
+        PortalInformacao.secao, PortalInformacao.ordem, PortalInformacao.titulo,
     )
     infos_por_secao = {
         "FINANCEIROS": [i for i in infos if i.secao == "FINANCEIROS"],
@@ -171,7 +177,7 @@ def submit_esic_request():
 
     tipo = TIPO_ESIC_MAP.get(tipo_input, "PEDIDO_ACESSO")
     protocolo = generate_protocolo()
-    prazo = datetime.utcnow() + timedelta(days=20)
+    prazo = datetime.now(timezone.utc) + timedelta(days=20)
 
     extras = []
     if nome:
@@ -212,4 +218,5 @@ with app.app_context():
 
 
 if __name__ == "__main__":
-    app.run(host="127.0.0.1", port=5000, debug=True)
+    debug = os.getenv("FLASK_DEBUG", "0") == "1"
+    app.run(host="127.0.0.1", port=5000, debug=debug)

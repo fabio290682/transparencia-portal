@@ -46,10 +46,13 @@ body.login #container {
     align-items: center;
     justify-content: center;
     padding: 24px;
+    max-width: none;
+    float: none;
 }
 
 .login-container {
-    width: min(100%, 500px);
+    width: min(500px, calc(100vw - 48px));
+    min-width: 360px;
     margin: 0 auto;
     border-radius: 18px;
     overflow: hidden;
@@ -165,6 +168,10 @@ body.login #container {
 }
 
 @media (max-width: 760px) {
+    .login-container {
+        min-width: 0;
+    }
+
     .login-header {
         min-height: 156px;
     }

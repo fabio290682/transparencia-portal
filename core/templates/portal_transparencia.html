@@ -1,4 +1,5 @@
 ﻿<!DOCTYPE html>
+{% load static %}
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -35,8 +36,18 @@ body{font-family:var(--FB);background:var(--bg);color:var(--texto);-webkit-font-
 .topbar .admin-link:hover{background:rgba(245,200,0,0.24);color:#fff}
 
 /* LOGO */
-.logo-area{background:var(--verde-n);padding:14px 24px;display:flex;justify-content:center;align-items:center;border-block-end:3px solid var(--dourado)}
-.logo-img{inline-size:min(620px,92vw);block-size:auto;max-inline-size:100%;filter:drop-shadow(0 2px 8px rgba(0,0,0,0.3))}
+.logo-area{background:var(--verde-n);padding:4px 24px 2px;display:flex;justify-content:center;align-items:center;border-block-end:3px solid var(--dourado)}
+.imm-logo{display:flex;flex-direction:column;align-items:center;text-align:center;transform:scale(0.56);transform-origin:center top}
+.imm-logo.compact{transform:scale(0.4);transform-origin:left top;align-items:flex-start;text-align:left}
+.imm-logo-monumento{width:35px;height:120px;background:var(--dourado);position:relative;margin-bottom:-5px}
+.imm-logo-monumento::before{content:'';position:absolute;top:15px;left:50%;transform:translateX(-50%);width:22px;height:22px;background:var(--verde-n);border-radius:50%}
+.imm-logo-monumento::after{content:'';position:absolute;top:5px;left:50%;transform:translateX(-50%);width:20px;height:4px;background:var(--verde-n)}
+.imm-logo.compact .imm-logo-monumento::before,.imm-logo.compact .imm-logo-monumento::after{background:var(--verde)}
+.imm-logo-linha{width:350px;height:4px;background:var(--dourado);position:relative;margin-bottom:20px;border-radius:2px}
+.imm-logo-linha::after{content:'^^^^^^';position:absolute;top:-12px;left:0;width:100%;color:var(--dourado);letter-spacing:45px;font-weight:700;text-align:center}
+.imm-logo-instituto{color:#fff;font-size:18px;letter-spacing:12px;margin-bottom:10px;font-weight:700;text-transform:uppercase;font-family:var(--FH)}
+.imm-logo-principal{color:#fff;font-size:52px;font-weight:900;text-transform:uppercase;letter-spacing:2px;font-family:'Arial Black', Gadget, sans-serif;line-height:0.95}
+.imm-logo-principal span{display:inline-block;transform:scaleY(1.1)}
 
 /* HERO */
 .hero{background:linear-gradient(135deg,var(--verde) 0%,var(--verde-n) 60%,#1e5a20 100%);padding:44px 40px 52px;text-align:center;position:relative;overflow:hidden}
@@ -74,8 +85,8 @@ nav{background:var(--verde-n);position:sticky;inset-block-start:0;z-index:100;bo
 .icon-card::before{content:'';position:absolute;inset-block-end:0;inset-inline-start:0;inset-inline-end:0;block-size:3px;background:var(--dourado);transform:scaleX(0);transform-origin:left;transition:transform 0.3s ease}
 .icon-card:hover{transform:translateY(-5px);border-color:var(--dourado);box-shadow:0 12px 40px rgba(0,0,0,0.25)}
 .icon-card:hover::before{transform:scaleX(1)}
-.icon-card img{inline-size:90px;block-size:90px;object-fit:contain;margin-block-end:16px;transition:transform 0.25s;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.3))}
-.icon-card:hover img{transform:scale(1.08)}
+.icon-mark{inline-size:90px;block-size:90px;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;border-radius:18px;background:rgba(255,255,255,0.06);font-size:36px;transition:transform 0.25s}
+.icon-card:hover .icon-mark{transform:scale(1.08)}
 .icon-card h3{font-family:var(--FH);font-size:15px;font-weight:700;color:#fff;margin-block-end:8px}
 .icon-card p{font-size:13px;color:rgba(255,255,255,0.55);line-height:1.55}
 .ic-link{display:inline-flex;align-items:center;gap:5px;margin-block-start:14px;font-size:12.5px;font-family:var(--FH);font-weight:700;color:var(--dourado);opacity:0.85;transition:opacity 0.2s}
@@ -168,7 +179,6 @@ nav{background:var(--verde-n);position:sticky;inset-block-start:0;z-index:100;bo
 footer{background:var(--verde);padding:48px 40px 24px}
 .ft-inner{max-width:1100px;margin:0 auto}
 .ft-top{display:grid;grid-template-columns:1.8fr 1fr 1fr 1fr;gap:40px;padding-bottom:36px;border-bottom:1px solid rgba(255,255,255,0.08);margin-bottom:24px}
-.ft-logo img{height:60px;width:auto;margin-bottom:12px}
 .ft-desc{font-size:13px;color:rgba(255,255,255,0.4);line-height:1.65;max-width:260px}
 .ft-col h4{font-family:var(--FH);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--dourado);margin-bottom:14px}
 .ft-col a{display:block;font-size:13px;color:rgba(255,255,255,0.45);text-decoration:none;margin-bottom:8px;cursor:pointer;transition:color 0.15s}
@@ -197,6 +207,8 @@ footer{background:var(--verde);padding:48px 40px 24px}
   .form-row{grid-template-columns:1fr}
   .proj-card-head{gap:12px}
   .proj-card-body table td:first-child{min-width:140px;width:140px;white-space:normal}
+  .imm-logo{transform:scale(0.5);transform-origin:center top}
+  .imm-logo.compact{transform:scale(0.36);transform-origin:left top}
 }
 </style>
 </head>
@@ -205,12 +217,16 @@ footer{background:var(--verde);padding:48px 40px 24px}
 <!-- TOP BAR -->
 <div class="topbar">
   <span>OSCIP · Macapá – Amapá · CNPJ 08.962.333/0001-03</span>
-  <span><a href="tel:5596981134444">Fone: +55 96 98113-4444</a> &nbsp;·&nbsp; <a href="https://wa.me/5596984111856">WhatsApp: 55 96 98411-1856</a> &nbsp;·&nbsp; <a href="mailto:contato@institutomeiodomundo.org">contato@institutomeiodomundo.org</a> <a href="/admin/" class="admin-link">Acesso Administrativo</a></span>
+  <span><a href="tel:5596981162362">Fone: +55 96 98116-2362</a> &nbsp;·&nbsp; <a href="https://wa.me/5596981134444">WhatsApp: 55 96 98113-4444</a> &nbsp;·&nbsp; <a href="mailto:contato@institutomeiodomundo.org">contato@institutomeiodomundo.org</a> <a href="/admin/" class="admin-link">Acesso Administrativo</a></span>
 </div>
 
-<!-- LOGO -->
 <div class="logo-area">
-  <img src="/static/img/logo-portal.svg" alt="Instituto Meio do Mundo" class="logo-img">
+  <div class="imm-logo" aria-label="Instituto Meio do Mundo">
+    <div class="imm-logo-monumento"></div>
+    <div class="imm-logo-linha"></div>
+    <div class="imm-logo-instituto">Instituto</div>
+    <div class="imm-logo-principal"><span>Meio do Mundo</span></div>
+  </div>
 </div>
 
 <!-- HERO -->
@@ -239,7 +255,7 @@ footer{background:var(--verde);padding:48px 40px 24px}
         <div class="dd-sep"></div>
         <div class="dd-head">Prestação de Contas</div>
         <a class="dd-item" onclick="showPage('prestacao')">📋 Relatório Contábil</a>
-        <a class="dd-item" onclick="showPage('prestacao')">🤝 Termo de Fomento e Patrocínio</a>
+        <a class="dd-item" onclick="showPage('projetos')">🤝 Termo de Fomento e Patrocínio</a>
         <a class="dd-item" onclick="showPage('prestacao')">📜 Ofício de Entrega</a>
         <a class="dd-item" onclick="showPage('prestacao')">💝 Doações Recebidas</a>
         <div class="dd-sep"></div>
@@ -276,37 +292,37 @@ footer{background:var(--verde);padding:48px 40px 24px}
 
   <div class="icon-grid">
     <div class="icon-card" onclick="showPage('acesso')">
-      <img src="/static/img/icons/icon-location.svg" alt="Localização">
+      <div class="icon-mark">📍</div>
       <h3>Localização & Sede</h3>
       <p>Rua Desidério Antonio Coelho, 511-A, Trem, Macapá – AP, CEP 68901-080.</p>
       <span class="ic-link">Ver localização →</span>
     </div>
     <div class="icon-card" onclick="showPage('projetos')">
-      <img src="/static/img/icons/icon-group.svg" alt="Beneficiários">
+      <div class="icon-mark">🤝</div>
       <h3>Beneficiários & Comunidades</h3>
       <p>Conheça as comunidades e pessoas impactadas pelos projetos do Instituto.</p>
       <span class="ic-link">Ver projetos →</span>
     </div>
     <div class="icon-card" onclick="showPage('acesso')">
-      <img src="/static/img/icons/icon-chat.svg" alt="Fale Conosco">
+      <div class="icon-mark">💬</div>
       <h3>Fale Conosco</h3>
       <p>Envie pedidos de informação, sugestões e solicitações via e-SIC / LAI.</p>
       <span class="ic-link">Fazer solicitação →</span>
     </div>
     <div class="icon-card" onclick="showPage('projetos')">
-      <img src="/static/img/icons/icon-impact.svg" alt="Resultados">
+      <div class="icon-mark">📈</div>
       <h3>Impactos e Resultados</h3>
       <p>Indicadores de desempenho e relatórios de avaliação de impacto social.</p>
       <span class="ic-link">Ver indicadores →</span>
     </div>
-    <div class="icon-card" onclick="showPage('prestacao')">
-      <img src="/static/img/icons/icon-partnership.svg" alt="Parcerias">
+    <div class="icon-card" onclick="showPage('projetos')">
+      <div class="icon-mark">🤝</div>
       <h3>Parcerias & Termos de Fomento</h3>
       <p>Termos de fomento, patrocínio e contratos com órgãos públicos e privados.</p>
       <span class="ic-link">Ver termos →</span>
     </div>
     <div class="icon-card" onclick="showPage('acesso')">
-      <img src="/static/img/icons/icon-tower.svg" alt="Acesso à Informação">
+      <div class="icon-mark">🏛️</div>
       <h3>Acesso à Informação</h3>
       <p>Solicite informações e acompanhe seu protocolo — Lei 12.527/2011 (LAI).</p>
       <span class="ic-link">Solicitar informação →</span>
@@ -345,7 +361,7 @@ footer{background:var(--verde);padding:48px 40px 24px}
             <tr><td>Recurso Financeiro</td><td>R$ 700.000,00</td></tr>
             <tr><td>Fonte de Recurso</td><td>Estadual (500)</td></tr>
             <tr><td>Autoria da Emenda</td><td>Emenda Parlamentar Impositiva I0371 – Dep. Rodolfo Vale (R$ 200.000,00) + Tesouro Estadual (R$ 500.000,00)</td></tr>
-            <tr><td>Valor Repassado</td><td>R$ 700.000,00</td></tr>
+            <tr><td>Valor Repassado</td><td>Aguardando o recebimento</td></tr>
             <tr><td>Objeto</td><td>Execução do Projeto "CORRIDA DO SERVIDOR PÚBLICO DO ESTADO DO AMAPÁ", incluindo pré-produção, produção e pós-produção do evento esportivo para 4.000 participantes, com percursos de 3 km, 5 km e 7 km, premiações e estrutura geral necessária.</td></tr>
             <tr><td>Data de Início</td><td>28/10/2025</td></tr>
             <tr><td>Data de Finalização</td><td>28/01/2026</td></tr>
@@ -377,7 +393,7 @@ footer{background:var(--verde);padding:48px 40px 24px}
             <tr><td>Recurso Financeiro</td><td>R$ 1.291.050,00</td></tr>
             <tr><td>Fonte de Recurso</td><td>Estadual (500)</td></tr>
             <tr><td>Autoria da Emenda</td><td>Dispensa de Chamamento Público – Processo Administrativo nº 0336/2025/CMDO/PMAP, Parecer Jurídico nº 469/2025 – GAB/PGE/AP</td></tr>
-            <tr><td>Valor Repassado</td><td>R$ 1.291.050,00</td></tr>
+            <tr><td>Valor Repassado</td><td>Aguardando o recebimento</td></tr>
             <tr><td>Objeto</td><td>Execução do projeto "PROJETO DESFILE DA INDEPENDÊNCIA 2025", por meio de ações formativas, conforme plano de trabalho.</td></tr>
             <tr><td>Data de Início</td><td>05/09/2025</td></tr>
             <tr><td>Data de Finalização</td><td>13/10/2025</td></tr>
@@ -409,7 +425,7 @@ footer{background:var(--verde);padding:48px 40px 24px}
             <tr><td>Recurso Financeiro</td><td>R$ 100.000,00</td></tr>
             <tr><td>Fonte de Recurso</td><td>Estadual (500)</td></tr>
             <tr><td>Autoria da Emenda</td><td>Emenda Parlamentar nº I0100 – Dep. Jack JK</td></tr>
-            <tr><td>Valor Repassado</td><td>R$ 100.000,00</td></tr>
+            <tr><td>Valor Repassado</td><td>Aguardando o recebimento</td></tr>
             <tr><td>Objeto</td><td>Execução do Projeto "SHOW MUSICAL 4 CANTOS DA FLORESTA", por meio de ações culturais, conforme plano de trabalho.</td></tr>
             <tr><td>Data de Início</td><td>08/08/2025</td></tr>
             <tr><td>Data de Finalização</td><td>15/12/2025</td></tr>
@@ -443,15 +459,15 @@ footer{background:var(--verde);padding:48px 40px 24px}
       <h2>Informações de Contato</h2>
       <p>Este espaço representa mais uma ação de promoção da transparência pública.</p>
       <div class="cdetails">
-        <div class="cline">📞 <strong>Fone: +55 96 98113-4444</strong></div>
-        <div class="cline">💬 <strong>WhatsApp: 55 96 98411-1856</strong></div>
+        <div class="cline">📞 <strong>Fone: +55 96 98116-2362</strong></div>
+        <div class="cline">💬 <strong>WhatsApp: 55 96 98113-4444</strong></div>
         <div class="cline">📧 <strong>contato@institutomeiodomundo.org</strong></div>
         <div class="cline">📍 <strong>Rua Desidério Antonio Coelho, 511-A, Trem, Macapá – AP, CEP: 68901-080</strong></div>
       </div>
     </div>
     <div class="cbtns">
       <button class="btn btn-gold" onclick="showPage('acesso')">📬 Solicitar via e-SIC</button>
-      <a href="https://wa.me/5596984111856" target="_blank" class="btn btn-white">💬 WhatsApp</a>
+      <a href="https://wa.me/5596981134444" target="_blank" class="btn btn-white">💬 WhatsApp</a>
     </div>
   </div>
 
@@ -463,8 +479,8 @@ footer{background:var(--verde);padding:48px 40px 24px}
 <div id="page-projetos" class="page">
 <div class="wrap">
   <div class="sec-label">Termos de Fomento e Patrocínio</div>
-  <div class="sec-title" style="margin-bottom:6px">Projetos</div>
-  <p style="font-size:14px;color:var(--texto-lt);margin-bottom:28px">Todos os projetos executados pelo Instituto Meio do Mundo com recursos públicos e privados.</p>
+  <div class="sec-title" style="margin-bottom:6px">Termos de Fomento</div>
+  <p style="font-size:14px;color:var(--texto-lt);margin-bottom:28px">Termos de fomento e instrumentos de apoio cadastrados no portal.</p>
 
   <div class="proj-filters" id="proj-filter">
     <button class="filter-btn active" onclick="filtrarProjetos('todos',this)">Todos</button>
@@ -473,305 +489,50 @@ footer{background:var(--verde);padding:48px 40px 24px}
   </div>
 
   <div class="proj-list" id="proj-lista">
-
-    <div class="proj-card" data-status="Em Andamento" onclick="toggleProj(this)">
-      <div class="proj-card-head">
-        <div class="proj-card-left">
-          <div class="proj-thumb-sm">🏃</div>
-          <div class="proj-info">
-            <h3>I CORRIDA DO SERVIDOR PÚBLICO DO ESTADO DO AMAPÁ</h3>
-            <div class="proj-instr">027/2025 – SEDEL &nbsp;·&nbsp; 28/10/2025 a 28/01/2026</div>
+    {% for termo in termos_fomento %}
+      <div class="proj-card" data-status="{{ termo.status_label }}" onclick="toggleProj(this)">
+        <div class="proj-card-head">
+          <div class="proj-card-left">
+            <div class="proj-thumb-sm">{{ termo.icone }}</div>
+            <div class="proj-info">
+              <h3>{{ termo.titulo }}</h3>
+              <div class="proj-instr">
+                {% if termo.subtitulo %}{{ termo.subtitulo }}{% endif %}
+                {% if termo.data_inicio %} &nbsp;·&nbsp; {{ termo.data_inicio }}{% endif %}
+                {% if termo.data_inicio and termo.data_finalizacao %} a {{ termo.data_finalizacao }}{% endif %}
+              </div>
+            </div>
+          </div>
+          <div class="proj-card-meta">
+            <span class="proj-valor">{{ termo.valor }}</span>
+            <span class="proj-tag {% if termo.status == 'EM_ANDAMENTO' %}tag-a{% else %}tag-f{% endif %}">{{ termo.status_label }}</span>
+            <span class="chevron">▼</span>
           </div>
         </div>
-        <div class="proj-card-meta">
-          <span class="proj-valor">R$ 700.000,00</span>
-          <span class="proj-tag tag-a">Em Andamento</span>
-          <span class="chevron">▼</span>
+        <div class="proj-card-body">
+          <table>
+            {% if termo.instrumento %}<tr><td>Número do Instrumento</td><td>{{ termo.instrumento }}</td></tr>{% endif %}
+            {% if termo.recurso_financeiro %}<tr><td>Recurso Financeiro</td><td>{{ termo.recurso_financeiro }}</td></tr>{% endif %}
+            {% if termo.fonte_recurso_estadual %}<tr><td>Fonte de Recurso Estadual (500)</td><td>{{ termo.fonte_recurso_estadual }}</td></tr>{% endif %}
+            {% if termo.fonte_recurso_federal %}<tr><td>Fonte de Recurso Federal (706)</td><td>{{ termo.fonte_recurso_federal }}</td></tr>{% endif %}
+            {% if termo.autoria_emenda %}<tr><td>Autoria da Emenda</td><td>{{ termo.autoria_emenda }}</td></tr>{% endif %}
+            {% if termo.nome_projeto %}<tr><td>Nome do Projeto</td><td>{{ termo.nome_projeto }}</td></tr>{% endif %}
+            {% if termo.valor_global %}<tr><td>Valor Global</td><td>{{ termo.valor_global }}</td></tr>{% endif %}
+            <tr><td>Valor Repassado</td><td>Aguardando o recebimento</td></tr>
+            {% if termo.objeto %}<tr><td>Objeto</td><td>{{ termo.objeto }}</td></tr>{% endif %}
+            {% if termo.data_inicio %}<tr><td>Data de Início</td><td>{{ termo.data_inicio }}</td></tr>{% endif %}
+            {% if termo.data_finalizacao %}<tr><td>Data de Finalização</td><td>{{ termo.data_finalizacao }}</td></tr>{% endif %}
+            {% if termo.justificativa %}<tr><td>Justificativa</td><td>{{ termo.justificativa }}</td></tr>{% endif %}
+            {% if termo.dados_orcamentarios %}<tr><td>Dados Orçamentários</td><td>{{ termo.dados_orcamentarios }}</td></tr>{% endif %}
+          </table>
+          {% if termo.url_documento %}
+          <a href="{{ termo.url_documento }}" target="_blank" class="proj-dl-btn">{{ termo.documento_label|default:'⬇ Documento do Projeto' }}</a>
+          {% endif %}
         </div>
       </div>
-      <div class="proj-card-body">
-        <table>
-          <tr><td>Número do Instrumento</td><td>027/2025 – SEDEL</td></tr>
-          <tr><td>Recurso Financeiro</td><td>R$ 700.000,00</td></tr>
-          <tr><td>Fonte de Recurso Estadual (500)</td><td>500</td></tr>
-          <tr><td>Fonte de Recurso Federal (706)</td><td>N/S</td></tr>
-          <tr><td>Autoria da Emenda</td><td>Emenda Parlamentar Impositiva I0371 – Dep. Rodolfo Vale (R$ 200.000,00) + Tesouro Estadual (R$ 500.000,00)</td></tr>
-          <tr><td>Valor Repassado</td><td>R$ 700.000,00</td></tr>
-          <tr><td>Valor Global</td><td>R$ 700.000,00</td></tr>
-          <tr><td>Objeto</td><td>Execução do Projeto "CORRIDA DO SERVIDOR PÚBLICO DO ESTADO DO AMAPÁ", incluindo pré-produção, produção e pós-produção do evento esportivo para 4.000 participantes, com percursos de 3 km, 5 km e 7 km, premiações e estrutura geral necessária.</td></tr>
-          <tr><td>Data de Início</td><td>28/10/2025</td></tr>
-          <tr><td>Data de Finalização</td><td>28/01/2026</td></tr>
-          <tr><td>Justificativa</td><td>Promover esporte, lazer, qualidade de vida e integração social por meio da realização da Corrida do Servidor Público, incentivando práticas saudáveis e fortalecendo políticas públicas voltadas ao esporte no Estado do Amapá.</td></tr>
-          <tr><td>Dados Orçamentários</td><td>UG: SEDEL – Secretaria de Estado do Desporto e Lazer · Programa: 27.812.0016 · Projeto/Atividade/Ação: 2239 – Apoiar a prática do esporte para toda a vida de jovens e adultos · Elemento de Despesa: 335041 · Fonte: 500 · Valor Total: R$ 700.000,00 · Origem: Emenda Impositiva I0371 (R$ 200.000,00) + Tesouro Estadual (R$ 500.000,00)</td></tr>
-        </table>
-        <a href="https://institutomeiodomundo.org/transparencia/wp-content/uploads/2025/12/FOMENTO-No-027-2025-IMM-CORRIDA-DO-SERVIDOR-assinado.pdf" target="_blank" class="proj-dl-btn">⬇ FOMENTO Nº 027/2025 – IMM – CORRIDA DO SERVIDOR (PDF)</a>
-      </div>
-    </div>
-
-    <div class="proj-card" data-status="Em Andamento" onclick="toggleProj(this)">
-      <div class="proj-card-head">
-        <div class="proj-card-left">
-          <div class="proj-thumb-sm">🎖️</div>
-          <div class="proj-info">
-            <h3>PROJETO DESFILE DA INDEPENDÊNCIA 2025</h3>
-            <div class="proj-instr">001/2025 – PMAP &nbsp;·&nbsp; 05/09/2025 a 13/10/2025</div>
-          </div>
-        </div>
-        <div class="proj-card-meta">
-          <span class="proj-valor">R$ 1.291.050,00</span>
-          <span class="proj-tag tag-a">Em Andamento</span>
-          <span class="chevron">▼</span>
-        </div>
-      </div>
-      <div class="proj-card-body">
-        <table>
-          <tr><td>Número do Instrumento</td><td>001/2025 – PMAP</td></tr>
-          <tr><td>Recurso Financeiro</td><td>R$ 1.291.050,00</td></tr>
-          <tr><td>Fonte de Recurso Estadual (500)</td><td>500</td></tr>
-          <tr><td>Fonte de Recurso Federal (706)</td><td>N/S</td></tr>
-          <tr><td>Autoria da Emenda</td><td>Dispensa de Chamamento Público – Processo Administrativo nº 0336/2025/CMDO/PMAP, Parecer Jurídico nº 469/2025 – GAB/PGE/AP</td></tr>
-          <tr><td>Valor Repassado</td><td>R$ 1.291.050,00</td></tr>
-          <tr><td>Valor Global</td><td>R$ 1.291.050,00</td></tr>
-          <tr><td>Objeto</td><td>Execução do projeto "PROJETO DESFILE DA INDEPENDÊNCIA 2025", por meio de ações formativas, conforme plano de trabalho.</td></tr>
-          <tr><td>Data de Início</td><td>05/09/2025</td></tr>
-          <tr><td>Data de Finalização</td><td>13/10/2025</td></tr>
-          <tr><td>Justificativa</td><td>O projeto visa promover a valorização cívica, cultural e social por meio do Desfile da Independência, fortalecendo a integração entre instituições militares, civis e a comunidade, fomentando práticas formativas e educativas que reforçam o sentimento de pertencimento e cidadania no Estado do Amapá.</td></tr>
-          <tr><td>Dados Orçamentários</td><td>UG: 340101 – Polícia Militar do Amapá · Programa de Trabalho: 1341010612200062277 · Natureza da Despesa: 335041 · Fonte: 500 · Valor: R$ 1.291.050,00</td></tr>
-        </table>
-        <a href="https://institutomeiodomundo.org/transparencia/wp-content/uploads/2025/09/TERMO-DE-FOMENTO_PMAP-X-IMM-2025-1.pdf" target="_blank" class="proj-dl-btn">⬇ TERMO DE FOMENTO – PMAP X IMM 2025 (PDF)</a>
-      </div>
-    </div>
-
-    <div class="proj-card" data-status="Finalizado" onclick="toggleProj(this)">
-      <div class="proj-card-head">
-        <div class="proj-card-left">
-          <div class="proj-thumb-sm">🌴</div>
-          <div class="proj-info">
-            <h3>FÉRIAS SOLIDÁRIAS</h3>
-            <div class="proj-instr">005/2025 – SEAS &nbsp;·&nbsp; 14/09/2025 a 31/12/2025</div>
-          </div>
-        </div>
-        <div class="proj-card-meta">
-          <span class="proj-valor">R$ 1.490.000,00</span>
-          <span class="proj-tag tag-f">Finalizado</span>
-          <span class="chevron">▼</span>
-        </div>
-      </div>
-      <div class="proj-card-body">
-        <table>
-          <tr><td>Número do Instrumento</td><td>005/2025 – SEAS</td></tr>
-          <tr><td>Recurso Financeiro</td><td>R$ 1.490.000,00</td></tr>
-          <tr><td>Fonte de Recurso Estadual (500)</td><td>500</td></tr>
-          <tr><td>Fonte de Recurso Federal (706)</td><td>N/S</td></tr>
-          <tr><td>Autoria da Emenda</td><td>Emenda Parlamentar Impositiva nº 10250</td></tr>
-          <tr><td>Valor Repassado</td><td>R$ 1.490.000,00</td></tr>
-          <tr><td>Valor Global</td><td>R$ 1.490.000,00</td></tr>
-          <tr><td>Objeto</td><td>Execução do Projeto Social "FÉRIAS SOLIDÁRIAS", visando assegurar direitos de pessoas em situação de risco e vulnerabilidade social, promovendo segurança alimentar, bem-estar e inclusão social durante o período de férias em comunidades carentes do Estado do Amapá.</td></tr>
-          <tr><td>Data de Início</td><td>14/09/2025</td></tr>
-          <tr><td>Data de Finalização</td><td>31/12/2025</td></tr>
-          <tr><td>Justificativa</td><td>O projeto visa assegurar suporte nutricional e promover inclusão social e bem-estar para famílias em vulnerabilidade durante o período de férias, atendendo comunidades carentes do Estado do Amapá.</td></tr>
-          <tr><td>Dados Orçamentários</td><td>UG: 550301 – SEAS · Programa de Trabalho: 0077 · Ação: 2345 – Rede Socioassistencial / SUAS · Natureza da Despesa: 3.3.50.43 – Subvenções Sociais · Fonte: 500 · Valor: R$ 1.490.000,00</td></tr>
-        </table>
-        <a href="https://institutomeiodomundo.org/transparencia/wp-content/uploads/2025/12/TERMO_DE_FOMENTO_-_005-2025-SEAS_-_INSTITUTO_MEIO_DO_MUNDO_assinado.pdf" target="_blank" class="proj-dl-btn">⬇ TERMO DE FOMENTO 005/2025 – SEAS (PDF)</a>
-      </div>
-    </div>
-
-    <div class="proj-card" data-status="Em Andamento" onclick="toggleProj(this)">
-      <div class="proj-card-head">
-        <div class="proj-card-left">
-          <div class="proj-thumb-sm">🎵</div>
-          <div class="proj-info">
-            <h3>SHOW MUSICAL 4 CANTOS DA FLORESTA</h3>
-            <div class="proj-instr">014/2025 – SECULT &nbsp;·&nbsp; 08/08/2025 a 15/12/2025</div>
-          </div>
-        </div>
-        <div class="proj-card-meta">
-          <span class="proj-valor">R$ 100.000,00</span>
-          <span class="proj-tag tag-a">Em Andamento</span>
-          <span class="chevron">▼</span>
-        </div>
-      </div>
-      <div class="proj-card-body">
-        <table>
-          <tr><td>Número do Instrumento</td><td>014/2025 – SECULT</td></tr>
-          <tr><td>Recurso Financeiro</td><td>R$ 100.000,00</td></tr>
-          <tr><td>Fonte de Recurso Estadual (500)</td><td>500</td></tr>
-          <tr><td>Fonte de Recurso Federal (706)</td><td>N/S</td></tr>
-          <tr><td>Autoria da Emenda</td><td>Emenda Parlamentar nº I0100 – Dep. Jack JK</td></tr>
-          <tr><td>Valor Repassado</td><td>R$ 100.000,00</td></tr>
-          <tr><td>Valor Global</td><td>R$ 100.000,00</td></tr>
-          <tr><td>Objeto</td><td>Execução do Projeto "SHOW MUSICAL 4 CANTOS DA FLORESTA", por meio de ações culturais, conforme plano de trabalho.</td></tr>
-          <tr><td>Data de Início</td><td>08/08/2025</td></tr>
-          <tr><td>Data de Finalização</td><td>15/12/2025</td></tr>
-          <tr><td>Justificativa</td><td>Promover ações culturais por meio do projeto "Show Musical 4 Cantos da Floresta", alcançando a população amapaense com atividades artístico-culturais previstas no plano de trabalho.</td></tr>
-          <tr><td>Dados Orçamentários</td><td>UG: 380101 – SECULT · Programa de Trabalho: 13.392.0059.2202 – Projetos e Produções/Eventos da Cultura Popular/Tradicionais do Estado do Amapá · Natureza da Despesa: 33.50.43 – Subvenções Sociais · Fonte: 500 · Plano Orçamentário: 000001 · Cadastro SIAFE/AP: 250127 · Nota de Empenho: 2025NE00541 – 07/08/2025 · Valor: R$ 100.000,00</td></tr>
-        </table>
-      </div>
-    </div>
-
-    <div class="proj-card" data-status="Finalizado" onclick="toggleProj(this)">
-      <div class="proj-card-head">
-        <div class="proj-card-left">
-          <div class="proj-thumb-sm">🎭</div>
-          <div class="proj-info">
-            <h3>ESPETÁCULO TEATRAL "O CORPO DE CRISTO – ELE RESSUSCITOU"</h3>
-            <div class="proj-instr">002/2025 – SECULT &nbsp;·&nbsp; R$ 69.000,00</div>
-          </div>
-        </div>
-        <div class="proj-card-meta">
-          <span class="proj-valor">R$ 69.000,00</span>
-          <span class="proj-tag tag-f">Finalizado</span>
-          <span class="chevron">▼</span>
-        </div>
-      </div>
-      <div class="proj-card-body">
-        <table>
-          <tr><td>Número do Instrumento</td><td>002/2025 – SECULT</td></tr>
-          <tr><td>Recurso Financeiro</td><td>R$ 69.000,00</td></tr>
-          <tr><td>Fonte de Recurso Estadual (500)</td><td>500</td></tr>
-          <tr><td>Fonte de Recurso Federal (706)</td><td>N/S</td></tr>
-          <tr><td>Autoria da Emenda</td><td>Não se aplica (recurso direto da SECULT)</td></tr>
-          <tr><td>Valor Repassado</td><td>R$ 69.000,00</td></tr>
-          <tr><td>Valor Global</td><td>R$ 69.000,00</td></tr>
-        </table>
-      </div>
-    </div>
-
-    <div class="proj-card" data-status="Finalizado" onclick="toggleProj(this)">
-      <div class="proj-card-head">
-        <div class="proj-card-left">
-          <div class="proj-thumb-sm">🏖️</div>
-          <div class="proj-info">
-            <h3>CALÇOENE VERÃO 2025</h3>
-            <div class="proj-instr">005/2025-SECULT &nbsp;·&nbsp; Processo 0054.1402.2361.0007/2025</div>
-          </div>
-        </div>
-        <div class="proj-card-meta">
-          <span class="proj-valor">R$ 267.000,00</span>
-          <span class="proj-tag tag-f">Finalizado</span>
-          <span class="chevron">▼</span>
-        </div>
-      </div>
-      <div class="proj-card-body">
-        <table>
-          <tr><td>Número do Instrumento</td><td>005/2025-SECULT</td></tr>
-          <tr><td>Recurso Financeiro</td><td>R$ 267.000,00</td></tr>
-          <tr><td>Fonte de Recurso Estadual (500)</td><td>500</td></tr>
-          <tr><td>Autoria da Emenda</td><td>Processo Administrativo nº 0054.1402.2361.0007/2025 – URDD/SECULT</td></tr>
-          <tr><td>Valor Repassado</td><td>R$ 267.000,00</td></tr>
-          <tr><td>Valor Global</td><td>R$ 267.000,00</td></tr>
-        </table>
-      </div>
-    </div>
-
-    <div class="proj-card" data-status="Finalizado" onclick="toggleProj(this)">
-      <div class="proj-card-head">
-        <div class="proj-card-left">
-          <div class="proj-thumb-sm">🏅</div>
-          <div class="proj-info">
-            <h3>V CORRIDA DE RUA DA POLÍCIA CIVIL DO AMAPÁ</h3>
-            <div class="proj-instr">014/2025 – SEDEL &nbsp;·&nbsp; Instrumento SEDEL</div>
-          </div>
-        </div>
-        <div class="proj-card-meta">
-          <span class="proj-valor">R$ 969.185,00</span>
-          <span class="proj-tag tag-f">Finalizado</span>
-          <span class="chevron">▼</span>
-        </div>
-      </div>
-      <div class="proj-card-body">
-        <table>
-          <tr><td>Número do Instrumento</td><td>014/2025 – SEDEL</td></tr>
-          <tr><td>Recurso Financeiro</td><td>R$ 969.185,00</td></tr>
-          <tr><td>Fonte de Recurso Estadual (500)</td><td>500</td></tr>
-          <tr><td>Autoria da Emenda</td><td>Emenda Parlamentar Impositiva I0179 – Dep. Estadual</td></tr>
-          <tr><td>Valor Repassado</td><td>R$ 969.185,00</td></tr>
-          <tr><td>Valor Global</td><td>R$ 969.185,00</td></tr>
-        </table>
-      </div>
-    </div>
-
-    <div class="proj-card" data-status="Finalizado" onclick="toggleProj(this)">
-      <div class="proj-card-head">
-        <div class="proj-card-left">
-          <div class="proj-thumb-sm">👩</div>
-          <div class="proj-info">
-            <h3>I CORRIDA DA VISIBILIDADE FEMININA EM SANTANA</h3>
-            <div class="proj-instr">Termo de Fomento nº 008/2025 SEDEL-GEA &nbsp;·&nbsp; Emenda Parlamentar</div>
-          </div>
-        </div>
-        <div class="proj-card-meta">
-          <span class="proj-valor">R$ 350.000,00</span>
-          <span class="proj-tag tag-f">Finalizado</span>
-          <span class="chevron">▼</span>
-        </div>
-      </div>
-      <div class="proj-card-body">
-        <table>
-          <tr><td>Número do Instrumento</td><td>Termo de Fomento nº 008/2025 SEDEL-GEA</td></tr>
-          <tr><td>Recurso Financeiro</td><td>R$ 350.000,00</td></tr>
-          <tr><td>Fonte de Recurso Estadual (500)</td><td>500</td></tr>
-          <tr><td>Autoria da Emenda</td><td>Emenda Parlamentar Impositiva</td></tr>
-          <tr><td>Valor Repassado</td><td>R$ 350.000,00</td></tr>
-          <tr><td>Valor Global</td><td>R$ 350.000,00</td></tr>
-        </table>
-      </div>
-    </div>
-
-    <div class="proj-card" data-status="Finalizado" onclick="toggleProj(this)">
-      <div class="proj-card-head">
-        <div class="proj-card-left">
-          <div class="proj-thumb-sm">🎄</div>
-          <div class="proj-info">
-            <h3>NATAL SOLIDÁRIO – Bairro das Pedrinhas 2024</h3>
-            <div class="proj-instr">Termo de Fomento 021/2024 – SEAS &nbsp;·&nbsp; Emenda Parlamentar</div>
-          </div>
-        </div>
-        <div class="proj-card-meta">
-          <span class="proj-valor">R$ 250.000,00</span>
-          <span class="proj-tag tag-f">Finalizado</span>
-          <span class="chevron">▼</span>
-        </div>
-      </div>
-      <div class="proj-card-body">
-        <table>
-          <tr><td>Número do Instrumento</td><td>Termo de Fomento 021/2024 – SEAS</td></tr>
-          <tr><td>Recurso Financeiro</td><td>R$ 250.000,00</td></tr>
-          <tr><td>Fonte de Recurso Estadual (500)</td><td>500</td></tr>
-          <tr><td>Autoria da Emenda</td><td>Emenda Parlamentar</td></tr>
-          <tr><td>Valor Repassado</td><td>R$ 250.000,00</td></tr>
-          <tr><td>Valor Global</td><td>R$ 250.000,00</td></tr>
-        </table>
-      </div>
-    </div>
-
-    <div class="proj-card" data-status="Finalizado" onclick="toggleProj(this)">
-      <div class="proj-card-head">
-        <div class="proj-card-left">
-          <div class="proj-thumb-sm">🌿</div>
-          <div class="proj-info">
-            <h3>CONEXÃO AMAZÔNIA</h3>
-            <div class="proj-instr">037/2024 – SECULT &nbsp;·&nbsp; Emenda Camilo Capiberibe</div>
-          </div>
-        </div>
-        <div class="proj-card-meta">
-          <span class="proj-valor">R$ 251.200,00</span>
-          <span class="proj-tag tag-f">Finalizado</span>
-          <span class="chevron">▼</span>
-        </div>
-      </div>
-      <div class="proj-card-body">
-        <table>
-          <tr><td>Número do Instrumento</td><td>037/2024 – SECULT</td></tr>
-          <tr><td>Recurso Financeiro</td><td>R$ 251.200,00</td></tr>
-          <tr><td>Fonte de Recurso Federal (706)</td><td>706</td></tr>
-          <tr><td>Autoria da Emenda</td><td>Camilo Capiberibe</td></tr>
-          <tr><td>Valor Repassado</td><td>R$ 251.200,00</td></tr>
-          <tr><td>Valor Global</td><td>R$ 251.200,00</td></tr>
-        </table>
-      </div>
-    </div>
-
+    {% empty %}
+      <p style="font-size:14px;color:var(--texto-lt);">Nenhum Termo de Fomento cadastrado no momento.</p>
+    {% endfor %}
   </div><!-- /proj-lista -->
 </div>
 </div><!-- /projetos -->
@@ -956,7 +717,12 @@ footer{background:var(--verde);padding:48px 40px 24px}
   <div class="ft-inner">
     <div class="ft-top">
       <div class="ft-logo">
-        <img src="/static/img/logo-portal.svg" alt="Instituto Meio do Mundo">
+        <div class="imm-logo compact" aria-hidden="true">
+          <div class="imm-logo-monumento"></div>
+          <div class="imm-logo-linha"></div>
+          <div class="imm-logo-instituto">Instituto</div>
+          <div class="imm-logo-principal"><span>Meio do Mundo</span></div>
+        </div>
         <p class="ft-desc">Este espaço representa mais uma ação de promoção da transparência pública.</p>
       </div>
       <div class="ft-col">
@@ -976,16 +742,16 @@ footer{background:var(--verde);padding:48px 40px 24px}
       </div>
       <div class="ft-col">
         <h4>Informações de Contato</h4>
-        <a href="tel:5596981134444">Fone: +55 96 98113-4444</a>
-        <a href="https://wa.me/5596984111856">Whatsapp: 55 96 98411-1856</a>
+        <a href="tel:5596981162362">Fone: +55 96 98116-2362</a>
+        <a href="https://wa.me/5596981134444">Whatsapp: 55 96 98113-4444</a>
         <a href="mailto:contato@institutomeiodomundo.org">contato@institutomeiodomundo.org</a>
         <a>End. Desidério Antonio Coelho, 511-A</a>
         <a>Trem, Macapá – AP, CEP: 68901-080</a>
       </div>
     </div>
     <div class="ft-bottom">
-      <span>©2025. Todos os Direitos Reservados</span>
-      <span><a href="https://institutomeiodomundo.org" target="_blank">institutomeiodomundo.org</a></span>
+      <span>©2026. Todos os Direitos Reservados</span>
+      <span>Desenvolvido por <a href="https://3brasil.com.br" target="_blank" rel="noopener">3Brasil</a></span>
     </div>
   </div>
 </footer>
