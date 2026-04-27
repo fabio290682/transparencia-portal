@@ -108,19 +108,15 @@ def _safe_termos_fomento(projetos=None):
 TIPO_ESIC_MAP = {
     "Acesso à Informação": "PEDIDO_ACESSO",
     "Acesso a informação": "PEDIDO_ACESSO",
-    "Acesso Ã  InformaÃ§Ã£o": "PEDIDO_ACESSO",
     "Acesso a Informacao": "PEDIDO_ACESSO",
     "PEDIDO_ACESSO": "PEDIDO_ACESSO",
     "Reclamação": "RECLAMACAO",
-    "ReclamaÃ§Ã£o": "RECLAMACAO",
     "Reclamacao": "RECLAMACAO",
     "RECLAMACAO": "RECLAMACAO",
     "Denúncia": "DENUNCIA",
-    "DenÃºncia": "DENUNCIA",
     "Denuncia": "DENUNCIA",
     "DENUNCIA": "DENUNCIA",
     "Sugestão": "SUGESTAO",
-    "SugestÃ£o": "SUGESTAO",
     "Sugestao": "SUGESTAO",
     "SUGESTAO": "SUGESTAO",
     "Elogio": "ELOGIO",
@@ -316,6 +312,97 @@ def _serve_html_file(filename):
         return f.read()
 
 
+def painel_admin(request):
+    from django.contrib.auth.views import redirect_to_login
+    from django.http import HttpResponse
+    if not request.user.is_authenticated or not request.user.is_staff:
+        return redirect_to_login(request.get_full_path())
+    return HttpResponse(_serve_html_file("admin-3d.html"), content_type="text/html; charset=utf-8")
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def dashboard_stats(request):
+    if not request.user.is_staff:
+        return Response({"error": "Acesso negado."}, status=status.HTTP_403_FORBIDDEN)
+
+    TIPO_DISPLAY = {
+        "PEDIDO_ACESSO": "Acesso",
+        "RECLAMACAO": "Reclamação",
+        "DENUNCIA": "Denúncia",
+        "SUGESTAO": "Sugestão",
+        "ELOGIO": "Elogio",
+    }
+    STATUS_DISPLAY = {
+        "ABERTO": "Aberto",
+        "EM_ANALISE": "Em Análise",
+        "RESPONDIDO": "Respondido",
+        "INDEFERIDO": "Indeferido",
+        "ARQUIVADO": "Arquivado",
+    }
+    SECAO_DISPLAY = {
+        "FINANCEIROS": "Financeiros",
+        "PRESTACAO": "Prestação de Contas",
+        "CONTRATACOES": "Contratações",
+        "POLITICAS": "Políticas",
+    }
+
+    try:
+        esic_total = EsicPedido.objects.count()
+        esic_pendentes = EsicPedido.objects.filter(status__in=["ABERTO", "EM_ANALISE"]).count()
+        projetos_ativos = Projeto.objects.filter(ativo=True, status="EM_ANDAMENTO").count()
+        documentos = PortalInformacao.objects.filter(ativo=True).count()
+
+        esic_qs = list(
+            EsicPedido.objects.order_by("-prazo")[:8].values(
+                "id", "protocolo", "tipo", "descricao", "email", "status", "prazo"
+            )
+        )
+        projetos_qs = list(
+            Projeto.objects.filter(ativo=True)
+            .order_by("ordem", "-criado_em")[:6]
+            .values("id", "titulo", "subtitulo", "status", "valor", "instrumento", "data_inicio", "data_finalizacao")
+        )
+        docs_qs = list(
+            PortalInformacao.objects.filter(ativo=True)
+            .order_by("-atualizado_em")[:6]
+            .values("id", "titulo", "secao", "atualizado_em", "link")
+        )
+    except (OperationalError, ProgrammingError) as exc:
+        logger.warning("Falha ao carregar dashboard: %s", exc)
+        return Response({"error": "Banco indisponível."}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+
+    for e in esic_qs:
+        e["tipo_display"] = TIPO_DISPLAY.get(e["tipo"], e["tipo"])
+        e["status_display"] = STATUS_DISPLAY.get(e["status"], e["status"])
+        e["prazo"] = e["prazo"].strftime("%d/%m/%Y") if e["prazo"] else ""
+        try:
+            dp = e["protocolo"].split("-")[1]
+            e["data_criacao"] = f"{dp[6:8]}/{dp[4:6]}/{dp[0:4]}"
+        except (IndexError, ValueError):
+            e["data_criacao"] = ""
+
+    for p in projetos_qs:
+        p["status_display"] = "Em Andamento" if p["status"] == "EM_ANDAMENTO" else "Finalizado"
+
+    for d in docs_qs:
+        d["secao_display"] = SECAO_DISPLAY.get(d["secao"], d["secao"])
+        if d["atualizado_em"]:
+            d["atualizado_em"] = d["atualizado_em"].strftime("%d/%m/%Y")
+
+    return Response({
+        "stats": {
+            "esic_total": esic_total,
+            "esic_pendentes": esic_pendentes,
+            "projetos_ativos": projetos_ativos,
+            "documentos": documentos,
+        },
+        "esic_recentes": esic_qs,
+        "projetos_recentes": projetos_qs,
+        "documentos_recentes": docs_qs,
+    })
+
+
 def portal_moderno(request):
     from django.http import HttpResponse
     _seed_portal_info_if_needed()
@@ -395,5 +482,4 @@ class EsicPedidoViewSet(viewsets.ModelViewSet):
     queryset = EsicPedido.objects.all()
     serializer_class = EsicPedidoSerializer
     permission_classes = [IsAuthenticated]
-
 

@@ -2,12 +2,11 @@ from __future__ import annotations
 
 from types import MethodType
 
-from django.core.files.uploadedfile import UploadedFile
-from django.http import HttpRequest, HttpResponse
-
 from django import forms
 from django.contrib import admin, messages
+from django.core.files.uploadedfile import UploadedFile
 from django.db import OperationalError, ProgrammingError, transaction
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import path, reverse
 
@@ -393,7 +392,11 @@ def _build_dashboard_context() -> dict[str, object]:
 _original_admin_index = admin.site.index
 
 
-def _custom_admin_index(self: admin.AdminSite, request: HttpRequest, extra_context: dict[str, object] | None = None) -> HttpResponse:
+def _custom_admin_index(
+    self: admin.AdminSite,
+    request: HttpRequest,
+    extra_context: dict[str, object] | None = None,
+) -> HttpResponse:
     context = _build_dashboard_context()
     if extra_context:
         context.update(extra_context)

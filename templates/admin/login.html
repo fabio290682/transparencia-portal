@@ -11,27 +11,50 @@
 
 {% block content %}
   <div class="imm-login">
+    <div class="imm-login__stars" aria-hidden="true"></div>
+
     <div class="imm-login__shell">
       <header class="imm-login__header">
-        <img
-          class="imm-login__logo"
-          src="{% static 'img/logo-header.png' %}"
-          alt="Instituto Meio do Mundo"
-          loading="eager"
-          decoding="async"
-          onerror="this.onerror=null; this.src='{% static 'img/logo-portal.svg' %}';"
-        >
-        <div class="imm-login__titlewrap">
+        <div class="imm-login__brandlock">
+          <img
+            class="imm-login__logo"
+            src="{% static 'img/logo-header.png' %}"
+            alt="Instituto Meio do Mundo"
+            loading="eager"
+            decoding="async"
+            onerror="this.onerror=null; this.src='{% static 'img/logo-portal.svg' %}';"
+          >
           <div class="imm-login__eyebrow">Portal Administrativo</div>
-          <h1 class="imm-login__title">Painel Administrativo</h1>
+        </div>
+
+        <div class="imm-login__titlewrap">
+          <h1 class="imm-login__title">Gestão com clareza, controle e presença institucional.</h1>
           <p class="imm-login__subtitle">
-            Acesso restrito. Use suas credenciais para entrar.
+            Entre com suas credenciais para administrar projetos, documentos e pedidos e-SIC no ambiente do Instituto Meio do Mundo.
           </p>
+        </div>
+
+        <div class="imm-login__featurelist" aria-label="Recursos do painel">
+          <div class="imm-login__feature">
+            <strong>Projetos</strong>
+            <span>Atualize termos, convênios e publicações do portal.</span>
+          </div>
+          <div class="imm-login__feature">
+            <strong>Transparência</strong>
+            <span>Gerencie documentos, relatórios e materiais públicos.</span>
+          </div>
+          <div class="imm-login__feature">
+            <strong>e-SIC</strong>
+            <span>Acompanhe protocolos, respostas e pendências em um só fluxo.</span>
+          </div>
         </div>
       </header>
 
       <main class="imm-login__card" aria-labelledby="login-title">
-        <h2 id="login-title" class="imm-login__cardtitle">Entrar</h2>
+        <div class="imm-login__cardhead">
+          <p class="imm-login__cardeyebrow">Acesso Seguro</p>
+          <h2 id="login-title" class="imm-login__cardtitle">Entrar no painel</h2>
+        </div>
 
         {% if form.errors %}
           <div class="imm-alert imm-alert--error" role="alert" aria-live="polite">
@@ -49,13 +72,13 @@
           {% csrf_token %}
 
           <div class="imm-field">
-            <label class="sr-only" for="id_username">Nome de usuário</label>
+            <label class="imm-label" for="id_username">Nome de usuário</label>
             <input
               class="imm-input"
               type="text"
               name="username"
               id="id_username"
-              placeholder="Nome de usuário"
+              placeholder="Digite seu usuário"
               value="{{ form.username.value|default_if_none:'' }}"
               required
               autofocus
@@ -66,13 +89,13 @@
           </div>
 
           <div class="imm-field">
-            <label class="sr-only" for="id_password">Senha</label>
+            <label class="imm-label" for="id_password">Senha</label>
             <input
               class="imm-input"
               type="password"
               name="password"
               id="id_password"
-              placeholder="Senha"
+              placeholder="Digite sua senha"
               required
               autocomplete="current-password"
               aria-label="Senha"
@@ -85,11 +108,16 @@
 
           <input type="hidden" name="next" value="{{ next }}">
 
-          {% if password_reset_url %}
-            <a href="{{ password_reset_url }}" class="imm-link">
-              Esqueceu a senha?
+          <div class="imm-login__actions">
+            {% if password_reset_url %}
+              <a href="{{ password_reset_url }}" class="imm-link">
+                Esqueceu a senha?
+              </a>
+            {% endif %}
+            <a href="/" class="imm-link imm-link--muted">
+              Voltar ao portal público
             </a>
-          {% endif %}
+          </div>
         </form>
 
         <div class="imm-login__footnote">
