@@ -5,59 +5,97 @@
 {% block bodyclass %}login{% endblock %}
 
 {% block extrastyle %}
-{{ block.super }}
-<link rel="stylesheet" href="{% static 'css/admin-login.css' %}">
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'css/admin-login.css' %}">
 {% endblock %}
 
 {% block content %}
-<div class="login-container">
-    <div class="login-header">
-        <img class="logo-image" src="{% static 'img/logo-header.png' %}" alt="Instituto Meio do Mundo" onerror="this.onerror=null; this.src='{% static 'img/logo-portal.svg' %}';">
-    </div>
+  <div class="imm-login">
+    <div class="imm-login__shell">
+      <header class="imm-login__header">
+        <img
+          class="imm-login__logo"
+          src="{% static 'img/logo-header.png' %}"
+          alt="Instituto Meio do Mundo"
+          loading="eager"
+          decoding="async"
+          onerror="this.onerror=null; this.src='{% static 'img/logo-portal.svg' %}';"
+        >
+        <div class="imm-login__titlewrap">
+          <div class="imm-login__eyebrow">Portal Administrativo</div>
+          <h1 class="imm-login__title">Painel Administrativo</h1>
+          <p class="imm-login__subtitle">
+            Acesso restrito. Use suas credenciais para entrar.
+          </p>
+        </div>
+      </header>
 
-    <div class="login-body">
-        <h2>Painel Administrativo</h2>
+      <main class="imm-login__card" aria-labelledby="login-title">
+        <h2 id="login-title" class="imm-login__cardtitle">Entrar</h2>
 
         {% if form.errors %}
-        <div class="form-error">Usuario ou senha invalidos.</div>
+          <div class="imm-alert imm-alert--error" role="alert" aria-live="polite">
+            Usuário ou senha inválidos.
+          </div>
         {% endif %}
 
         {% if user.is_authenticated %}
-        <div class="form-error">Voce ja esta autenticado, mas sem permissao para esta area.</div>
+          <div class="imm-alert imm-alert--warn" role="alert" aria-live="polite">
+            Você já está autenticado, mas sem permissão para esta área.
+          </div>
         {% endif %}
 
-        <form method="post" action="{{ app_path }}">
-            {% csrf_token %}
+        <form method="post" action="{{ app_path }}" class="imm-form" novalidate>
+          {% csrf_token %}
 
-            <div class="input-group">
-                <input
-                    type="text"
-                    name="username"
-                    id="id_username"
-                    placeholder="Nome de usuario"
-                    value="{{ form.username.value|default_if_none:'' }}"
-                    required
-                    autofocus
-                    autocomplete="username">
-            </div>
+          <div class="imm-field">
+            <label class="sr-only" for="id_username">Nome de usuário</label>
+            <input
+              class="imm-input"
+              type="text"
+              name="username"
+              id="id_username"
+              placeholder="Nome de usuário"
+              value="{{ form.username.value|default_if_none:'' }}"
+              required
+              autofocus
+              autocomplete="username"
+              inputmode="text"
+              aria-label="Nome de usuário"
+            >
+          </div>
 
-            <div class="input-group">
-                <input
-                    type="password"
-                    name="password"
-                    id="id_password"
-                    placeholder="Senha"
-                    required
-                    autocomplete="current-password">
-            </div>
+          <div class="imm-field">
+            <label class="sr-only" for="id_password">Senha</label>
+            <input
+              class="imm-input"
+              type="password"
+              name="password"
+              id="id_password"
+              placeholder="Senha"
+              required
+              autocomplete="current-password"
+              aria-label="Senha"
+            >
+          </div>
 
-            <button type="submit" class="btn-access">Acessar Sistema</button>
-            <input type="hidden" name="next" value="{{ next }}">
+          <button type="submit" class="imm-btn imm-btn--gold">
+            Acessar sistema
+          </button>
+
+          <input type="hidden" name="next" value="{{ next }}">
+
+          {% if password_reset_url %}
+            <a href="{{ password_reset_url }}" class="imm-link">
+              Esqueceu a senha?
+            </a>
+          {% endif %}
         </form>
 
-        {% if password_reset_url %}
-        <a href="{{ password_reset_url }}" class="forgot-password">Esqueceu a senha?</a>
-        {% endif %}
+        <div class="imm-login__footnote">
+          © {% now "Y" %} Instituto Meio do Mundo
+        </div>
+      </main>
     </div>
-</div>
+  </div>
 {% endblock %}

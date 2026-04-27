@@ -965,7 +965,7 @@ async function loadPortalInfo(section) {
   if (!grid || grid.dataset.loaded) return;
   grid.dataset.loaded = '1';
   try {
-    const r = await fetch('/api/portal-info/');
+    const r = await fetch('/api/public/portal-info/');
     const data = await r.json();
     const items = data.items[map[section]] || [];
     if (!items.length) { grid.innerHTML = '<div style="color:var(--text2);padding:20px 0;font-size:14px">Nenhum documento disponível no momento.</div>'; return; }
@@ -1005,7 +1005,7 @@ async function submitEsic(e) {
   const form = e.target;
   const fd = new FormData(form);
   try {
-    const r = await fetch('/api/esic/', { method:'POST', body: fd });
+    const r = await fetch('/api/esic/submit/', { method:'POST', body: fd });
     const data = await r.json();
     if (r.ok) {
       status.className = 'form-status success';

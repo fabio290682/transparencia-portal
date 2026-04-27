@@ -320,6 +320,24 @@ def home(request):
     )
 
 
+def _serve_html_file(filename):
+    filepath = os.path.join(settings.BASE_DIR, filename)
+    with open(filepath, encoding="utf-8") as f:
+        return f.read()
+
+
+def portal_moderno(request):
+    from django.http import HttpResponse
+    _seed_portal_info_if_needed()
+    return HttpResponse(_serve_html_file("portal-moderno.html"), content_type="text/html; charset=utf-8")
+
+
+def portal_3d(request):
+    from django.http import HttpResponse
+    _seed_portal_info_if_needed()
+    return HttpResponse(_serve_html_file("portal-3d.html"), content_type="text/html; charset=utf-8")
+
+
 @api_view(["GET"])
 @permission_classes([AllowAny])
 def health(request):
