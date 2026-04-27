@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: "Segoe UI", sans-serif; background: #f5f8f5; padding: 20px; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .swatch { border-radius: 10px; overflow: hidden; flex: 1; min-width: 80px; }
+  .color-block { height: 64px; }
+  .swatch-label { padding: 6px 8px; background: #fff; border: 1px solid #e8ede8; border-top: none; border-radius: 0 0 10px 10px; }
+  .swatch-label .name { font-size: 10px; font-weight: 700; color: #1a3020; letter-spacing: 0.04em; }
+  .swatch-label .hex { font-size: 10px; color: #4a6550; font-family: monospace; }
+  .section-title { font-size: 10px; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; color: #4a6550; margin-bottom: 8px; margin-top: 16px; }
+  .section-title:first-child { margin-top: 0; }
+</style>
+</head>
+<body>
+  <div class="section-title">Green Scale</div>
+  <div class="row">
+    <div class="swatch"><div class="color-block" style="background:#0d3318"></div><div class="swatch-label"><div class="name">green-900</div><div class="hex">#0d3318</div></div></div>
+    <div class="swatch"><div class="color-block" style="background:#155224"></div><div class="swatch-label"><div class="name">green-600</div><div class="hex">#155224</div></div></div>
+    <div class="swatch"><div class="color-block" style="background:#1a4a1a"></div><div class="swatch-label"><div class="name">green-500</div><div class="hex">#1a4a1a</div></div></div>
+    <div class="swatch"><div class="color-block" style="background:#1e5420"></div><div class="swatch-label"><div class="name">green-400</div><div class="hex">#1e5420</div></div></div>
+    <div class="swatch"><div class="color-block" style="background:#2a5e28"></div><div class="swatch-label"><div class="name">green-300</div><div class="hex">#2a5e28</div></div></div>
+    <div class="swatch"><div class="color-block" style="background:#4a6550"></div><div class="swatch-label"><div class="name">green-200</div><div class="hex">#4a6550</div></div></div>
+    <div class="swatch"><div class="color-block" style="background:#d0ecd9"></div><div class="swatch-label"><div class="name">green-100</div><div class="hex">#d0ecd9</div></div></div>
+    <div class="swatch"><div class="color-block" style="background:#e6f4eb"></div><div class="swatch-label"><div class="name">green-50</div><div class="hex">#e6f4eb</div></div></div>
+  </div>
+  <div class="section-title">Gold / Accent</div>
+  <div class="row">
+    <div class="swatch"><div class="color-block" style="background:#f5c800"></div><div class="swatch-label"><div class="name">gold-500</div><div class="hex">#f5c800</div></div></div>
+    <div class="swatch"><div class="color-block" style="background:#ffd700"></div><div class="swatch-label"><div class="name">gold-400</div><div class="hex">#ffd700</div></div></div>
+    <div class="swatch"><div class="color-block" style="background:#ffd21a"></div><div class="swatch-label"><div class="name">gold-300</div><div class="hex">#ffd21a</div></div></div>
+    <div class="swatch"><div class="color-block" style="background:rgba(245,200,0,0.14); border: 1px solid #e8ede8;"></div><div class="swatch-label"><div class="name">gold-soft</div><div class="hex">rgba(245,200,0,.14)</div></div></div>
+  </div>
+  <div class="section-title">Neutrals</div>
+  <div class="row">
+    <div class="swatch"><div class="color-block" style="background:#1a3020"></div><div class="swatch-label"><div class="name">text-dark</div><div class="hex">#1a3020</div></div></div>
+    <div class="swatch"><div class="color-block" style="background:#4a6550"></div><div class="swatch-label"><div class="name">text-mid</div><div class="hex">#4a6550</div></div></div>
+    <div class="swatch"><div class="color-block" style="background:#e8ede8; border: 1px solid #ccc;"></div><div class="swatch-label"><div class="name">gray-100</div><div class="hex">#e8ede8</div></div></div>
+    <div class="swatch"><div class="color-block" style="background:#f5f8f5; border: 1px solid #ccc;"></div><div class="swatch-label"><div class="name">bg-light</div><div class="hex">#f5f8f5</div></div></div>
+    <div class="swatch"><div class="color-block" style="background:#fff; border: 1px solid #ccc;"></div><div class="swatch-label"><div class="name">white</div><div class="hex">#ffffff</div></div></div>
+  </div>
+</body>
+</html>

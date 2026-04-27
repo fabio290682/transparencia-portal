@@ -1,0 +1,14 @@
+# ruff.toml
+[lint]
+# Same as `ruff --select-all`
+select = ["ALL"]
+# E501: line too long
+# B008: do not perform function calls in argument defaults
+# a lot of this project uses function calls in argument defaults, this will be fixed later
+ignore = ["E501", "B008"]
+
+[format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"

@@ -1,0 +1,1628 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portal da Transparência — Instituto Meio do Mundo</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,600;0,700;0,800;0,900;1,900&display=swap" rel="stylesheet">
+<style>
+/* ── TOKENS ── */
+:root {
+  --bg:     #050c06;
+  --bg2:    #07120a;
+  --panel:  rgba(12,24,14,0.85);
+  --g1:     #0d2b10;
+  --g2:     #143d18;
+  --g3:     #1b5221;
+  --gold:   #f5c800;
+  --gold2:  #ffe566;
+  --gold3:  rgba(245,200,0,0.15);
+  --text:   #e8f0e9;
+  --muted:  rgba(232,240,233,0.45);
+  --line:   rgba(245,200,0,0.12);
+  --F: "Montserrat", sans-serif;
+  --ease: cubic-bezier(.22,1,.36,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--F);background:var(--bg);color:var(--text);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-thumb{background:var(--gold);border-radius:3px;opacity:.4}
+
+/* ── NOISE TEXTURE OVERLAY ── */
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  opacity:.4;mix-blend-mode:overlay;
+}
+
+/* ── TOPBAR ── */
+.topbar{
+  position:relative;z-index:300;
+  background:rgba(5,12,6,0.9);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line);
+  padding:7px 40px;
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:10.5px;font-weight:500;color:var(--muted);
+  letter-spacing:.04em;
+}
+.topbar a{color:var(--gold);opacity:.75;transition:opacity .2s}
+.topbar a:hover{opacity:1}
+.tb-dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--gold);animation:blink 2s ease-in-out infinite;margin-right:6px;vertical-align:middle}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+
+/* ── NAV ── */
+.nav{
+  position:sticky;top:0;z-index:200;
+  padding:0 40px;
+  background:rgba(5,12,6,0.7);
+  backdrop-filter:blur(24px) saturate(1.4);
+  border-bottom:1px solid var(--line);
+  transition:background .4s;
+}
+.nav.solid{background:rgba(5,12,6,0.96);box-shadow:0 8px 40px rgba(0,0,0,.6)}
+.nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:4px}
+.nav-logo{margin-right:auto;display:flex;align-items:center;gap:10px;padding:12px 0}
+.logo-mark{
+  width:36px;height:36px;border-radius:10px;
+  background:linear-gradient(135deg,var(--gold),#b78d00);
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:900;color:#0a1e0c;letter-spacing:.06em;
+  box-shadow:0 4px 16px rgba(245,200,0,0.4);
+}
+.logo-name{font-size:13px;font-weight:800;color:#fff;letter-spacing:-.3px;line-height:1.2}
+.logo-name span{display:block;font-size:9.5px;font-weight:600;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.nav-item{
+  padding:16px 13px;
+  color:var(--muted);font-size:12px;font-weight:600;
+  border-bottom:2px solid transparent;
+  cursor:pointer;white-space:nowrap;
+  transition:all .2s;letter-spacing:.02em;
+}
+.nav-item:hover,.nav-item.active{color:var(--gold);border-bottom-color:var(--gold)}
+.nav-dd{position:relative}
+.nav-dd .dd{
+  display:none;position:absolute;top:calc(100% + 8px);left:50%;
+  transform:translateX(-50%);
+  background:rgba(7,14,8,0.97);
+  backdrop-filter:blur(20px);
+  border:1px solid var(--line);border-radius:16px;
+  padding:10px 6px;min-width:240px;
+  box-shadow:0 24px 60px rgba(0,0,0,.7),0 0 0 1px rgba(245,200,0,.05);
+  animation:dd-open .18s var(--ease);
+}
+@keyframes dd-open{from{opacity:0;transform:translateX(-50%) translateY(-10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+.nav-dd:hover .dd{display:block}
+.dd-h{padding:5px 12px 3px;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.15em;color:rgba(245,200,0,.4);margin-top:4px}
+.dd-i{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:10px;font-size:12px;color:var(--muted);cursor:pointer;transition:all .15s}
+.dd-i:hover{background:rgba(245,200,0,.07);color:var(--gold);transform:translateX(4px)}
+.dd-sep{height:1px;background:rgba(255,255,255,.05);margin:5px 4px}
+
+/* ── HERO ── */
+.hero{
+  position:relative;min-height:100svh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  overflow:hidden;padding:120px 40px 140px;
+  perspective:1200px;
+}
+/* Depth layers */
+.hero-bg{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 70% 50% at 50% 40%, rgba(26,82,33,0.35) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 40% at 80% 80%, rgba(245,200,0,0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 60% at 10% 20%, rgba(14,40,18,0.5) 0%, transparent 60%),
+    var(--bg);
+}
+/* 3D grid floor */
+.hero-grid{
+  position:absolute;bottom:0;left:0;right:0;height:55%;
+  background-image:
+    linear-gradient(rgba(245,200,0,0.07) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(245,200,0,0.07) 1px,transparent 1px);
+  background-size:60px 60px;
+  transform:perspective(600px) rotateX(55deg);
+  transform-origin:bottom center;
+  mask-image:linear-gradient(to top, rgba(0,0,0,.7) 0%, transparent 100%);
+  animation:grid-drift 20s linear infinite;
+}
+@keyframes grid-drift{from{background-position:0 0}to{background-position:0 60px}}
+/* Floating orbs */
+.orb{position:absolute;border-radius:50%;pointer-events:none;will-change:transform}
+.orb-1{width:700px;height:700px;top:-200px;right:-200px;background:radial-gradient(circle,rgba(245,200,0,0.06) 0%,transparent 65%);animation:float1 14s ease-in-out infinite}
+.orb-2{width:500px;height:500px;bottom:-150px;left:-100px;background:radial-gradient(circle,rgba(20,61,24,0.7) 0%,transparent 65%);animation:float2 18s ease-in-out infinite}
+.orb-3{width:250px;height:250px;top:35%;right:15%;background:radial-gradient(circle,rgba(245,200,0,0.04) 0%,transparent 70%);animation:float3 10s ease-in-out infinite}
+@keyframes float1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-40px,30px) scale(1.1)}}
+@keyframes float2{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-40px) scale(1.08)}}
+@keyframes float3{0%,100%{transform:translate(0,0)}33%{transform:translate(20px,-15px)}66%{transform:translate(-10px,25px)}}
+
+.hero-content{position:relative;z-index:2;text-align:center;max-width:860px}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:10px;
+  border:1px solid rgba(245,200,0,.2);
+  background:rgba(245,200,0,.06);
+  border-radius:999px;padding:7px 20px;
+  font-size:10.5px;font-weight:700;color:rgba(245,200,0,.8);
+  letter-spacing:.16em;text-transform:uppercase;
+  margin-bottom:36px;
+  animation:fade-up .6s var(--ease) both;
+}
+.hero-eyebrow .pulse{width:7px;height:7px;background:var(--gold);border-radius:50%;box-shadow:0 0 8px var(--gold);animation:blink 1.6s infinite}
+.hero h1{
+  font-size:clamp(48px,8vw,96px);font-weight:900;
+  line-height:.96;letter-spacing:-3px;
+  margin-bottom:30px;
+  animation:fade-up .7s .1s var(--ease) both;
+}
+.hero h1 .line1{display:block;color:var(--text)}
+.hero h1 .line2{
+  display:block;
+  background:linear-gradient(90deg,var(--gold) 0%,var(--gold2) 50%,#c9a500 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  filter:drop-shadow(0 0 40px rgba(245,200,0,0.3));
+}
+.hero h1 .line3{display:block;color:rgba(232,240,233,0.35);font-style:italic}
+.hero-sub{
+  font-size:15px;color:var(--muted);line-height:1.75;
+  max-width:520px;margin:0 auto 44px;font-weight:400;
+  animation:fade-up .7s .2s var(--ease) both;
+}
+.hero-actions{
+  display:flex;justify-content:center;gap:14px;flex-wrap:wrap;
+  animation:fade-up .7s .3s var(--ease) both;
+}
+/* 3D floating cards in hero */
+.hero-cards{
+  position:absolute;z-index:1;
+  width:100%;height:100%;inset:0;
+  pointer-events:none;
+}
+.hcard{
+  position:absolute;
+  background:rgba(12,24,14,0.7);
+  backdrop-filter:blur(12px);
+  border:1px solid rgba(245,200,0,0.15);
+  border-radius:16px;padding:14px 18px;
+  box-shadow:0 20px 40px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.04);
+  animation:hcard-float 6s ease-in-out infinite;
+  will-change:transform;
+}
+.hcard-label{font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.hcard-val{font-size:18px;font-weight:900;color:var(--gold);letter-spacing:-1px}
+.hcard-sub{font-size:10px;color:rgba(232,240,233,0.35);margin-top:2px}
+.hcard-1{left:6%;top:28%;transform:rotateY(15deg) rotateX(-8deg);animation-delay:0s}
+.hcard-2{right:6%;top:34%;transform:rotateY(-12deg) rotateX(-6deg);animation-delay:-.8s}
+.hcard-3{left:10%;bottom:18%;transform:rotateY(10deg) rotateX(5deg);animation-delay:-1.6s}
+.hcard-4{right:9%;bottom:22%;transform:rotateY(-14deg) rotateX(3deg);animation-delay:-2.4s}
+@keyframes hcard-float{0%,100%{transform:rotateY(15deg) rotateX(-8deg) translateY(0)}50%{transform:rotateY(15deg) rotateX(-8deg) translateY(-12px)}}
+.hcard-2{animation-name:hcard-float2}
+@keyframes hcard-float2{0%,100%{transform:rotateY(-12deg) rotateX(-6deg) translateY(0)}50%{transform:rotateY(-12deg) rotateX(-6deg) translateY(-10px)}}
+.hcard-3{animation-name:hcard-float3}
+@keyframes hcard-float3{0%,100%{transform:rotateY(10deg) rotateX(5deg) translateY(0)}50%{transform:rotateY(10deg) rotateX(5deg) translateY(-14px)}}
+.hcard-4{animation-name:hcard-float4}
+@keyframes hcard-float4{0%,100%{transform:rotateY(-14deg) rotateX(3deg) translateY(0)}50%{transform:rotateY(-14deg) rotateX(3deg) translateY(-8px)}}
+
+/* scroll cue */
+.scroll-cue{
+  position:absolute;bottom:36px;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  animation:fade-up .7s .6s var(--ease) both;z-index:2;
+}
+.scroll-cue span{font-size:9.5px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--muted)}
+.scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,var(--gold),transparent);animation:scroll-drop 1.8s ease-in-out infinite}
+@keyframes scroll-drop{0%{height:0;opacity:1}100%{height:40px;opacity:0}}
+
+/* ── SECTION BASE ── */
+.wrap{max-width:1200px;margin:0 auto;padding:0 40px}
+section{padding:80px 0}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:10px;font-weight:800;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--gold);opacity:.7;
+  margin-bottom:12px;
+}
+.eyebrow::before{content:'';width:20px;height:2px;background:var(--gold);border-radius:2px}
+.title{
+  font-size:clamp(28px,4vw,44px);font-weight:900;
+  color:var(--text);letter-spacing:-1.5px;line-height:1;
+}
+
+/* ── 3D ICON CARDS ── */
+.icon-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;perspective:1000px}
+.icon-card{
+  position:relative;
+  background:rgba(10,20,12,0.8);
+  border:1px solid rgba(245,200,0,0.1);
+  border-radius:22px;padding:36px 28px 30px;
+  cursor:pointer;
+  transform-style:preserve-3d;
+  transition:transform .4s var(--ease),border-color .3s,box-shadow .4s;
+  overflow:hidden;
+}
+.icon-card::before{
+  content:'';position:absolute;inset:0;border-radius:22px;
+  background:radial-gradient(circle at 50% 0%,rgba(245,200,0,0.1) 0%,transparent 60%);
+  opacity:0;transition:opacity .35s;
+}
+.icon-card::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  transform:scaleX(0);transition:transform .35s var(--ease);
+}
+.icon-card:hover{
+  transform:translateY(-10px) rotateX(6deg) rotateY(-2deg);
+  border-color:rgba(245,200,0,0.35);
+  box-shadow:0 30px 60px rgba(0,0,0,.6),0 0 40px rgba(245,200,0,0.08),inset 0 1px 0 rgba(255,255,255,.05);
+}
+.icon-card:hover::before{opacity:1}
+.icon-card:hover::after{transform:scaleX(1)}
+.ic-glow{
+  width:72px;height:72px;border-radius:18px;
+  background:rgba(245,200,0,0.07);border:1px solid rgba(245,200,0,0.15);
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:22px;
+  transition:transform .4s var(--ease),background .3s,box-shadow .3s;
+  position:relative;
+}
+.icon-card:hover .ic-glow{
+  transform:translateZ(20px) scale(1.1);
+  background:rgba(245,200,0,0.12);
+  box-shadow:0 8px 24px rgba(245,200,0,0.2);
+}
+.ic-glow img{width:36px;height:36px;object-fit:contain;filter:brightness(1.3) drop-shadow(0 2px 6px rgba(0,0,0,.4))}
+.icon-card h3{font-size:15px;font-weight:700;color:var(--text);margin-bottom:8px;letter-spacing:-.2px}
+.icon-card p{font-size:12.5px;color:var(--muted);line-height:1.6}
+.ic-link{display:inline-flex;align-items:center;gap:5px;margin-top:16px;font-size:11.5px;font-weight:700;color:var(--gold);opacity:.6;transition:opacity .2s,gap .2s}
+.icon-card:hover .ic-link{opacity:1;gap:9px}
+
+/* ── PROJECT CARDS ── */
+.proj-header{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:28px}
+.proj-filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.filter-btn{
+  padding:8px 20px;border-radius:999px;border:1px solid rgba(245,200,0,0.15);
+  background:transparent;color:var(--muted);font-family:var(--F);font-size:12px;
+  font-weight:600;cursor:pointer;transition:all .2s;outline:none;
+}
+.filter-btn:hover,.filter-btn.active{background:rgba(245,200,0,0.1);border-color:rgba(245,200,0,0.4);color:var(--gold)}
+.proj-list{display:flex;flex-direction:column;gap:10px}
+.proj-card{
+  background:rgba(8,18,10,0.9);
+  border:1px solid rgba(245,200,0,0.08);
+  border-radius:18px;overflow:hidden;
+  cursor:pointer;
+  transition:transform .25s var(--ease),border-color .25s,box-shadow .25s;
+}
+.proj-card:hover{transform:translateX(4px);border-color:rgba(245,200,0,0.2);box-shadow:0 10px 40px rgba(0,0,0,.4),-4px 0 0 var(--gold)}
+.proj-card-head{padding:20px 24px;display:flex;align-items:center;gap:16px;justify-content:space-between;flex-wrap:wrap}
+.proj-card-left{display:flex;align-items:center;gap:14px;flex:1;min-width:0}
+.proj-thumb{
+  width:48px;height:48px;border-radius:14px;
+  background:linear-gradient(135deg,#143d18,#0d2b10);
+  border:1px solid rgba(245,200,0,0.15);
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;flex-shrink:0;
+}
+.proj-info h3{font-size:13.5px;font-weight:700;color:var(--text);margin-bottom:3px;letter-spacing:-.2px}
+.proj-info .sub{font-size:11px;color:var(--muted)}
+.proj-meta{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.proj-value{font-size:14.5px;font-weight:900;color:var(--gold);letter-spacing:-.5px}
+.proj-tag{display:inline-block;padding:4px 12px;border-radius:999px;font-size:10.5px;font-weight:700;letter-spacing:.3px}
+.tag-a{background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.2);color:#4ade80}
+.tag-f{background:rgba(96,165,250,0.1);border:1px solid rgba(96,165,250,0.2);color:#60a5fa}
+.chevron{font-size:10px;color:var(--muted);transition:transform .3s var(--ease)}
+.proj-card.open .chevron{transform:rotate(180deg)}
+.proj-card-body{display:none;padding:0 24px 22px;border-top:1px solid rgba(255,255,255,0.05);padding-top:18px}
+.proj-card.open .proj-card-body{display:block;animation:slide-in .25s var(--ease)}
+@keyframes slide-in{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.proj-table{width:100%;border-collapse:collapse;font-size:12px}
+.proj-table tr:nth-child(even){background:rgba(255,255,255,0.02)}
+.proj-table td{padding:9px 14px;border-bottom:1px solid rgba(255,255,255,0.04);vertical-align:top;line-height:1.55;color:var(--muted)}
+.proj-table td:first-child{font-weight:700;color:rgba(245,200,0,0.6);white-space:nowrap;width:200px}
+.proj-dl-btn{
+  display:inline-flex;align-items:center;gap:8px;margin-top:14px;
+  padding:10px 18px;background:rgba(245,200,0,0.1);color:var(--gold);
+  border:1px solid rgba(245,200,0,0.2);border-radius:10px;
+  font-size:12px;font-weight:700;transition:all .2s;
+}
+.proj-dl-btn:hover{background:rgba(245,200,0,0.18);transform:translateY(-1px)}
+
+/* ── IMPACT / STATS ── */
+.impact-wrap{
+  border-radius:28px;overflow:hidden;position:relative;
+  background:linear-gradient(135deg,#07120a 0%,#0d2010 50%,#060e07 100%);
+  border:1px solid rgba(245,200,0,0.1);
+  box-shadow:0 40px 80px rgba(0,0,0,.6);
+}
+.impact-inner{position:relative;z-index:1;padding:56px 52px}
+.impact-glow{
+  position:absolute;top:-100px;right:-100px;width:400px;height:400px;
+  background:radial-gradient(circle,rgba(245,200,0,0.08) 0%,transparent 65%);
+  pointer-events:none;
+}
+.impact-glow2{
+  position:absolute;bottom:-80px;left:40px;width:280px;height:280px;
+  background:radial-gradient(circle,rgba(26,82,33,0.4) 0%,transparent 65%);
+  pointer-events:none;
+}
+.impact-header{margin-bottom:44px}
+.impact-header .eyebrow{color:rgba(245,200,0,0.5)}
+.impact-header .title{color:#fff}
+.impact-header p{font-size:13px;color:var(--muted);margin-top:6px}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(245,200,0,0.06);border-radius:18px;overflow:hidden}
+.stat-box{
+  background:rgba(7,14,8,0.8);padding:28px 24px;
+  transition:background .25s;cursor:default;
+}
+.stat-box:hover{background:rgba(245,200,0,0.04)}
+.stat-num{font-size:42px;font-weight:900;color:#fff;letter-spacing:-3px;line-height:1;margin-bottom:7px}
+.stat-num em{color:var(--gold);font-style:normal;font-size:22px}
+.stat-lbl{font-size:11.5px;color:var(--muted);line-height:1.4}
+
+/* ── CONTACT ── */
+.contact-card{
+  border-radius:24px;padding:52px 52px;
+  background:rgba(8,18,10,0.8);
+  border:1px solid rgba(245,200,0,0.1);
+  display:flex;justify-content:space-between;align-items:center;gap:32px;
+  position:relative;overflow:hidden;
+}
+.contact-card::before{
+  content:'';position:absolute;top:-60px;right:-60px;
+  width:280px;height:280px;border-radius:50%;
+  border:1px solid rgba(245,200,0,0.06);
+  pointer-events:none;
+}
+.contact-card h2{font-size:26px;font-weight:900;color:#fff;letter-spacing:-1px;margin-bottom:6px}
+.contact-card .sub{font-size:13px;color:var(--muted);margin-bottom:20px}
+.cline{display:flex;align-items:center;gap:12px;font-size:12.5px;color:var(--muted);margin-bottom:8px}
+.cline strong{color:var(--text)}
+.cline-ic{
+  width:28px;height:28px;border-radius:8px;
+  background:rgba(245,200,0,0.08);border:1px solid rgba(245,200,0,0.12);
+  display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;
+}
+.cbtns{display:flex;gap:12px;flex-wrap:wrap;flex-shrink:0}
+
+/* ── BUTTONS ── */
+.btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:13px 26px;border-radius:12px;
+  font-family:var(--F);font-size:13px;font-weight:700;
+  cursor:pointer;border:none;
+  transition:transform .2s var(--ease),box-shadow .2s,filter .2s;
+  white-space:nowrap;letter-spacing:.01em;
+}
+.btn:active{transform:scale(.96)!important}
+.btn-gold{
+  background:var(--gold);color:#071008;
+  box-shadow:0 6px 24px rgba(245,200,0,0.4),0 0 0 1px rgba(245,200,0,.2);
+}
+.btn-gold:hover{transform:translateY(-3px) scale(1.02);filter:brightness(1.08);box-shadow:0 12px 30px rgba(245,200,0,0.45)}
+.btn-ghost{
+  background:transparent;color:var(--text);
+  border:1px solid rgba(255,255,255,0.14);
+}
+.btn-ghost:hover{transform:translateY(-2px);background:rgba(255,255,255,0.05);border-color:rgba(255,255,255,.25)}
+.btn-sm{padding:9px 18px;font-size:12px;border-radius:9px}
+
+/* ── FORM ── */
+.lai-layout{display:grid;grid-template-columns:1fr 1.1fr;gap:48px;align-items:start}
+.lai-feat{display:flex;flex-direction:column;gap:16px;margin-top:28px}
+.feat{display:flex;gap:14px;align-items:flex-start}
+.feat-ic{
+  width:38px;height:38px;border-radius:10px;flex-shrink:0;
+  background:rgba(245,200,0,0.07);border:1px solid rgba(245,200,0,0.12);
+  display:flex;align-items:center;justify-content:center;font-size:15px;
+}
+.feat-tx strong{font-size:13px;font-weight:700;color:var(--text);display:block;margin-bottom:2px}
+.feat-tx span{font-size:12px;color:var(--muted);line-height:1.5}
+.form-card{
+  background:rgba(8,18,10,0.85);border-radius:22px;
+  padding:36px 32px;border:1px solid rgba(245,200,0,0.1);
+  box-shadow:0 24px 60px rgba(0,0,0,.4);
+}
+.form-title{font-size:18px;font-weight:800;color:#fff;letter-spacing:-.3px;margin-bottom:4px}
+.form-sub{font-size:12px;color:var(--muted);margin-bottom:20px}
+.form-note{
+  background:rgba(26,82,33,0.2);border-left:2px solid var(--gold);
+  border-radius:0 8px 8px 0;padding:10px 14px;
+  font-size:12.5px;color:rgba(245,200,0,0.7);margin-bottom:18px;line-height:1.55;
+}
+.form-group{margin-bottom:14px}
+.form-label{display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(245,200,0,0.5);margin-bottom:6px}
+.form-ctrl{
+  width:100%;border:1px solid rgba(245,200,0,0.1);border-radius:10px;
+  padding:10px 14px;background:rgba(5,12,6,0.8);
+  font-family:var(--F);font-size:13px;color:var(--text);outline:none;
+  transition:all .2s;resize:vertical;-webkit-appearance:none;
+}
+.form-ctrl option{background:#071008}
+.form-ctrl:focus{border-color:rgba(245,200,0,0.35);background:rgba(10,22,12,0.9);box-shadow:0 0 0 3px rgba(245,200,0,0.08)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-status{display:none;margin-top:10px;padding:10px 12px;border-radius:10px;font-size:12.5px;font-weight:600}
+.form-status.error{display:block;background:rgba(220,38,38,0.1);color:#fca5a5;border:1px solid rgba(220,38,38,0.25)}
+.form-status.success{display:block;background:rgba(74,222,128,0.1);color:#4ade80;border:1px solid rgba(74,222,128,0.25)}
+
+/* ── INFO CARDS ── */
+.info-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.info-card{
+  background:rgba(8,18,10,0.85);border:1px solid rgba(245,200,0,0.08);
+  border-radius:16px;padding:22px;display:flex;align-items:flex-start;gap:14px;
+  transition:transform .25s,border-color .25s,box-shadow .25s;
+}
+.info-card:hover{transform:translateY(-3px);border-color:rgba(245,200,0,0.2);box-shadow:0 12px 30px rgba(0,0,0,.4)}
+.info-card-icon{font-size:22px;flex-shrink:0;margin-top:1px}
+.info-card h4{font-size:13.5px;font-weight:700;color:var(--text);margin-bottom:4px}
+.info-card p{font-size:12px;color:var(--muted);line-height:1.55}
+.info-card a{color:var(--gold);font-size:11.5px;font-weight:700;display:inline-block;margin-top:8px;opacity:.75;transition:opacity .2s}
+.info-card a:hover{opacity:1}
+
+/* ── FOOTER ── */
+footer{background:rgba(4,9,5,1);padding:56px 40px 28px;border-top:1px solid rgba(245,200,0,0.07)}
+.ft-inner{max-width:1200px;margin:0 auto}
+.ft-top{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;padding-bottom:36px;border-bottom:1px solid rgba(255,255,255,0.05);margin-bottom:22px}
+.ft-logo-mark{
+  width:44px;height:44px;border-radius:12px;
+  background:linear-gradient(135deg,var(--gold),#9e7f00);
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:900;color:#071008;margin-bottom:14px;
+}
+.ft-desc{font-size:12px;color:rgba(255,255,255,0.28);line-height:1.7;max-width:250px}
+.ft-col h4{font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.15em;color:var(--gold);opacity:.6;margin-bottom:16px}
+.ft-col a{display:block;font-size:12px;color:rgba(255,255,255,0.3);margin-bottom:9px;cursor:pointer;transition:color .15s}
+.ft-col a:hover{color:rgba(255,255,255,.7)}
+.ft-bottom{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:rgba(255,255,255,.2);flex-wrap:wrap;gap:8px}
+.ft-bottom a{color:var(--gold);opacity:.5}
+
+/* ── PAGE SYSTEM ── */
+.page{display:none}
+.page.active{display:block;animation:page-in .4s var(--ease)}
+@keyframes page-in{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── SCROLL REVEAL ── */
+.reveal{opacity:0;transform:translateY(30px);transition:opacity .6s var(--ease),transform .6s var(--ease)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}
+.d4{transition-delay:.32s}.d5{transition-delay:.40s}
+
+/* ── ANIMATIONS ── */
+@keyframes fade-up{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── MOUSE 3D TILT ── */
+.tilt3d{transform-style:preserve-3d;transition:transform .15s linear}
+
+/* ── 3D PHOTO CARDS ── */
+.hcard{
+  position:absolute;
+  background:rgba(5,12,6,0.7);
+  backdrop-filter:blur(12px);
+  border:1px solid rgba(245,200,0,0.2);
+  border-radius:18px;
+  overflow:hidden;
+  width:210px;
+  box-shadow:0 24px 48px rgba(0,0,0,.65),inset 0 1px 0 rgba(255,255,255,.06);
+  animation:hcard-float 6s ease-in-out infinite;
+  will-change:transform;
+}
+.hcard-img{
+  width:100%;height:118px;object-fit:cover;
+  display:block;background:linear-gradient(135deg,#0d2b10,#1b5221);
+  transition:transform .4s ease;
+}
+.hcard:hover .hcard-img{transform:scale(1.06)}
+.hcard-info{padding:10px 12px 12px}
+.hcard-label{font-size:10.5px;font-weight:800;color:#fff;letter-spacing:.02em;margin-bottom:2px}
+.hcard-sub{font-size:9.5px;color:rgba(245,200,0,.65);font-weight:600}
+.hcard-badge{
+  display:inline-flex;align-items:center;gap:4px;margin-top:6px;
+  background:rgba(245,200,0,.1);border:1px solid rgba(245,200,0,.2);
+  border-radius:999px;padding:2px 8px;
+  font-size:9px;font-weight:700;color:rgba(245,200,0,.8);
+}
+.hcard-1{left:4%;top:22%;transform:rotateY(14deg) rotateX(-7deg)}
+.hcard-2{right:4%;top:28%;transform:rotateY(-12deg) rotateX(-5deg)}
+.hcard-3{left:7%;bottom:24%;transform:rotateY(10deg) rotateX(4deg)}
+.hcard-4{right:6%;bottom:26%;transform:rotateY(-13deg) rotateX(3deg)}
+.hcard-1{animation-name:hcard-float}
+.hcard-2{animation-name:hcard-float2;animation-delay:-.8s}
+.hcard-3{animation-name:hcard-float3;animation-delay:-1.6s}
+.hcard-4{animation-name:hcard-float4;animation-delay:-2.4s}
+
+/* ── LUA ── */
+.hero-moon {
+  position: absolute;
+  top: 60px; right: 12%;
+  width: 54px; height: 54px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 38% 38%, #fff9e0 0%, #f5c800 40%, #c89800 100%);
+  box-shadow: 0 0 24px rgba(245,200,0,0.35), 0 0 60px rgba(245,200,0,0.15), 0 0 120px rgba(245,200,0,0.07);
+  z-index: 1;
+  pointer-events: none;
+  animation: moon-glow 6s ease-in-out infinite alternate;
+}
+.hero-moon::after {
+  content: '';
+  position: absolute;
+  top: 8px; left: 14px;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: rgba(180,140,0,0.3);
+  box-shadow: 16px 10px 0 rgba(180,140,0,0.2), 6px 22px 0 rgba(180,140,0,0.15);
+}
+@keyframes moon-glow {
+  from { box-shadow: 0 0 24px rgba(245,200,0,0.35), 0 0 60px rgba(245,200,0,0.15), 0 0 120px rgba(245,200,0,0.07); }
+  to   { box-shadow: 0 0 32px rgba(245,200,0,0.5),  0 0 80px rgba(245,200,0,0.22), 0 0 160px rgba(245,200,0,0.1); }
+}
+
+/* ── MACAPÁ SKYLINE ── */
+.skyline-wrap{
+  position:absolute;bottom:0;left:0;right:0;height:220px;
+  overflow:hidden;pointer-events:none;z-index:1;
+  mask-image:linear-gradient(to top,rgba(0,0,0,.9) 0%,rgba(0,0,0,.6) 60%,transparent 100%);
+  -webkit-mask-image:linear-gradient(to top,rgba(0,0,0,.9) 0%,rgba(0,0,0,.6) 60%,transparent 100%);
+}
+.skyline-strip{
+  position:absolute;bottom:0;left:0;
+  height:200px;
+  animation:skyline-scroll 70s linear infinite;
+  will-change:transform;
+}
+@keyframes skyline-scroll{
+  from{transform:translateX(0)}
+  to{transform:translateX(-50%)}
+}
+.skyline-water{
+  position:absolute;bottom:0;left:0;right:0;height:40px;
+  animation:water-wave 8s ease-in-out infinite alternate;
+}
+@keyframes water-wave{
+  from{transform:translateX(0) scaleY(1)}
+  to{transform:translateX(-8px) scaleY(1.06)}
+}
+
+/* ── RESPONSIVE ── */
+@media(max-width:960px){
+  .icon-grid{grid-template-columns:repeat(2,1fr)}
+  .stats-row{grid-template-columns:repeat(2,1fr)}
+  .ft-top{grid-template-columns:1fr 1fr}
+  .lai-layout{grid-template-columns:1fr}
+  .hcard{display:none}
+  .hero h1{font-size:clamp(40px,10vw,72px)}
+}
+@media(max-width:600px){
+  .icon-grid{grid-template-columns:1fr}
+  .contact-card{flex-direction:column;padding:32px 24px}
+  .ft-top{grid-template-columns:1fr;gap:24px}
+  .topbar{display:none}
+  .nav-inner{overflow-x:auto;scrollbar-width:none;padding:0 20px}
+  .form-row{grid-template-columns:1fr}
+  .info-grid{grid-template-columns:1fr}
+  .wrap{padding:0 20px}
+  .impact-inner{padding:36px 24px}
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <span><span class="tb-dot"></span>OSCIP · Macapá – Amapá · CNPJ 08.962.333/0001-03</span>
+  <span>
+    <a href="tel:5596981162362">+55 96 98116-2362</a> &nbsp;·&nbsp;
+    <a href="https://wa.me/5596981134444">WhatsApp</a> &nbsp;·&nbsp;
+    <a href="mailto:contato@institutomeiodomundo.org">contato@institutomeiodomundo.org</a>
+    &nbsp;·&nbsp;
+    <a href="/admin/" style="padding:2px 10px;border:1px solid rgba(245,200,0,0.35);border-radius:999px;color:rgba(255,255,255,0.8);font-weight:700;background:rgba(245,200,0,0.08);">⚙ Área Admin</a>
+  </span>
+</div>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <div class="nav-logo">
+      <img src="assets/logo-dark.png" alt="Instituto Meio do Mundo" style="height:36px;width:auto;display:block;">
+    </div>
+    <span class="nav-item active" onclick="showPage('home')">Início</span>
+    <span class="nav-item" onclick="showPage('acesso')">e-SIC / LAI</span>
+    <span class="nav-item nav-dd">Transparência ▾
+      <div class="dd">
+        <div class="dd-h">Financeiro</div>
+        <div class="dd-i" onclick="showPage('financeiros')">📊 Demonstrativos Contábeis</div>
+        <div class="dd-i" onclick="showPage('financeiros')">🔍 Auditorias</div>
+        <div class="dd-i" onclick="showPage('financeiros')">📅 Orçamento Anual</div>
+        <div class="dd-sep"></div>
+        <div class="dd-h">Prestação de Contas</div>
+        <div class="dd-i" onclick="showPage('prestacao')">📋 Relatório Contábil</div>
+        <div class="dd-i" onclick="showPage('prestacao')">🤝 Termos de Fomento</div>
+        <div class="dd-i" onclick="showPage('prestacao')">💝 Doações Recebidas</div>
+        <div class="dd-sep"></div>
+        <div class="dd-h">Outros</div>
+        <div class="dd-i" onclick="showPage('contratacoes')">📑 Contratações & Editais</div>
+        <div class="dd-i" onclick="showPage('politicas')">⚖️ Código de Ética</div>
+        <div class="dd-i" onclick="showPage('politicas')">🔒 LGPD</div>
+      </div>
+    </span>
+    <span class="nav-item nav-dd">Projetos ▾
+      <div class="dd">
+        <div class="dd-i" onclick="showPage('projetos')">🌱 Em Andamento</div>
+        <div class="dd-i" onclick="showPage('projetos')">✅ Finalizados</div>
+        <div class="dd-i" onclick="showPage('projetos')">📈 Impactos e Resultados</div>
+      </div>
+    </span>
+    <span class="nav-item" onclick="showPage('acesso')">Fale Conosco</span>
+  </div>
+</nav>
+
+<!-- ══════════════ HOME ══════════════ -->
+<div id="page-home" class="page active">
+
+  <!-- HERO -->
+  <div class="hero" id="hero3d">
+    <div class="hero-bg"></div>
+    <!-- ══ CÉEU NOTURNO ══ -->
+    <canvas id="starCanvas" style="position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:0.85"></canvas>
+    <!-- Lua -->
+    <div class="hero-moon"></div>
+    <div class="hero-grid"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <!-- Floating 3D photo cards -->
+    <div class="hero-cards">
+      <!-- Card 1: Fortaleza de São José -->
+      <div class="hcard hcard-1">
+        <img class="hcard-img" id="img-fortaleza"
+          src="assets/foto-fortaleza-aerea.webp"
+          alt="Fortaleza de São José">
+        <div class="hcard-info">
+          <div class="hcard-label">Fortaleza de São José</div>
+          <div class="hcard-sub">Maior forte do Brasil · Séc. XVIII</div>
+          <div class="hcard-badge">🏰 Patrimônio Histórico</div>
+        </div>
+      </div>
+
+      <!-- Card 2: Marco Zero do Equador -->
+      <div class="hcard hcard-2">
+        <img class="hcard-img" id="img-marco"
+          src="assets/foto-marco-zero.jpg"
+          alt="Marco Zero do Equador">
+        <div class="hcard-info">
+          <div class="hcard-label">Marco Zero do Equador</div>
+          <div class="hcard-sub">Linha do Equador · 0° 00' 00"</div>
+          <div class="hcard-badge">⭕ Hemisfério Norte & Sul</div>
+        </div>
+      </div>
+
+      <!-- Card 3: Orla do Amazonas -->
+      <div class="hcard hcard-3">
+        <img class="hcard-img" id="img-orla"
+          src="assets/foto-parque-meio-mundo.jpg"
+          alt="Parque Meio do Mundo">
+        <div class="hcard-info">
+          <div class="hcard-label">Parque Meio do Mundo</div>
+          <div class="hcard-sub">Macapá · Ponto turístico</div>
+          <div class="hcard-badge">🌍 Meio do Mundo</div>
+        </div>
+      </div>
+
+      <!-- Card 4: Floresta Amazônica -->
+      <div class="hcard hcard-4">
+        <img class="hcard-img" id="img-floresta"
+          src="assets/foto-fortaleza-entrada.webp"
+          alt="Entrada da Fortaleza">
+        <div class="hcard-info">
+          <div class="hcard-label">Fortaleza — Entrada</div>
+          <div class="hcard-sub">Portal histórico · Séc. XVIII</div>
+          <div class="hcard-badge">🏛️ Patrimônio Nacional</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-content">
+      <div style="margin-bottom:28px;animation:fade-up .5s var(--ease) both">
+        <img src="assets/logo-dark.png" alt="Instituto Meio do Mundo" style="height:100px;width:auto;filter:drop-shadow(0 4px 24px rgba(0,0,0,0.5)) drop-shadow(0 0 40px rgba(245,200,0,0.2));">
+      </div>
+      <div class="hero-eyebrow"><span class="pulse"></span> Portal Ativo · 2025</div>
+      <h1>
+        <span class="line1">Portal da</span>
+        <span class="line2">Transparência</span>
+        <span class="line3">Instituto Meio do Mundo</span>
+      </h1>
+      <p class="hero-sub">Comprometidos com a transparência pública, disponibilizamos acesso livre a documentos, projetos e informações institucionais — conforme a Lei 12.527/2011.</p>
+      <div class="hero-actions">
+        <button class="btn btn-gold" onclick="showPage('acesso')">📬 Solicitar via e-SIC</button>
+        <button class="btn btn-ghost" onclick="showPage('projetos')">Ver Projetos →</button>
+      </div>
+    </div>
+
+    <!-- ══ MACAPÁ SKYLINE ANIMADO ══ -->
+    <div class="skyline-wrap">
+      <!-- Water layer -->
+      <div class="skyline-water">
+        <svg viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0,20 C60,8 120,32 180,20 C240,8 300,32 360,20 C420,8 480,32 540,20 C600,8 660,32 720,20 C780,8 840,32 900,20 C960,8 1020,32 1080,20 C1120,10 1160,28 1200,20 L1200,40 L0,40 Z" fill="rgba(5,50,15,0.5)"/>
+          <path d="M0,28 C80,16 160,36 240,24 C320,14 400,34 480,24 C560,14 640,34 720,24 C800,14 880,34 960,24 C1040,14 1120,34 1200,24 L1200,40 L0,40 Z" fill="rgba(5,40,12,0.6)"/>
+        </svg>
+      </div>
+      <!-- Skyline strip -->
+      <div class="skyline-strip">
+        <svg id="skylineSvg" viewBox="0 0 2400 200" preserveAspectRatio="xMidYMax meet" xmlns="http://www.w3.org/2000/svg" style="width:200%;height:100%">
+          <defs>
+            <linearGradient id="goldGlow" x1="0" y1="1" x2="0" y2="0">
+              <stop offset="0%" stop-color="rgba(245,200,0,0.18)"/>
+              <stop offset="100%" stop-color="rgba(245,200,0,0)"/>
+            </linearGradient>
+            <filter id="glow">
+              <feGaussianBlur stdDeviation="2.5" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+
+          <!-- ── COPY 1 ── -->
+          <g class="scene">
+
+            <!-- AMAZON JUNGLE LEFT -->
+            <g fill="#050e07">
+              <ellipse cx="10" cy="148" rx="22" ry="32"/>
+              <ellipse cx="32" cy="138" rx="26" ry="42"/>
+              <ellipse cx="55" cy="145" rx="20" ry="35"/>
+              <ellipse cx="72" cy="152" rx="18" ry="28"/>
+              <rect x="30" y="180" width="5" height="10"/>
+              <rect x="52" y="183" width="4" height="8"/>
+              <!-- Small understory -->
+              <ellipse cx="15" cy="162" rx="12" ry="18"/>
+              <ellipse cx="68" cy="160" rx="14" ry="20"/>
+            </g>
+
+            <!-- AÇAÍ PALMS -->
+            <g fill="#050e07">
+              <rect x="85" y="130" width="4" height="52" rx="2"/>
+              <ellipse cx="87" cy="128" rx="16" ry="10"/>
+              <line x1="87" y1="128" x2="70" y2="118" stroke="#050e07" stroke-width="2"/>
+              <line x1="87" y1="128" x2="104" y2="116" stroke="#050e07" stroke-width="2"/>
+              <line x1="87" y1="128" x2="75" y2="112" stroke="#050e07" stroke-width="2"/>
+              <line x1="87" y1="128" x2="100" y2="110" stroke="#050e07" stroke-width="2"/>
+              <!-- fronds -->
+              <ellipse cx="70" cy="117" rx="10" ry="4" transform="rotate(-20,70,117)"/>
+              <ellipse cx="104" cy="115" rx="10" ry="4" transform="rotate(20,104,115)"/>
+              <ellipse cx="75" cy="111" rx="9" ry="3" transform="rotate(-35,75,111)"/>
+              <ellipse cx="100" cy="109" rx="9" ry="3" transform="rotate(30,100,109)"/>
+
+              <rect x="102" y="138" width="3" height="44" rx="1.5"/>
+              <line x1="103" y1="138" x2="90" y2="128" stroke="#050e07" stroke-width="1.5"/>
+              <line x1="103" y1="138" x2="116" y2="126" stroke="#050e07" stroke-width="1.5"/>
+              <line x1="103" y1="138" x2="93" y2="122" stroke="#050e07" stroke-width="1.5"/>
+              <ellipse cx="90" cy="127" rx="8" ry="3" transform="rotate(-22,90,127)"/>
+              <ellipse cx="116" cy="125" rx="8" ry="3" transform="rotate(22,116,125)"/>
+              <ellipse cx="93" cy="121" rx="7" ry="3" transform="rotate(-38,93,121)"/>
+            </g>
+
+            <!-- ═══ FORTALEZA DE SÃO JOSÉ ═══ -->
+            <!-- Label glow -->
+            <rect x="118" y="100" width="190" height="82" fill="url(#goldGlow)" rx="4" opacity="0.4"/>
+            <g fill="#040c06" filter="url(#glow)">
+              <!-- Left outer bastion -->
+              <polygon points="118,182 130,158 152,158 152,182"/>
+              <!-- Right outer bastion -->
+              <polygon points="308,182 296,158 274,158 274,182"/>
+              <!-- Outer walls -->
+              <rect x="130" y="160" width="178" height="22"/>
+              <!-- Battlements on outer wall -->
+              <rect x="132" y="154" width="10" height="8"/><rect x="148" y="154" width="10" height="8"/>
+              <rect x="164" y="154" width="10" height="8"/><rect x="180" y="154" width="10" height="8"/>
+              <rect x="196" y="154" width="10" height="8"/><rect x="212" y="154" width="10" height="8"/>
+              <rect x="228" y="154" width="10" height="8"/><rect x="244" y="154" width="10" height="8"/>
+              <rect x="260" y="154" width="10" height="8"/><rect x="276" y="154" width="10" height="8"/>
+              <!-- Inner main keep -->
+              <rect x="165" y="118" width="78" height="44"/>
+              <!-- Keep battlements -->
+              <rect x="167" y="111" width="8" height="9"/><rect x="181" y="111" width="8" height="9"/>
+              <rect x="195" y="111" width="8" height="9"/><rect x="209" y="111" width="8" height="9"/>
+              <rect x="223" y="111" width="8" height="9"/>
+              <!-- Corner towers on keep -->
+              <rect x="158" y="122" width="16" height="40"/>
+              <rect x="234" y="122" width="16" height="40"/>
+              <rect x="159" y="115" width="8" height="9"/><rect x="168" y="115" width="8" height="9"/>
+              <rect x="234" y="115" width="8" height="9"/><rect x="243" y="115" width="8" height="9"/>
+              <!-- Gate arch in outer wall -->
+              <path d="M196,182 L196,165 Q204,157 212,165 L212,182" fill="#090f0a"/>
+              <!-- Windows in keep -->
+              <rect x="172" y="126" width="8" height="12" rx="4" fill="#090f0a"/>
+              <rect x="186" y="126" width="8" height="12" rx="4" fill="#090f0a"/>
+              <rect x="212" y="126" width="8" height="12" rx="4" fill="#090f0a"/>
+              <rect x="226" y="126" width="8" height="12" rx="4" fill="#090f0a"/>
+              <!-- Flag pole -->
+              <rect x="202" y="84" width="2" height="28"/>
+              <!-- Flag -->
+              <polygon points="204,86 218,91 204,96" fill="#f5c800" opacity="0.7"/>
+              <!-- Cannon slots -->
+              <rect x="135" y="164" width="6" height="4" rx="1" fill="#090f0a"/>
+              <rect x="150" y="164" width="6" height="4" rx="1" fill="#090f0a"/>
+              <rect x="265" y="164" width="6" height="4" rx="1" fill="#090f0a"/>
+              <rect x="278" y="164" width="6" height="4" rx="1" fill="#090f0a"/>
+            </g>
+            <!-- Fortaleza label -->
+            <text x="213" y="78" text-anchor="middle" font-size="8" font-family="Montserrat,sans-serif" font-weight="700" fill="rgba(245,200,0,0.45)" letter-spacing="1">FORTALEZA DE SÃO JOSÉ</text>
+
+            <!-- VEGETATION GAP -->
+            <g fill="#050e07">
+              <ellipse cx="328" cy="160" rx="16" ry="22"/>
+              <ellipse cx="345" cy="155" rx="14" ry="28"/>
+              <ellipse cx="360" cy="163" rx="12" ry="18"/>
+            </g>
+
+            <!-- ═══ MARCO ZERO DO EQUADOR ═══ -->
+            <rect x="370" y="86" width="120" height="96" fill="url(#goldGlow)" rx="4" opacity="0.5"/>
+            <g fill="#040c06" filter="url(#glow)">
+              <!-- Base platform -->
+              <rect x="380" y="170" width="100" height="12"/>
+              <!-- Left column -->
+              <rect x="388" y="110" width="14" height="62"/>
+              <!-- Right column -->
+              <rect x="458" y="110" width="14" height="62"/>
+              <!-- Arch top -->
+              <path d="M388,112 Q430,80 472,112" stroke="#040c06" stroke-width="14" fill="none"/>
+              <!-- Globe/sphere at center top of arch -->
+              <circle cx="430" cy="90" r="14"/>
+              <!-- Equator line through globe -->
+              <path d="M416,90 Q430,95 444,90" stroke="#090f0a" stroke-width="2" fill="none"/>
+              <!-- Meridian on globe -->
+              <line x1="430" y1="76" x2="430" y2="104" stroke="#090f0a" stroke-width="1.5"/>
+              <!-- Base steps -->
+              <rect x="376" y="178" width="108" height="5"/>
+              <rect x="372" y="183" width="116" height="4"/>
+              <!-- Column details -->
+              <rect x="388" y="108" width="14" height="6"/>
+              <rect x="458" y="108" width="14" height="6"/>
+              <rect x="390" y="165" width="10" height="6"/>
+              <rect x="460" y="165" width="10" height="6"/>
+            </g>
+            <text x="430" y="78" text-anchor="middle" font-size="8" font-family="Montserrat,sans-serif" font-weight="700" fill="rgba(245,200,0,0.45)" letter-spacing="1">MARCO ZERO</text>
+
+            <!-- SMALL TREES -->
+            <g fill="#050e07">
+              <ellipse cx="504" cy="158" rx="14" ry="24"/>
+              <ellipse cx="520" cy="162" rx="10" ry="18"/>
+            </g>
+
+            <!-- ═══ IGREJA DE SÃO JOSÉ ═══ -->
+            <rect x="530" y="90" width="130" height="92" fill="url(#goldGlow)" rx="4" opacity="0.4"/>
+            <g fill="#040c06" filter="url(#glow)">
+              <!-- Facade base -->
+              <rect x="545" y="148" width="100" height="34"/>
+              <!-- Left tower -->
+              <rect x="545" y="110" width="30" height="72"/>
+              <!-- Left tower top (pointed) -->
+              <polygon points="545,110 560,88 575,110"/>
+              <!-- Cross on left tower -->
+              <rect x="557" y="80" width="6" height="14"/><rect x="553" y="87" width="14" height="4"/>
+              <!-- Right tower -->
+              <rect x="615" y="110" width="30" height="72"/>
+              <!-- Right tower top -->
+              <polygon points="615,110 630,88 645,110"/>
+              <!-- Cross on right tower -->
+              <rect x="627" y="80" width="6" height="14"/><rect x="623" y="87" width="14" height="4"/>
+              <!-- Central facade gable -->
+              <polygon points="575,148 595,118 615,148"/>
+              <!-- Facade door arch -->
+              <path d="M583,182 L583,160 Q595,150 607,160 L607,182" fill="#090f0a"/>
+              <!-- Rose window -->
+              <circle cx="595" cy="138" r="10" fill="#090f0a"/>
+              <circle cx="595" cy="138" r="6" fill="#040c06"/>
+              <!-- Tower windows -->
+              <rect x="553" y="120" width="10" height="14" rx="5" fill="#090f0a"/>
+              <rect x="553" y="138" width="10" height="12" rx="4" fill="#090f0a"/>
+              <rect x="623" y="120" width="10" height="14" rx="5" fill="#090f0a"/>
+              <rect x="623" y="138" width="10" height="12" rx="4" fill="#090f0a"/>
+              <!-- Bell openings in towers -->
+              <rect x="550" y="102" width="18" height="10" rx="2" fill="#090f0a"/>
+              <rect x="622" y="102" width="18" height="10" rx="2" fill="#090f0a"/>
+              <!-- Side steps -->
+              <rect x="543" y="180" width="104" height="4"/>
+              <rect x="541" y="184" width="108" height="3"/>
+            </g>
+            <text x="595" y="78" text-anchor="middle" font-size="8" font-family="Montserrat,sans-serif" font-weight="700" fill="rgba(245,200,0,0.45)" letter-spacing="1">IGREJA DE SÃO JOSÉ</text>
+
+            <!-- COLONIAL BUILDINGS -->
+            <g fill="#050e07">
+              <rect x="676" y="140" width="50" height="42"/>
+              <polygon points="676,140 701,120 726,140"/>
+              <rect x="682" y="155" width="10" height="14" rx="2" fill="#090f0a"/>
+              <rect x="706" y="155" width="10" height="14" rx="2" fill="#090f0a"/>
+              <rect x="686" y="140" width="8" height="8" rx="1" fill="#090f0a"/>
+              <rect x="706" y="140" width="8" height="8" rx="1" fill="#090f0a"/>
+
+              <rect x="730" y="150" width="40" height="32"/>
+              <polygon points="730,150 750,133 770,150"/>
+              <rect x="738" y="158" width="8" height="12" rx="2" fill="#090f0a"/>
+              <rect x="754" y="158" width="8" height="12" rx="2" fill="#090f0a"/>
+            </g>
+
+            <!-- ═══ MUSEU SACACA ═══ -->
+            <rect x="775" y="108" width="115" height="74" fill="url(#goldGlow)" rx="4" opacity="0.35"/>
+            <g fill="#040c06" filter="url(#glow)">
+              <!-- Main building body -->
+              <rect x="780" y="130" width="110" height="52"/>
+              <!-- Roof structure - traditional amazon style with overhanging eaves -->
+              <polygon points="772,132 835,104 898,132"/>
+              <!-- Inner elevated section -->
+              <rect x="800" y="110" width="70" height="24"/>
+              <polygon points="796,112 835,94 874,112"/>
+              <!-- Stilts / traditional elevation -->
+              <rect x="790" y="182" width="8" height="10"/><rect x="810" y="182" width="8" height="10"/>
+              <rect x="830" y="182" width="8" height="10"/><rect x="850" y="182" width="8" height="10"/>
+              <rect x="870" y="182" width="8" height="10"/>
+              <!-- Windows -->
+              <rect x="786" y="144" width="12" height="16" rx="1" fill="#090f0a"/>
+              <rect x="806" y="144" width="12" height="16" rx="1" fill="#090f0a"/>
+              <rect x="848" y="144" width="12" height="16" rx="1" fill="#090f0a"/>
+              <rect x="866" y="144" width="12" height="16" rx="1" fill="#090f0a"/>
+              <!-- Door -->
+              <path d="M827,182 L827,162 Q835,154 843,162 L843,182" fill="#090f0a"/>
+            </g>
+            <text x="835" y="91" text-anchor="middle" font-size="8" font-family="Montserrat,sans-serif" font-weight="700" fill="rgba(245,200,0,0.45)" letter-spacing="1">MUSEU SACACA</text>
+
+            <!-- ═══ ORLA / TRAPICHE ═══ -->
+            <rect x="900" y="148" width="150" height="34" fill="url(#goldGlow)" rx="2" opacity="0.3"/>
+            <g fill="#040c06" filter="url(#glow)">
+              <!-- Orla promenade -->
+              <rect x="900" y="170" width="160" height="12"/>
+              <!-- Lamp posts -->
+              <rect x="910" y="148" width="3" height="24"/><circle cx="911" cy="146" r="5"/>
+              <rect x="930" y="148" width="3" height="24"/><circle cx="931" cy="146" r="5"/>
+              <rect x="950" y="148" width="3" height="24"/><circle cx="951" cy="146" r="5"/>
+              <rect x="970" y="148" width="3" height="24"/><circle cx="971" cy="146" r="5"/>
+              <rect x="990" y="148" width="3" height="24"/><circle cx="991" cy="146" r="5"/>
+              <rect x="1010" y="148" width="3" height="24"/><circle cx="1011" cy="146" r="5"/>
+              <rect x="1030" y="148" width="3" height="24"/><circle cx="1031" cy="146" r="5"/>
+              <rect x="1050" y="148" width="3" height="24"/><circle cx="1051" cy="146" r="5"/>
+              <!-- Trapiche pier extending into river -->
+              <rect x="940" y="156" width="80" height="16"/>
+              <rect x="938" y="158" width="4" height="30"/>
+              <rect x="955" y="158" width="4" height="30"/>
+              <rect x="972" y="158" width="4" height="30"/>
+              <rect x="989" y="158" width="4" height="30"/>
+              <rect x="1006" y="158" width="4" height="30"/>
+              <rect x="1016" y="158" width="4" height="30"/>
+              <!-- Small kiosk -->
+              <rect x="908" y="152" width="24" height="18"/>
+              <polygon points="905,152 920,140 935,152"/>
+            </g>
+            <text x="975" y="143" text-anchor="middle" font-size="8" font-family="Montserrat,sans-serif" font-weight="700" fill="rgba(245,200,0,0.4)" letter-spacing="1">ORLA DO AMAZONAS</text>
+
+            <!-- AMAZON BOATS on water -->
+            <g fill="#050e07">
+              <!-- Boat 1 - regatão (trading boat) -->
+              <path d="M1055,175 Q1070,168 1090,170 Q1100,168 1110,175 Z"/>
+              <rect x="1065" y="162" width="36" height="13"/>
+              <rect x="1070" y="154" width="26" height="9"/>
+              <polygon points="1070,154 1076,146 1082,154"/>
+              <rect x="1082" y="148" width="2" height="22"/>
+              <!-- Boat 2 - small canoe -->
+              <path d="M1118,178 Q1128,173 1142,175 Q1148,173 1154,178 Z"/>
+              <rect x="1126" y="172" width="22" height="6"/>
+              <rect x="1132" y="162" width="3" height="14"/>
+              <!-- Birds above water -->
+              <path d="M1070,136 Q1074,132 1078,136" stroke="#040c06" stroke-width="1.5" fill="none"/>
+              <path d="M1086,130 Q1090,126 1094,130" stroke="#040c06" stroke-width="1.5" fill="none"/>
+              <path d="M1100,140 Q1104,136 1108,140" stroke="#040c06" stroke-width="1.5" fill="none"/>
+            </g>
+
+            <!-- JUNGLE RIGHT -->
+            <g fill="#050e07">
+              <ellipse cx="1162" cy="152" rx="18" ry="30"/>
+              <ellipse cx="1180" cy="143" rx="22" ry="40"/>
+              <ellipse cx="1200" cy="150" rx="20" ry="32"/>
+            </g>
+
+            <!-- GROUND BASE -->
+            <rect x="0" y="183" width="1200" height="17" fill="#050e07"/>
+
+          </g><!-- /scene copy 1 -->
+
+          <!-- ── COPY 2 (exact repeat offset by 1200) ── -->
+          <use href="#skylineSvg" x="0" y="0" display="none"/>
+          <g transform="translate(1200,0)" class="scene">
+            <g fill="#050e07">
+              <ellipse cx="10" cy="148" rx="22" ry="32"/><ellipse cx="32" cy="138" rx="26" ry="42"/>
+              <ellipse cx="55" cy="145" rx="20" ry="35"/><ellipse cx="72" cy="152" rx="18" ry="28"/>
+              <rect x="30" y="180" width="5" height="10"/><rect x="52" y="183" width="4" height="8"/>
+              <ellipse cx="15" cy="162" rx="12" ry="18"/><ellipse cx="68" cy="160" rx="14" ry="20"/>
+            </g>
+            <g fill="#050e07">
+              <rect x="85" y="130" width="4" height="52" rx="2"/>
+              <ellipse cx="87" cy="128" rx="16" ry="10"/>
+              <line x1="87" y1="128" x2="70" y2="118" stroke="#050e07" stroke-width="2"/>
+              <line x1="87" y1="128" x2="104" y2="116" stroke="#050e07" stroke-width="2"/>
+              <line x1="87" y1="128" x2="75" y2="112" stroke="#050e07" stroke-width="2"/>
+              <line x1="87" y1="128" x2="100" y2="110" stroke="#050e07" stroke-width="2"/>
+              <ellipse cx="70" cy="117" rx="10" ry="4" transform="rotate(-20,70,117)"/>
+              <ellipse cx="104" cy="115" rx="10" ry="4" transform="rotate(20,104,115)"/>
+              <ellipse cx="75" cy="111" rx="9" ry="3" transform="rotate(-35,75,111)"/>
+              <ellipse cx="100" cy="109" rx="9" ry="3" transform="rotate(30,100,109)"/>
+              <rect x="102" y="138" width="3" height="44" rx="1.5"/>
+              <line x1="103" y1="138" x2="90" y2="128" stroke="#050e07" stroke-width="1.5"/>
+              <line x1="103" y1="138" x2="116" y2="126" stroke="#050e07" stroke-width="1.5"/>
+              <line x1="103" y1="138" x2="93" y2="122" stroke="#050e07" stroke-width="1.5"/>
+              <ellipse cx="90" cy="127" rx="8" ry="3" transform="rotate(-22,90,127)"/>
+              <ellipse cx="116" cy="125" rx="8" ry="3" transform="rotate(22,116,125)"/>
+              <ellipse cx="93" cy="121" rx="7" ry="3" transform="rotate(-38,93,121)"/>
+            </g>
+            <rect x="118" y="100" width="190" height="82" fill="url(#goldGlow)" rx="4" opacity="0.4"/>
+            <g fill="#040c06" filter="url(#glow)">
+              <polygon points="118,182 130,158 152,158 152,182"/>
+              <polygon points="308,182 296,158 274,158 274,182"/>
+              <rect x="130" y="160" width="178" height="22"/>
+              <rect x="132" y="154" width="10" height="8"/><rect x="148" y="154" width="10" height="8"/>
+              <rect x="164" y="154" width="10" height="8"/><rect x="180" y="154" width="10" height="8"/>
+              <rect x="196" y="154" width="10" height="8"/><rect x="212" y="154" width="10" height="8"/>
+              <rect x="228" y="154" width="10" height="8"/><rect x="244" y="154" width="10" height="8"/>
+              <rect x="260" y="154" width="10" height="8"/><rect x="276" y="154" width="10" height="8"/>
+              <rect x="165" y="118" width="78" height="44"/>
+              <rect x="167" y="111" width="8" height="9"/><rect x="181" y="111" width="8" height="9"/>
+              <rect x="195" y="111" width="8" height="9"/><rect x="209" y="111" width="8" height="9"/>
+              <rect x="223" y="111" width="8" height="9"/>
+              <rect x="158" y="122" width="16" height="40"/>
+              <rect x="234" y="122" width="16" height="40"/>
+              <rect x="159" y="115" width="8" height="9"/><rect x="168" y="115" width="8" height="9"/>
+              <rect x="234" y="115" width="8" height="9"/><rect x="243" y="115" width="8" height="9"/>
+              <path d="M196,182 L196,165 Q204,157 212,165 L212,182" fill="#090f0a"/>
+              <rect x="172" y="126" width="8" height="12" rx="4" fill="#090f0a"/>
+              <rect x="186" y="126" width="8" height="12" rx="4" fill="#090f0a"/>
+              <rect x="212" y="126" width="8" height="12" rx="4" fill="#090f0a"/>
+              <rect x="226" y="126" width="8" height="12" rx="4" fill="#090f0a"/>
+              <rect x="202" y="84" width="2" height="28"/>
+              <polygon points="204,86 218,91 204,96" fill="#f5c800" opacity="0.7"/>
+              <rect x="135" y="164" width="6" height="4" rx="1" fill="#090f0a"/>
+              <rect x="150" y="164" width="6" height="4" rx="1" fill="#090f0a"/>
+              <rect x="265" y="164" width="6" height="4" rx="1" fill="#090f0a"/>
+              <rect x="278" y="164" width="6" height="4" rx="1" fill="#090f0a"/>
+            </g>
+            <text x="213" y="78" text-anchor="middle" font-size="8" font-family="Montserrat,sans-serif" font-weight="700" fill="rgba(245,200,0,0.45)" letter-spacing="1">FORTALEZA DE SÃO JOSÉ</text>
+            <g fill="#050e07"><ellipse cx="328" cy="160" rx="16" ry="22"/><ellipse cx="345" cy="155" rx="14" ry="28"/><ellipse cx="360" cy="163" rx="12" ry="18"/></g>
+            <rect x="370" y="86" width="120" height="96" fill="url(#goldGlow)" rx="4" opacity="0.5"/>
+            <g fill="#040c06" filter="url(#glow)">
+              <rect x="380" y="170" width="100" height="12"/>
+              <rect x="388" y="110" width="14" height="62"/>
+              <rect x="458" y="110" width="14" height="62"/>
+              <path d="M388,112 Q430,80 472,112" stroke="#040c06" stroke-width="14" fill="none"/>
+              <circle cx="430" cy="90" r="14"/>
+              <path d="M416,90 Q430,95 444,90" stroke="#090f0a" stroke-width="2" fill="none"/>
+              <line x1="430" y1="76" x2="430" y2="104" stroke="#090f0a" stroke-width="1.5"/>
+              <rect x="376" y="178" width="108" height="5"/>
+              <rect x="372" y="183" width="116" height="4"/>
+              <rect x="388" y="108" width="14" height="6"/>
+              <rect x="458" y="108" width="14" height="6"/>
+              <rect x="390" y="165" width="10" height="6"/>
+              <rect x="460" y="165" width="10" height="6"/>
+            </g>
+            <text x="430" y="78" text-anchor="middle" font-size="8" font-family="Montserrat,sans-serif" font-weight="700" fill="rgba(245,200,0,0.45)" letter-spacing="1">MARCO ZERO</text>
+            <g fill="#050e07"><ellipse cx="504" cy="158" rx="14" ry="24"/><ellipse cx="520" cy="162" rx="10" ry="18"/></g>
+            <rect x="530" y="90" width="130" height="92" fill="url(#goldGlow)" rx="4" opacity="0.4"/>
+            <g fill="#040c06" filter="url(#glow)">
+              <rect x="545" y="148" width="100" height="34"/>
+              <rect x="545" y="110" width="30" height="72"/>
+              <polygon points="545,110 560,88 575,110"/>
+              <rect x="557" y="80" width="6" height="14"/><rect x="553" y="87" width="14" height="4"/>
+              <rect x="615" y="110" width="30" height="72"/>
+              <polygon points="615,110 630,88 645,110"/>
+              <rect x="627" y="80" width="6" height="14"/><rect x="623" y="87" width="14" height="4"/>
+              <polygon points="575,148 595,118 615,148"/>
+              <path d="M583,182 L583,160 Q595,150 607,160 L607,182" fill="#090f0a"/>
+              <circle cx="595" cy="138" r="10" fill="#090f0a"/>
+              <circle cx="595" cy="138" r="6" fill="#040c06"/>
+              <rect x="553" y="120" width="10" height="14" rx="5" fill="#090f0a"/>
+              <rect x="553" y="138" width="10" height="12" rx="4" fill="#090f0a"/>
+              <rect x="623" y="120" width="10" height="14" rx="5" fill="#090f0a"/>
+              <rect x="623" y="138" width="10" height="12" rx="4" fill="#090f0a"/>
+              <rect x="550" y="102" width="18" height="10" rx="2" fill="#090f0a"/>
+              <rect x="622" y="102" width="18" height="10" rx="2" fill="#090f0a"/>
+              <rect x="543" y="180" width="104" height="4"/>
+              <rect x="541" y="184" width="108" height="3"/>
+            </g>
+            <text x="595" y="78" text-anchor="middle" font-size="8" font-family="Montserrat,sans-serif" font-weight="700" fill="rgba(245,200,0,0.45)" letter-spacing="1">IGREJA DE SÃO JOSÉ</text>
+            <g fill="#050e07">
+              <rect x="676" y="140" width="50" height="42"/>
+              <polygon points="676,140 701,120 726,140"/>
+              <rect x="682" y="155" width="10" height="14" rx="2" fill="#090f0a"/>
+              <rect x="706" y="155" width="10" height="14" rx="2" fill="#090f0a"/>
+              <rect x="686" y="140" width="8" height="8" rx="1" fill="#090f0a"/>
+              <rect x="706" y="140" width="8" height="8" rx="1" fill="#090f0a"/>
+              <rect x="730" y="150" width="40" height="32"/>
+              <polygon points="730,150 750,133 770,150"/>
+              <rect x="738" y="158" width="8" height="12" rx="2" fill="#090f0a"/>
+              <rect x="754" y="158" width="8" height="12" rx="2" fill="#090f0a"/>
+            </g>
+            <rect x="775" y="108" width="115" height="74" fill="url(#goldGlow)" rx="4" opacity="0.35"/>
+            <g fill="#040c06" filter="url(#glow)">
+              <rect x="780" y="130" width="110" height="52"/>
+              <polygon points="772,132 835,104 898,132"/>
+              <rect x="800" y="110" width="70" height="24"/>
+              <polygon points="796,112 835,94 874,112"/>
+              <rect x="790" y="182" width="8" height="10"/><rect x="810" y="182" width="8" height="10"/>
+              <rect x="830" y="182" width="8" height="10"/><rect x="850" y="182" width="8" height="10"/>
+              <rect x="870" y="182" width="8" height="10"/>
+              <rect x="786" y="144" width="12" height="16" rx="1" fill="#090f0a"/>
+              <rect x="806" y="144" width="12" height="16" rx="1" fill="#090f0a"/>
+              <rect x="848" y="144" width="12" height="16" rx="1" fill="#090f0a"/>
+              <rect x="866" y="144" width="12" height="16" rx="1" fill="#090f0a"/>
+              <path d="M827,182 L827,162 Q835,154 843,162 L843,182" fill="#090f0a"/>
+            </g>
+            <text x="835" y="91" text-anchor="middle" font-size="8" font-family="Montserrat,sans-serif" font-weight="700" fill="rgba(245,200,0,0.45)" letter-spacing="1">MUSEU SACACA</text>
+            <rect x="900" y="148" width="150" height="34" fill="url(#goldGlow)" rx="2" opacity="0.3"/>
+            <g fill="#040c06" filter="url(#glow)">
+              <rect x="900" y="170" width="160" height="12"/>
+              <rect x="910" y="148" width="3" height="24"/><circle cx="911" cy="146" r="5"/>
+              <rect x="930" y="148" width="3" height="24"/><circle cx="931" cy="146" r="5"/>
+              <rect x="950" y="148" width="3" height="24"/><circle cx="951" cy="146" r="5"/>
+              <rect x="970" y="148" width="3" height="24"/><circle cx="971" cy="146" r="5"/>
+              <rect x="990" y="148" width="3" height="24"/><circle cx="991" cy="146" r="5"/>
+              <rect x="1010" y="148" width="3" height="24"/><circle cx="1011" cy="146" r="5"/>
+              <rect x="1030" y="148" width="3" height="24"/><circle cx="1031" cy="146" r="5"/>
+              <rect x="1050" y="148" width="3" height="24"/><circle cx="1051" cy="146" r="5"/>
+              <rect x="940" y="156" width="80" height="16"/>
+              <rect x="938" y="158" width="4" height="30"/><rect x="955" y="158" width="4" height="30"/>
+              <rect x="972" y="158" width="4" height="30"/><rect x="989" y="158" width="4" height="30"/>
+              <rect x="1006" y="158" width="4" height="30"/><rect x="1016" y="158" width="4" height="30"/>
+              <rect x="908" y="152" width="24" height="18"/>
+              <polygon points="905,152 920,140 935,152"/>
+            </g>
+            <text x="975" y="143" text-anchor="middle" font-size="8" font-family="Montserrat,sans-serif" font-weight="700" fill="rgba(245,200,0,0.4)" letter-spacing="1">ORLA DO AMAZONAS</text>
+            <g fill="#050e07">
+              <path d="M1055,175 Q1070,168 1090,170 Q1100,168 1110,175 Z"/>
+              <rect x="1065" y="162" width="36" height="13"/>
+              <rect x="1070" y="154" width="26" height="9"/>
+              <polygon points="1070,154 1076,146 1082,154"/>
+              <rect x="1082" y="148" width="2" height="22"/>
+              <path d="M1118,178 Q1128,173 1142,175 Q1148,173 1154,178 Z"/>
+              <rect x="1126" y="172" width="22" height="6"/>
+              <rect x="1132" y="162" width="3" height="14"/>
+              <path d="M1070,136 Q1074,132 1078,136" stroke="#040c06" stroke-width="1.5" fill="none"/>
+              <path d="M1086,130 Q1090,126 1094,130" stroke="#040c06" stroke-width="1.5" fill="none"/>
+              <path d="M1100,140 Q1104,136 1108,140" stroke="#040c06" stroke-width="1.5" fill="none"/>
+            </g>
+            <g fill="#050e07">
+              <ellipse cx="1162" cy="152" rx="18" ry="30"/><ellipse cx="1180" cy="143" rx="22" ry="40"/>
+              <ellipse cx="1200" cy="150" rx="20" ry="32"/>
+            </g>
+            <rect x="0" y="183" width="1200" height="17" fill="#050e07"/>
+          </g><!-- /scene copy 2 -->
+
+        </svg>
+      </div>
+    </div>
+
+    <div class="scroll-cue">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </div>
+
+  <!-- ACESSO RÁPIDO -->
+  <section>
+    <div class="wrap">
+      <div style="text-align:center;margin-bottom:48px" class="reveal">
+        <div class="eyebrow" style="justify-content:center">Acesso Rápido</div>
+        <div class="title">O que você procura?</div>
+      </div>
+      <div class="icon-grid">
+        <div class="icon-card tilt3d reveal d1" onclick="showPage('acesso')">
+          <div class="ic-glow"><img src="assets/icons/icon-location.svg" alt="Localização"></div>
+          <h3>Localização & Sede</h3>
+          <p>Rua Desidério Antonio Coelho, 511-A, Trem, Macapá – AP, CEP 68901-080.</p>
+          <div class="ic-link">Ver localização →</div>
+        </div>
+        <div class="icon-card tilt3d reveal d2" onclick="showPage('projetos')">
+          <div class="ic-glow"><img src="assets/icons/icon-group.svg" alt="Beneficiários"></div>
+          <h3>Beneficiários & Comunidades</h3>
+          <p>Conheça as comunidades e pessoas impactadas pelos projetos do Instituto.</p>
+          <div class="ic-link">Ver projetos →</div>
+        </div>
+        <div class="icon-card tilt3d reveal d3" onclick="showPage('acesso')">
+          <div class="ic-glow"><img src="assets/icons/icon-chat.svg" alt="Fale Conosco"></div>
+          <h3>Fale Conosco</h3>
+          <p>Envie pedidos de informação, sugestões e solicitações via e-SIC / LAI.</p>
+          <div class="ic-link">Fazer solicitação →</div>
+        </div>
+        <div class="icon-card tilt3d reveal d1" onclick="showPage('projetos')">
+          <div class="ic-glow"><img src="assets/icons/icon-impact.svg" alt="Resultados"></div>
+          <h3>Impactos e Resultados</h3>
+          <p>Indicadores de desempenho e relatórios de avaliação de impacto social.</p>
+          <div class="ic-link">Ver indicadores →</div>
+        </div>
+        <div class="icon-card tilt3d reveal d2" onclick="showPage('prestacao')">
+          <div class="ic-glow"><img src="assets/icons/icon-partnership.svg" alt="Parcerias"></div>
+          <h3>Parcerias & Termos de Fomento</h3>
+          <p>Termos de fomento, patrocínio e contratos com órgãos públicos e privados.</p>
+          <div class="ic-link">Ver termos →</div>
+        </div>
+        <div class="icon-card tilt3d reveal d3" onclick="showPage('acesso')">
+          <div class="ic-glow"><img src="assets/icons/icon-tower.svg" alt="LAI"></div>
+          <h3>Acesso à Informação</h3>
+          <p>Solicite informações e acompanhe seu protocolo — Lei 12.527/2011 (LAI).</p>
+          <div class="ic-link">Solicitar informação →</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJETOS RECENTES -->
+  <section style="padding-top:0">
+    <div class="wrap">
+      <div class="proj-header reveal">
+        <div><div class="eyebrow">Últimos registros</div><div class="title">Projetos Recentes</div></div>
+        <button class="btn btn-ghost btn-sm" onclick="showPage('projetos')">Ver todos →</button>
+      </div>
+      <div class="proj-list">
+        <div class="proj-card reveal" onclick="toggleProj(this)">
+          <div class="proj-card-head"><div class="proj-card-left"><div class="proj-thumb">🏃</div><div class="proj-info"><h3>I CORRIDA DO SERVIDOR PÚBLICO DO ESTADO DO AMAPÁ</h3><div class="sub">027/2025 – SEDEL · Início: 28/10/2025</div></div></div><div class="proj-meta"><span class="proj-value">R$ 700.000,00</span><span class="proj-tag tag-a">Em Andamento</span><span class="chevron">▼</span></div></div>
+          <div class="proj-card-body"><table class="proj-table"><tr><td>Instrumento</td><td>027/2025 – SEDEL</td></tr><tr><td>Recurso</td><td>R$ 700.000,00</td></tr><tr><td>Fonte</td><td>Estadual (500)</td></tr><tr><td>Emenda</td><td>I0371 – Dep. Rodolfo Vale + Tesouro Estadual</td></tr><tr><td>Período</td><td>28/10/2025 a 28/01/2026</td></tr></table><a href="https://institutomeiodomundo.org/transparencia/wp-content/uploads/2025/12/FOMENTO-No-027-2025-IMM-CORRIDA-DO-SERVIDOR-assinado.pdf" target="_blank" class="proj-dl-btn">⬇ Baixar PDF</a></div>
+        </div>
+        <div class="proj-card reveal d1" onclick="toggleProj(this)">
+          <div class="proj-card-head"><div class="proj-card-left"><div class="proj-thumb">🎖️</div><div class="proj-info"><h3>PROJETO DESFILE DA INDEPENDÊNCIA 2025</h3><div class="sub">001/2025 – PMAP · Início: 05/09/2025</div></div></div><div class="proj-meta"><span class="proj-value">R$ 1.291.050,00</span><span class="proj-tag tag-a">Em Andamento</span><span class="chevron">▼</span></div></div>
+          <div class="proj-card-body"><table class="proj-table"><tr><td>Instrumento</td><td>001/2025 – PMAP</td></tr><tr><td>Recurso</td><td>R$ 1.291.050,00</td></tr><tr><td>Fonte</td><td>Estadual (500)</td></tr><tr><td>Período</td><td>05/09/2025 a 13/10/2025</td></tr></table><a href="https://institutomeiodomundo.org/transparencia/wp-content/uploads/2025/09/TERMO-DE-FOMENTO_PMAP-X-IMM-2025-1.pdf" target="_blank" class="proj-dl-btn">⬇ Baixar PDF</a></div>
+        </div>
+        <div class="proj-card reveal d2" onclick="toggleProj(this)">
+          <div class="proj-card-head"><div class="proj-card-left"><div class="proj-thumb">🌴</div><div class="proj-info"><h3>FÉRIAS SOLIDÁRIAS</h3><div class="sub">005/2025 – SEAS · 14/09/2025 a 31/12/2025</div></div></div><div class="proj-meta"><span class="proj-value">R$ 1.490.000,00</span><span class="proj-tag tag-f">Finalizado</span><span class="chevron">▼</span></div></div>
+          <div class="proj-card-body"><table class="proj-table"><tr><td>Instrumento</td><td>005/2025 – SEAS</td></tr><tr><td>Recurso</td><td>R$ 1.490.000,00</td></tr><tr><td>Emenda</td><td>Emenda Parlamentar Impositiva nº 10250</td></tr></table></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- IMPACT -->
+  <section>
+    <div class="wrap">
+      <div class="impact-wrap reveal">
+        <div class="impact-glow"></div>
+        <div class="impact-glow2"></div>
+        <div class="impact-inner">
+          <div class="impact-header">
+            <div class="eyebrow">Transparência pública</div>
+            <div class="title">Instituto Meio do Mundo</div>
+            <p>OSCIP comprometida com o desenvolvimento social no Amapá</p>
+          </div>
+          <div class="stats-row">
+            <div class="stat-box"><div class="stat-num" data-count="10">0<em>+</em></div><div class="stat-lbl">Projetos registrados no portal</div></div>
+            <div class="stat-box"><div class="stat-num">R$5<em>M+</em></div><div class="stat-lbl">Em recursos gerenciados (2024–2025)</div></div>
+            <div class="stat-box"><div class="stat-num" data-count="5">0<em> órgãos</em></div><div class="stat-lbl">Parceiros governamentais ativos</div></div>
+            <div class="stat-box"><div class="stat-num" data-count="100">0<em>%</em></div><div class="stat-lbl">Documentos com acesso livre</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTATO -->
+  <section style="padding-top:0;padding-bottom:80px">
+    <div class="wrap">
+      <div class="contact-card reveal">
+        <div>
+          <h2>Informações de Contato</h2>
+          <div class="sub">Estamos disponíveis para atender sua solicitação.</div>
+          <div class="cline"><div class="cline-ic">📞</div><strong>+55 96 98116-2362</strong></div>
+          <div class="cline"><div class="cline-ic">💬</div><strong>WhatsApp: 55 96 98113-4444</strong></div>
+          <div class="cline"><div class="cline-ic">📧</div><strong>contato@institutomeiodomundo.org</strong></div>
+          <div class="cline"><div class="cline-ic">📍</div><strong>Rua Desidério Antonio Coelho, 511-A, Macapá – AP</strong></div>
+        </div>
+        <div class="cbtns">
+          <button class="btn btn-gold" onclick="showPage('acesso')">📬 Solicitar via e-SIC</button>
+          <a href="https://wa.me/5596981134444" target="_blank" class="btn btn-ghost">💬 WhatsApp</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ══════════════ PROJETOS ══════════════ -->
+<div id="page-projetos" class="page">
+  <section><div class="wrap">
+    <div class="eyebrow">Termos de Fomento</div>
+    <div class="title" style="margin-bottom:24px">Projetos</div>
+    <div class="proj-filters" id="proj-filter">
+      <button class="filter-btn active" onclick="filtrarProjetos('todos',this)">Todos</button>
+      <button class="filter-btn" onclick="filtrarProjetos('Em Andamento',this)">Em Andamento</button>
+      <button class="filter-btn" onclick="filtrarProjetos('Finalizado',this)">Finalizados</button>
+    </div>
+    <div class="proj-list" id="proj-lista">
+      <div class="proj-card" data-status="Em Andamento" onclick="toggleProj(this)"><div class="proj-card-head"><div class="proj-card-left"><div class="proj-thumb">🏃</div><div class="proj-info"><h3>I CORRIDA DO SERVIDOR PÚBLICO DO ESTADO DO AMAPÁ</h3><div class="sub">027/2025 – SEDEL · 28/10/2025 a 28/01/2026</div></div></div><div class="proj-meta"><span class="proj-value">R$ 700.000,00</span><span class="proj-tag tag-a">Em Andamento</span><span class="chevron">▼</span></div></div><div class="proj-card-body"><table class="proj-table"><tr><td>Instrumento</td><td>027/2025 – SEDEL</td></tr><tr><td>Recurso</td><td>R$ 700.000,00</td></tr><tr><td>Fonte</td><td>Estadual (500)</td></tr><tr><td>Emenda</td><td>I0371 – Dep. Rodolfo Vale + Tesouro Estadual</td></tr></table><a href="https://institutomeiodomundo.org/transparencia/wp-content/uploads/2025/12/FOMENTO-No-027-2025-IMM-CORRIDA-DO-SERVIDOR-assinado.pdf" target="_blank" class="proj-dl-btn">⬇ Baixar PDF</a></div></div>
+      <div class="proj-card" data-status="Em Andamento" onclick="toggleProj(this)"><div class="proj-card-head"><div class="proj-card-left"><div class="proj-thumb">🎖️</div><div class="proj-info"><h3>PROJETO DESFILE DA INDEPENDÊNCIA 2025</h3><div class="sub">001/2025 – PMAP · 05/09/2025 a 13/10/2025</div></div></div><div class="proj-meta"><span class="proj-value">R$ 1.291.050,00</span><span class="proj-tag tag-a">Em Andamento</span><span class="chevron">▼</span></div></div><div class="proj-card-body"><table class="proj-table"><tr><td>Instrumento</td><td>001/2025 – PMAP</td></tr><tr><td>Recurso</td><td>R$ 1.291.050,00</td></tr><tr><td>Fonte</td><td>Estadual (500)</td></tr></table><a href="https://institutomeiodomundo.org/transparencia/wp-content/uploads/2025/09/TERMO-DE-FOMENTO_PMAP-X-IMM-2025-1.pdf" target="_blank" class="proj-dl-btn">⬇ Baixar PDF</a></div></div>
+      <div class="proj-card" data-status="Finalizado" onclick="toggleProj(this)"><div class="proj-card-head"><div class="proj-card-left"><div class="proj-thumb">🌴</div><div class="proj-info"><h3>FÉRIAS SOLIDÁRIAS</h3><div class="sub">005/2025 – SEAS · 14/09/2025 a 31/12/2025</div></div></div><div class="proj-meta"><span class="proj-value">R$ 1.490.000,00</span><span class="proj-tag tag-f">Finalizado</span><span class="chevron">▼</span></div></div><div class="proj-card-body"><table class="proj-table"><tr><td>Instrumento</td><td>005/2025 – SEAS</td></tr><tr><td>Recurso</td><td>R$ 1.490.000,00</td></tr><tr><td>Emenda</td><td>Emenda Parlamentar nº 10250</td></tr></table><a href="https://institutomeiodomundo.org/transparencia/wp-content/uploads/2025/12/TERMO_DE_FOMENTO_-_005-2025-SEAS_-_INSTITUTO_MEIO_DO_MUNDO_assinado.pdf" target="_blank" class="proj-dl-btn">⬇ Baixar PDF</a></div></div>
+      <div class="proj-card" data-status="Em Andamento" onclick="toggleProj(this)"><div class="proj-card-head"><div class="proj-card-left"><div class="proj-thumb">🎵</div><div class="proj-info"><h3>SHOW MUSICAL 4 CANTOS DA FLORESTA</h3><div class="sub">014/2025 – SECULT · 08/08/2025 a 15/12/2025</div></div></div><div class="proj-meta"><span class="proj-value">R$ 100.000,00</span><span class="proj-tag tag-a">Em Andamento</span><span class="chevron">▼</span></div></div><div class="proj-card-body"><table class="proj-table"><tr><td>Instrumento</td><td>014/2025 – SECULT</td></tr><tr><td>Recurso</td><td>R$ 100.000,00</td></tr><tr><td>Emenda</td><td>I0100 – Dep. Jack JK</td></tr></table></div></div>
+      <div class="proj-card" data-status="Finalizado" onclick="toggleProj(this)"><div class="proj-card-head"><div class="proj-card-left"><div class="proj-thumb">🎭</div><div class="proj-info"><h3>ESPETÁCULO TEATRAL "O CORPO DE CRISTO – ELE RESSUSCITOU"</h3><div class="sub">002/2025 – SECULT</div></div></div><div class="proj-meta"><span class="proj-value">R$ 69.000,00</span><span class="proj-tag tag-f">Finalizado</span><span class="chevron">▼</span></div></div><div class="proj-card-body"><table class="proj-table"><tr><td>Instrumento</td><td>002/2025 – SECULT</td></tr><tr><td>Recurso</td><td>R$ 69.000,00</td></tr></table></div></div>
+      <div class="proj-card" data-status="Finalizado" onclick="toggleProj(this)"><div class="proj-card-head"><div class="proj-card-left"><div class="proj-thumb">🏖️</div><div class="proj-info"><h3>CALÇOENE VERÃO 2025</h3><div class="sub">005/2025-SECULT</div></div></div><div class="proj-meta"><span class="proj-value">R$ 267.000,00</span><span class="proj-tag tag-f">Finalizado</span><span class="chevron">▼</span></div></div><div class="proj-card-body"><table class="proj-table"><tr><td>Instrumento</td><td>005/2025-SECULT</td></tr><tr><td>Recurso</td><td>R$ 267.000,00</td></tr></table></div></div>
+      <div class="proj-card" data-status="Finalizado" onclick="toggleProj(this)"><div class="proj-card-head"><div class="proj-card-left"><div class="proj-thumb">🏅</div><div class="proj-info"><h3>V CORRIDA DE RUA DA POLÍCIA CIVIL DO AMAPÁ</h3><div class="sub">014/2025 – SEDEL</div></div></div><div class="proj-meta"><span class="proj-value">R$ 969.185,00</span><span class="proj-tag tag-f">Finalizado</span><span class="chevron">▼</span></div></div><div class="proj-card-body"><table class="proj-table"><tr><td>Instrumento</td><td>014/2025 – SEDEL</td></tr><tr><td>Recurso</td><td>R$ 969.185,00</td></tr><tr><td>Emenda</td><td>I0179 – Dep. Estadual</td></tr></table></div></div>
+      <div class="proj-card" data-status="Finalizado" onclick="toggleProj(this)"><div class="proj-card-head"><div class="proj-card-left"><div class="proj-thumb">👩</div><div class="proj-info"><h3>I CORRIDA DA VISIBILIDADE FEMININA EM SANTANA</h3><div class="sub">008/2025 SEDEL-GEA</div></div></div><div class="proj-meta"><span class="proj-value">R$ 350.000,00</span><span class="proj-tag tag-f">Finalizado</span><span class="chevron">▼</span></div></div><div class="proj-card-body"><table class="proj-table"><tr><td>Instrumento</td><td>008/2025 SEDEL-GEA</td></tr><tr><td>Recurso</td><td>R$ 350.000,00</td></tr></table></div></div>
+      <div class="proj-card" data-status="Finalizado" onclick="toggleProj(this)"><div class="proj-card-head"><div class="proj-card-left"><div class="proj-thumb">🎄</div><div class="proj-info"><h3>NATAL SOLIDÁRIO – Bairro das Pedrinhas 2024</h3><div class="sub">021/2024 – SEAS</div></div></div><div class="proj-meta"><span class="proj-value">R$ 250.000,00</span><span class="proj-tag tag-f">Finalizado</span><span class="chevron">▼</span></div></div><div class="proj-card-body"><table class="proj-table"><tr><td>Instrumento</td><td>021/2024 – SEAS</td></tr><tr><td>Recurso</td><td>R$ 250.000,00</td></tr></table></div></div>
+      <div class="proj-card" data-status="Finalizado" onclick="toggleProj(this)"><div class="proj-card-head"><div class="proj-card-left"><div class="proj-thumb">🌿</div><div class="proj-info"><h3>CONEXÃO AMAZÔNIA</h3><div class="sub">037/2024 – SECULT · Emenda Camilo Capiberibe</div></div></div><div class="proj-meta"><span class="proj-value">R$ 251.200,00</span><span class="proj-tag tag-f">Finalizado</span><span class="chevron">▼</span></div></div><div class="proj-card-body"><table class="proj-table"><tr><td>Instrumento</td><td>037/2024 – SECULT</td></tr><tr><td>Recurso</td><td>R$ 251.200,00</td></tr><tr><td>Fonte</td><td>Federal (706)</td></tr><tr><td>Emenda</td><td>Camilo Capiberibe</td></tr></table></div></div>
+    </div>
+  </div></section>
+</div>
+
+<!-- ══════════════ e-SIC ══════════════ -->
+<div id="page-acesso" class="page">
+  <section><div class="wrap">
+    <div class="lai-layout">
+      <div>
+        <div class="eyebrow">Lei 12.527/2011</div>
+        <div class="title">Acesso a Informação</div>
+        <p style="font-size:14px;color:var(--muted);line-height:1.8;margin:18px 0 28px;font-weight:400">
+          O Instituto Meio do Mundo garante o direito fundamental ao acesso à informação pública, nos termos da <strong style="color:var(--text)">Lei Federal 12.527 (LAI)</strong>. Qualquer cidadão pode solicitar informações de forma ágil e segura.
+        </p>
+        <div class="lai-feat">
+          <div class="feat"><div class="feat-ic">📋</div><div class="feat-tx"><strong>Especificar a unidade ou área</strong><span>do Instituto Meio do Mundo que deseja contatar.</span></div></div>
+          <div class="feat"><div class="feat-ic">✍️</div><div class="feat-tx"><strong>Descrição detalhada</strong><span>do pedido de informação desejado.</span></div></div>
+          <div class="feat"><div class="feat-ic">📎</div><div class="feat-tx"><strong>Anexar documentos PDF</strong><span>relevantes ao pedido (até 3MB).</span></div></div>
+          <div class="feat"><div class="feat-ic">📬</div><div class="feat-tx"><strong>Formato de resposta</strong><span>escolha como deseja receber a resposta.</span></div></div>
+          <div class="feat"><div class="feat-ic">🔄</div><div class="feat-tx"><strong>Protocolo único</strong><span>acompanhe em tempo real via e-mail.</span></div></div>
+        </div>
+      </div>
+      <div class="form-card">
+        <div class="form-title">Formulário e-SIC</div>
+        <div class="form-sub">Prazo de resposta: até 20 dias úteis</div>
+        <div class="form-note">ℹ️ Após o envio você receberá um protocolo único por e-mail para acompanhar sua solicitação.</div>
+        <form id="esic-form" onsubmit="submitEsic(event)">
+          <div class="form-group">
+            <label class="form-label">Tipo de Solicitação</label>
+            <select class="form-ctrl" name="tipo" required><option value="">Selecione...</option><option>Acesso à Informação</option><option>Reclamação</option><option>Denúncia</option><option>Sugestão</option><option>Elogio</option></select>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Nome Completo</label><input class="form-ctrl" type="text" name="nome" placeholder="Seu nome"></div>
+            <div class="form-group"><label class="form-label">E-mail</label><input class="form-ctrl" type="email" name="email" placeholder="seu@email.com"></div>
+          </div>
+          <div class="form-group"><label class="form-label">Setor / Área</label><select class="form-ctrl" name="setor"><option>Selecione...</option><option>Diretoria Executiva</option><option>Financeiro</option><option>Projetos Sociais</option><option>Recursos Humanos</option><option>Comunicação</option></select></div>
+          <div class="form-group"><label class="form-label">Descrição do Pedido</label><textarea class="form-ctrl" name="descricao" rows="4" placeholder="Descreva detalhadamente sua solicitação..." required></textarea></div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Formato de Resposta</label><select class="form-ctrl" name="formato_resposta"><option>E-mail</option><option>Carta</option><option>Portal (online)</option></select></div>
+            <div class="form-group"><label class="form-label">Anexo PDF (máx. 3MB)</label><input class="form-ctrl" type="file" name="anexo" accept=".pdf"></div>
+          </div>
+          <button type="submit" class="btn btn-gold" style="width:100%;justify-content:center;margin-top:6px" id="esic-btn">📬 Enviar Solicitação</button>
+          <div class="form-status" id="esic-status"></div>
+        </form>
+      </div>
+    </div>
+  </div></section>
+</div>
+
+<!-- TRANSPARENCY PAGES -->
+<div id="page-financeiros" class="page"><section><div class="wrap"><div class="eyebrow">Transparência</div><div class="title" style="margin-bottom:24px">Relatórios Financeiros</div><div class="info-grid" id="financeiros-grid"><p style="color:var(--muted);font-size:14px;padding:20px 0">Carregando informações financeiras...</p></div></div></section></div>
+<div id="page-prestacao" class="page"><section><div class="wrap"><div class="eyebrow">Transparência</div><div class="title" style="margin-bottom:24px">Prestação de Contas</div><div class="info-grid" id="prestacao-grid"><p style="color:var(--muted);font-size:14px;padding:20px 0">Carregando informações...</p></div></div></section></div>
+<div id="page-contratacoes" class="page"><section><div class="wrap"><div class="eyebrow">Transparência</div><div class="title" style="margin-bottom:24px">Contratações</div><div class="info-grid" id="contratacoes-grid"><p style="color:var(--muted);font-size:14px;padding:20px 0">Carregando informações...</p></div></div></section></div>
+<div id="page-politicas" class="page"><section><div class="wrap"><div class="eyebrow">Governança</div><div class="title" style="margin-bottom:24px">Políticas Institucionais</div><div class="info-grid" id="politicas-grid"><p style="color:var(--muted);font-size:14px;padding:20px 0">Carregando informações...</p></div></div></section></div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="ft-inner">
+    <div class="ft-top">
+      <div>
+        <img src="assets/logo-dark.png" alt="Instituto Meio do Mundo" style="height:56px;width:auto;display:block;margin-bottom:16px;">
+        <div class="ft-desc">OSCIP comprometida com o desenvolvimento social, cultural e ambiental no Estado do Amapá. CNPJ 08.962.333/0001-03.</div>
+      </div>
+      <div class="ft-col"><h4>Portal</h4><a onclick="showPage('home')">Página Inicial</a><a onclick="showPage('projetos')">Projetos</a><a onclick="showPage('financeiros')">Financeiro</a><a onclick="showPage('prestacao')">Prestação de Contas</a></div>
+      <div class="ft-col"><h4>Transparência</h4><a onclick="showPage('contratacoes')">Contratações</a><a onclick="showPage('politicas')">Código de Ética</a><a onclick="showPage('politicas')">LGPD</a></div>
+      <div class="ft-col"><h4>Contato</h4><a href="tel:5596981162362">+55 96 98116-2362</a><a href="https://wa.me/5596981134444">WhatsApp</a><a href="mailto:contato@institutomeiodomundo.org">E-mail</a><a onclick="showPage('acesso')">Solicitar via e-SIC</a></div>
+    </div>
+    <div class="ft-bottom">
+      <span>© 2025 Instituto Meio do Mundo. Todos os direitos reservados.</span>
+      <span><a href="#">Lei 12.527/2011</a> · <a href="#">LGPD</a></span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* NAV SCROLL */
+window.addEventListener('scroll', () => {
+  document.getElementById('nav').classList.toggle('solid', window.scrollY > 40);
+}, {passive:true});
+
+/* PAGE ROUTING */
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const pg = document.getElementById('page-' + id);
+  if (pg) { pg.classList.add('active'); window.scrollTo({top:0, behavior:'smooth'}); }
+  const map = {home:'Início',projetos:'Projetos ▾',acesso:'e-SIC / LAI',financeiros:'Transparência ▾',prestacao:'Transparência ▾',contratacoes:'Transparência ▾',politicas:'Transparência ▾'};
+  document.querySelectorAll('.nav-item').forEach(n => { if (n.textContent.trim() === (map[id]||'')) n.classList.add('active'); });
+  if (['financeiros','prestacao','contratacoes','politicas'].includes(id)) loadPortalInfo(id);
+  setTimeout(initReveal, 80);
+}
+
+/* PROJECT TOGGLE */
+function toggleProj(el) { el.classList.toggle('open'); }
+
+/* PROJECT FILTER */
+function filtrarProjetos(status, btn) {
+  document.querySelectorAll('#proj-filter .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('#proj-lista .proj-card').forEach(c => {
+    c.style.display = (status === 'todos' || c.dataset.status === status) ? '' : 'none';
+  });
+}
+
+/* PORTAL INFO */
+async function loadPortalInfo(section) {
+  const map = {financeiros:'FINANCEIROS',prestacao:'PRESTACAO',contratacoes:'CONTRATACOES',politicas:'POLITICAS'};
+  const grid = document.getElementById(section + '-grid');
+  if (!grid || grid.dataset.loaded) return;
+  grid.dataset.loaded = '1';
+  try {
+    const r = await fetch('/api/portal-info/');
+    const data = await r.json();
+    const items = data.items[map[section]] || [];
+    grid.innerHTML = items.length ? items.map(i => `<div class="info-card"><div class="info-card-icon">${i.possui_arquivo?'📄':'📋'}</div><div><h4>${i.titulo}</h4><p>${i.descricao||''}</p>${i.url_documento?`<a href="${i.url_documento}" target="_blank">⬇ Acessar documento</a>`:''}</div></div>`).join('') : '<p style="color:var(--muted);font-size:13px;padding:16px 0">Nenhum documento disponível no momento.</p>';
+  } catch {
+    grid.innerHTML = '<p style="color:var(--muted);font-size:13px;padding:16px 0">⚠️ Não foi possível carregar os dados. Verifique a conexão com o servidor.</p>';
+  }
+}
+
+/* FORM SUBMIT */
+async function submitEsic(e) {
+  e.preventDefault();
+  const btn = document.getElementById('esic-btn');
+  const st = document.getElementById('esic-status');
+  btn.disabled = true; btn.textContent = 'Enviando...';
+  try {
+    const r = await fetch('/api/esic/', {method:'POST', body: new FormData(e.target)});
+    const d = await r.json();
+    if (r.ok) { st.className='form-status success'; st.textContent=`✅ Enviado! Protocolo: ${d.protocolo}`; e.target.reset(); }
+    else { st.className='form-status error'; st.textContent='❌ '+(d.error||'Erro ao enviar.'); }
+  } catch { st.className='form-status error'; st.textContent='❌ Servidor indisponível. Tente novamente.'; }
+  btn.disabled=false; btn.textContent='📬 Enviar Solicitação';
+}
+
+/* SCROLL REVEAL */
+function initReveal() {
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+  }, {threshold:0.08});
+  document.querySelectorAll('.reveal:not(.visible)').forEach(el => io.observe(el));
+}
+initReveal();
+
+/* COUNTER ANIMATION */
+const cntIo = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    e.target.querySelectorAll('[data-count]').forEach(el => {
+      if (el.dataset.animated) return;
+      el.dataset.animated = '1';
+      const target = +el.dataset.count;
+      const suffix = el.innerHTML.match(/<em>(.*?)<\/em>/)?.[1] || '';
+      let cur = 0, step = target / 45;
+      const t = setInterval(() => {
+        cur = Math.min(cur + step, target);
+        el.innerHTML = Math.floor(cur) + (suffix ? `<em>${suffix}</em>` : '');
+        if (cur >= target) clearInterval(t);
+      }, 28);
+    });
+  });
+}, {threshold:0.3});
+document.querySelectorAll('.impact-wrap').forEach(el => cntIo.observe(el));
+
+/* 3D CARD MOUSE TILT */
+document.querySelectorAll('.tilt3d').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const r = card.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - .5;
+    const y = (e.clientY - r.top) / r.height - .5;
+    card.style.transform = `perspective(800px) rotateY(${x*14}deg) rotateX(${-y*10}deg) translateY(-10px)`;
+  });
+  card.addEventListener('mouseleave', () => {
+    card.style.transform = '';
+  });
+});
+
+/* HERO PARALLAX */
+const hero = document.getElementById('hero3d');
+if (hero) {
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    const content = hero.querySelector('.hero-content');
+    if (content && y < window.innerHeight) {
+      content.style.transform = `translateY(${y * 0.3}px)`;
+      hero.querySelector('.hero-grid').style.transform = `perspective(600px) rotateX(55deg) translateY(${-y * 0.1}px)`;
+    }
+  }, {passive:true});
+}
+
+/* STAR CANVAS */
+(function() {
+  const canvas = document.getElementById('starCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let stars = [], shootingStars = [], W, H, raf;
+
+  function resize() {
+    W = canvas.width  = canvas.offsetWidth;
+    H = canvas.height = canvas.offsetHeight;
+    buildStars();
+  }
+
+  function buildStars() {
+    stars = [];
+    const count = Math.floor((W * H) / 3200);
+    for (let i = 0; i < count; i++) {
+      stars.push({
+        x: Math.random() * W,
+        y: Math.random() * H * 0.78,
+        r: Math.random() * 1.4 + 0.2,
+        alpha: Math.random() * 0.7 + 0.2,
+        twinkleSpeed: Math.random() * 0.02 + 0.005,
+        twinklePhase: Math.random() * Math.PI * 2,
+        color: Math.random() > 0.85 ? '#ffe8a0' : (Math.random() > 0.7 ? '#c8e0ff' : '#ffffff')
+      });
+    }
+  }
+
+  function spawnShooting() {
+    if (Math.random() > 0.004) return;
+    const sx = Math.random() * W * 0.8;
+    const sy = Math.random() * H * 0.3;
+    shootingStars.push({
+      x: sx, y: sy,
+      vx: (Math.random() * 4 + 3),
+      vy: (Math.random() * 2 + 1),
+      len: Math.random() * 120 + 60,
+      alpha: 1, life: 1
+    });
+  }
+
+  let t = 0;
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    t += 0.016;
+
+    // Stars
+    stars.forEach(s => {
+      const a = s.alpha * (0.6 + 0.4 * Math.sin(t * s.twinkleSpeed * 60 + s.twinklePhase));
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = s.color;
+      ctx.globalAlpha = a;
+      ctx.fill();
+      // Larger stars get a cross sparkle
+      if (s.r > 1.2) {
+        ctx.globalAlpha = a * 0.4;
+        ctx.strokeStyle = s.color;
+        ctx.lineWidth = 0.5;
+        ctx.beginPath();
+        ctx.moveTo(s.x - s.r * 2.5, s.y);
+        ctx.lineTo(s.x + s.r * 2.5, s.y);
+        ctx.moveTo(s.x, s.y - s.r * 2.5);
+        ctx.lineTo(s.x, s.y + s.r * 2.5);
+        ctx.stroke();
+      }
+    });
+
+    // Shooting stars
+    spawnShooting();
+    shootingStars = shootingStars.filter(s => s.life > 0);
+    shootingStars.forEach(s => {
+      s.x += s.vx; s.y += s.vy; s.life -= 0.025;
+      const grad = ctx.createLinearGradient(s.x, s.y, s.x - s.vx * 12, s.y - s.vy * 12);
+      grad.addColorStop(0, `rgba(255,245,200,${s.life * 0.9})`);
+      grad.addColorStop(1, 'rgba(255,245,200,0)');
+      ctx.globalAlpha = s.life;
+      ctx.strokeStyle = grad;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(s.x, s.y);
+      ctx.lineTo(s.x - s.len * (s.vx / 5), s.y - s.len * (s.vy / 5));
+      ctx.stroke();
+    });
+
+    ctx.globalAlpha = 1;
+    raf = requestAnimationFrame(draw);
+  }
+
+  const ro = new ResizeObserver(resize);
+  ro.observe(canvas.parentElement);
+  resize();
+  draw();
+})();
+</script>
+</body>
+</html>

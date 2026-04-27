@@ -1,0 +1,8 @@
+﻿{% extends "admin/change_list.html" %}
+
+{% block object-tools-items %}
+  <li>
+    <a href="{% url 'admin:core_portalinformacao_importar_planilha' %}" class="addlink">Importar planilha</a>
+  </li>
+  {{ block.super }}
+{% endblock %}

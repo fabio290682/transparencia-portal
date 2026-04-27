@@ -1,0 +1,5 @@
+secao,titulo,descricao,link,ordem,ativo
+FINANCEIROS,Balancete Janeiro/2026,Demonstrativo financeiro mensal.,https://exemplo.org/balancete-jan-2026.pdf,1,sim
+PRESTACAO,Relatorio de Execucao 1T/2026,Prestacao de contas do trimestre.,,2,sim
+CONTRATACOES,Edital 003/2026,Contratacao de servicos especializados.,https://exemplo.org/edital-003-2026,3,sim
+POLITICAS,Politica de Privacidade,Diretrizes de privacidade e LGPD.,,4,sim

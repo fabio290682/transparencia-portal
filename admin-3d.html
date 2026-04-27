@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel Administrativo — Instituto Meio do Mundo</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:    #050c06;
+  --bg2:   #07120a;
+  --p1:    rgba(10,22,12,0.92);
+  --p2:    rgba(12,26,14,0.85);
+  --g1:    #0d2b10; --g2: #143d18; --g3: #1b5221;
+  --gold:  #f5c800; --gold2: rgba(245,200,0,0.14); --gold3: rgba(245,200,0,0.08);
+  --line:  rgba(245,200,0,0.1); --line2: rgba(255,255,255,0.05);
+  --text:  #e8f0e9; --muted: rgba(232,240,233,0.45);
+  --ok:    #4ade80; --warn: #fb923c; --err: #f87171;
+  --F: "Montserrat", sans-serif;
+  --ease: cubic-bezier(.22,1,.36,1);
+  --spring: cubic-bezier(.34,1.56,.64,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:var(--F);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-thumb{background:var(--g2);border-radius:3px}
+
+/* ── STAR BG ── */
+#adminStars{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.5}
+
+/* ── SHELL ── */
+.shell{
+  min-height:100vh;display:grid;
+  grid-template-columns:260px minmax(0,1fr);
+  position:relative;z-index:1;
+}
+
+/* ── SIDEBAR ── */
+.sidebar{
+  position:sticky;top:0;height:100vh;
+  background:rgba(5,10,6,0.92);
+  backdrop-filter:blur(20px);
+  border-right:1px solid var(--line);
+  display:flex;flex-direction:column;gap:6px;
+  padding:22px 14px;overflow-y:auto;
+  box-shadow:4px 0 30px rgba(0,0,0,.4);
+}
+.sidebar-logo{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 10px 20px;
+  border-bottom:1px solid var(--line);margin-bottom:10px;
+}
+.sidebar-logo img{height:38px;width:auto}
+.sidebar-logo-fallback{
+  width:40px;height:40px;border-radius:11px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--gold),#9e7f00);
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:900;color:#071008;
+  box-shadow:0 4px 14px rgba(245,200,0,.35);
+}
+.sidebar-brand{font-size:12.5px;font-weight:700;color:var(--text);letter-spacing:-.2px;line-height:1.3}
+.sidebar-brand span{display:block;font-size:9.5px;font-weight:500;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-top:1px}
+
+.nav-group{margin-bottom:6px}
+.nav-label{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.15em;color:rgba(245,200,0,.35);padding:4px 12px;margin-bottom:2px}
+.nav-link{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 12px;border-radius:12px;
+  color:var(--muted);font-size:12.5px;font-weight:600;
+  border:1px solid transparent;cursor:pointer;
+  transition:all .2s var(--ease);
+}
+.nav-link:hover,.nav-link.active{
+  background:var(--gold2);border-color:rgba(245,200,0,.18);
+  color:var(--gold);transform:translateX(3px);
+}
+.nav-link .ico{font-size:15px;width:20px;text-align:center;flex-shrink:0}
+.nav-link .badge{
+  margin-left:auto;min-width:20px;height:18px;padding:0 6px;
+  background:rgba(245,200,0,.15);border:1px solid rgba(245,200,0,.25);
+  border-radius:999px;font-size:10px;font-weight:800;color:var(--gold);
+  display:flex;align-items:center;justify-content:center;
+}
+.nav-sep{height:1px;background:var(--line);margin:8px 4px}
+
+.sidebar-footer{
+  margin-top:auto;padding:14px 12px;
+  border:1px solid var(--line);border-radius:14px;
+  background:rgba(7,14,8,.6);
+}
+.sf-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px}
+.sf-role{font-size:11px;color:var(--muted)}
+.sf-dot{display:inline-block;width:6px;height:6px;background:var(--ok);border-radius:50%;margin-right:5px;box-shadow:0 0 6px var(--ok)}
+
+/* ── MAIN ── */
+.main{padding:24px;display:flex;flex-direction:column;gap:20px;min-height:100vh}
+
+/* ── TOPBAR ── */
+.topbar{
+  background:var(--p1);backdrop-filter:blur(20px);
+  border:1px solid var(--line);border-radius:20px;
+  padding:20px 24px;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  box-shadow:0 8px 32px rgba(0,0,0,.3);
+}
+.topbar-left .eyebrow{font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);opacity:.7;margin-bottom:4px}
+.topbar-left h2{font-size:20px;font-weight:900;color:var(--text);letter-spacing:-.5px}
+.topbar-right{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.time-badge{
+  font-size:11px;font-weight:700;color:var(--muted);
+  background:var(--gold3);border:1px solid var(--line);
+  border-radius:999px;padding:5px 14px;
+}
+
+/* ── STATS GRID ── */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.stat-card{
+  background:var(--p1);border:1px solid var(--line);
+  border-radius:18px;padding:22px 20px;
+  display:flex;flex-direction:column;gap:10px;
+  cursor:default;
+  transition:transform .3s var(--spring),border-color .3s,box-shadow .3s;
+  position:relative;overflow:hidden;
+}
+.stat-card::before{
+  content:'';position:absolute;inset:0;border-radius:18px;
+  background:radial-gradient(circle at 100% 0%,rgba(245,200,0,.08) 0%,transparent 55%);
+  opacity:0;transition:opacity .3s;
+}
+.stat-card:hover{transform:translateY(-5px) scale(1.02);border-color:rgba(245,200,0,.25);box-shadow:0 16px 40px rgba(0,0,0,.4)}
+.stat-card:hover::before{opacity:1}
+.stat-label{font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.stat-value{font-size:36px;font-weight:900;color:var(--gold);letter-spacing:-2px;line-height:1}
+.stat-value.warn{color:var(--warn)}
+.stat-value.ok{color:var(--ok)}
+.stat-sub{font-size:11.5px;color:var(--muted)}
+
+/* ── SECTION ── */
+.section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.section-head h3{font-size:14px;font-weight:800;color:var(--text);letter-spacing:-.2px}
+.section-eyebrow{font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.16em;color:var(--gold);opacity:.6;margin-bottom:4px}
+
+/* ── ACTION CARDS GRID ── */
+.action-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.action-card{
+  background:var(--p1);border:1px solid var(--line);
+  border-radius:20px;padding:22px;
+  display:flex;flex-direction:column;gap:14px;
+  transition:transform .3s var(--spring),border-color .3s,box-shadow .3s;
+}
+.action-card:hover{transform:translateY(-4px);border-color:rgba(245,200,0,.2);box-shadow:0 14px 36px rgba(0,0,0,.35)}
+.action-card h4{font-size:13.5px;font-weight:800;color:var(--text);letter-spacing:-.2px}
+.action-card p{font-size:12px;color:var(--muted);line-height:1.55}
+.action-row{display:flex;gap:8px;flex-wrap:wrap}
+
+/* ── CONTENT GRID ── */
+.content-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.panel-card{
+  background:var(--p1);border:1px solid var(--line);
+  border-radius:20px;padding:22px;
+  box-shadow:0 8px 28px rgba(0,0,0,.2);
+}
+.record-list{display:flex;flex-direction:column;gap:8px;margin-top:4px}
+.record-item{
+  border:1px solid var(--line2);border-radius:13px;
+  padding:13px 16px;display:flex;justify-content:space-between;
+  align-items:center;gap:12px;
+  background:rgba(255,255,255,.02);
+  transition:transform .2s var(--ease),border-color .2s,background .2s;
+  cursor:default;
+}
+.record-item:hover{transform:translateX(3px);border-color:rgba(245,200,0,.15);background:var(--gold3)}
+.record-item strong{font-size:13px;font-weight:700;color:var(--text);display:block;margin-bottom:2px}
+.record-item p{font-size:11.5px;color:var(--muted);margin:0}
+.record-meta{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0}
+
+/* ── PILLS ── */
+.pill{border-radius:999px;padding:4px 10px;font-size:11px;font-weight:800;white-space:nowrap}
+.pill-ok{background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.22);color:var(--ok)}
+.pill-warn{background:rgba(251,146,60,.1);border:1px solid rgba(251,146,60,.22);color:var(--warn)}
+.pill-gold{background:var(--gold2);border:1px solid rgba(245,200,0,.22);color:var(--gold)}
+.pill-muted{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:var(--text)}
+
+/* ── BUTTONS ── */
+.btn{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:9px 18px;border-radius:10px;border:none;
+  font-family:var(--F);font-size:12.5px;font-weight:700;
+  cursor:pointer;transition:all .2s var(--spring);white-space:nowrap;
+}
+.btn:active{transform:scale(.96)!important}
+.btn-gold{background:var(--gold);color:#071008;box-shadow:0 4px 16px rgba(245,200,0,.35)}
+.btn-gold:hover{transform:translateY(-2px);filter:brightness(1.08);box-shadow:0 8px 22px rgba(245,200,0,.4)}
+.btn-outline{background:transparent;border:1px solid rgba(245,200,0,.3);color:var(--gold)}
+.btn-outline:hover{background:var(--gold2);transform:translateY(-1px)}
+.btn-ghost{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:var(--text)}
+.btn-ghost:hover{background:rgba(255,255,255,.09);transform:translateY(-1px)}
+.btn-sm{padding:7px 14px;font-size:11.5px;border-radius:8px}
+
+/* ── ESIC TABLE ── */
+.esic-table{width:100%;border-collapse:collapse;font-size:12px}
+.esic-table th{
+  text-align:left;padding:10px 14px;
+  font-size:9.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;
+  color:rgba(245,200,0,.45);border-bottom:1px solid var(--line);
+}
+.esic-table td{padding:12px 14px;border-bottom:1px solid var(--line2);vertical-align:middle;color:var(--muted)}
+.esic-table td:first-child{color:var(--text);font-weight:600}
+.esic-table tr:hover td{background:rgba(255,255,255,.02);color:var(--text)}
+.esic-table .protocolo{font-family:monospace;font-size:11px;color:var(--gold);opacity:.7}
+.esic-table .tipo-badge{font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:6px}
+
+/* ── PROGRESS BAR ── */
+.progress-wrap{margin-top:6px}
+.progress-bar{height:4px;border-radius:2px;background:rgba(255,255,255,.06);overflow:hidden}
+.progress-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--gold),#e8b800);transition:width 1s var(--ease)}
+
+/* ── EMPTY STATE ── */
+.empty{padding:24px 0;text-align:center;color:var(--muted);font-size:13px}
+
+/* ── NOTIFICATION DOT ── */
+.notif{
+  position:relative;width:36px;height:36px;border-radius:10px;
+  background:var(--gold3);border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:background .2s;font-size:16px;
+}
+.notif:hover{background:var(--gold2)}
+.notif-dot{position:absolute;top:6px;right:6px;width:7px;height:7px;background:var(--err);border-radius:50%;border:1.5px solid var(--bg);animation:pulse-n .8s ease-in-out infinite alternate}
+@keyframes pulse-n{from{transform:scale(.8);opacity:.7}to{transform:scale(1.1);opacity:1}}
+
+/* ── VIEWS ── */
+.view{display:none}.view.active{display:contents}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1100px){
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+  .action-grid{grid-template-columns:repeat(2,1fr)}
+  .content-grid{grid-template-columns:1fr}
+}
+@media(max-width:860px){
+  .shell{grid-template-columns:1fr}
+  .sidebar{position:fixed;left:-280px;top:0;z-index:500;height:100vh;transition:left .3s var(--ease)}
+  .sidebar.open{left:0}
+  .stats-grid,.action-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- Stars background -->
+<canvas id="adminStars"></canvas>
+
+<div class="shell">
+
+  <!-- ══════ SIDEBAR ══════ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <img src="assets/logo-dark.png" alt="IMM" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="sidebar-logo-fallback" style="display:none">IMM</div>
+      <div class="sidebar-brand">Instituto Meio do Mundo<span>Painel Administrativo</span></div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-label">Principal</div>
+      <div class="nav-link active" onclick="showView('dashboard',this)">
+        <span class="ico">📊</span> Dashboard
+      </div>
+      <div class="nav-link" onclick="showView('esic',this)">
+        <span class="ico">📬</span> Pedidos e-SIC
+        <span class="badge">3</span>
+      </div>
+      <div class="nav-link" onclick="showView('projetos',this)">
+        <span class="ico">🌱</span> Projetos
+      </div>
+      <div class="nav-link" onclick="showView('documentos',this)">
+        <span class="ico">📄</span> Documentos
+      </div>
+    </div>
+
+    <div class="nav-sep"></div>
+
+    <div class="nav-group">
+      <div class="nav-label">Transparência</div>
+      <div class="nav-link" onclick="showView('financeiro',this)">
+        <span class="ico">💰</span> Financeiro
+      </div>
+      <div class="nav-link" onclick="showView('licitacoes',this)">
+        <span class="ico">📑</span> Licitações
+      </div>
+      <div class="nav-link" onclick="showView('servidores',this)">
+        <span class="ico">👥</span> Servidores
+      </div>
+    </div>
+
+    <div class="nav-sep"></div>
+
+    <div class="nav-group">
+      <div class="nav-label">Sistema</div>
+      <div class="nav-link" onclick="showView('configuracoes',this)">
+        <span class="ico">⚙️</span> Configurações
+      </div>
+      <div class="nav-link" onclick="window.location.href='/'">
+        <span class="ico">🌐</span> Ver Portal Público
+      </div>
+      <div class="nav-link" onclick="window.location.href='/admin/logout/'">
+        <span class="ico">🚪</span> Sair
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <div style="display:flex;align-items:center;gap:8px">
+        <div style="width:32px;height:32px;border-radius:9px;background:var(--g2);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:14px">👤</div>
+        <div>
+          <div class="sf-name">Administrador</div>
+          <div class="sf-role"><span class="sf-dot"></span>Online agora</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ══════ MAIN ══════ -->
+  <main class="main">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <div class="eyebrow">Instituto Meio do Mundo</div>
+        <h2 id="page-title">Dashboard</h2>
+      </div>
+      <div class="topbar-right">
+        <div class="time-badge" id="clock">--:--</div>
+        <button class="btn btn-outline btn-sm" onclick="window.location.href='/'">🌐 Portal</button>
+        <div class="notif" title="Notificações">
+          🔔<span class="notif-dot"></span>
+        </div>
+        <div class="notif" onclick="document.getElementById('sidebar').classList.toggle('open')" title="Menu" style="display:none" id="menu-btn">☰</div>
+      </div>
+    </div>
+
+    <!-- ══ DASHBOARD VIEW ══ -->
+    <div class="view active" id="view-dashboard">
+
+      <!-- Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Pedidos e-SIC</div>
+          <div class="stat-value" data-count="12">0</div>
+          <div class="stat-sub">Total recebidos</div>
+          <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" style="width:0%" data-w="75"></div></div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Aguardando resposta</div>
+          <div class="stat-value warn" data-count="3">0</div>
+          <div class="stat-sub">Prazo: até 20 dias úteis</div>
+          <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" style="width:0%;background:var(--warn)" data-w="25"></div></div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Projetos Ativos</div>
+          <div class="stat-value ok" data-count="10">0</div>
+          <div class="stat-sub">Publicados no portal</div>
+          <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" style="width:0%;background:var(--ok)" data-w="100"></div></div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Documentos</div>
+          <div class="stat-value" data-count="47">0</div>
+          <div class="stat-sub">Publicados com acesso livre</div>
+          <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" style="width:0%" data-w="94"></div></div></div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div>
+        <div class="section-head">
+          <div><div class="section-eyebrow">Ações rápidas</div><h3>O que deseja fazer?</h3></div>
+        </div>
+        <div class="action-grid">
+          <div class="action-card">
+            <div>
+              <h4>📬 Novo Pedido e-SIC</h4>
+              <p>Registrar manualmente um novo pedido de acesso à informação recebido fora do portal.</p>
+            </div>
+            <div class="action-row">
+              <button class="btn btn-gold btn-sm" onclick="showView('esic',document.querySelector('[onclick*=esic]'))">Acessar e-SIC</button>
+              <button class="btn btn-outline btn-sm">Exportar CSV</button>
+            </div>
+          </div>
+          <div class="action-card">
+            <div>
+              <h4>🌱 Publicar Projeto</h4>
+              <p>Adicionar ou atualizar projetos, termos de fomento e patrocínio no portal público.</p>
+            </div>
+            <div class="action-row">
+              <button class="btn btn-gold btn-sm" onclick="showView('projetos',document.querySelector('[onclick*=projetos]'))">Gerenciar Projetos</button>
+              <button class="btn btn-outline btn-sm">Novo Projeto</button>
+            </div>
+          </div>
+          <div class="action-card">
+            <div>
+              <h4>📄 Publicar Documento</h4>
+              <p>Enviar relatórios contábeis, auditorias e documentos para o portal de transparência.</p>
+            </div>
+            <div class="action-row">
+              <button class="btn btn-gold btn-sm" onclick="showView('documentos',document.querySelector('[onclick*=documentos]'))">Ver Documentos</button>
+              <button class="btn btn-outline btn-sm">Upload</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Content grid -->
+      <div class="content-grid">
+
+        <!-- Pedidos recentes -->
+        <div class="panel-card">
+          <div class="section-head">
+            <div><div class="section-eyebrow">e-SIC</div><h3>Pedidos Recentes</h3></div>
+            <button class="btn btn-ghost btn-sm" onclick="showView('esic',document.querySelector('[onclick*=esic]'))">Ver todos →</button>
+          </div>
+          <div class="record-list">
+            <div class="record-item">
+              <div>
+                <strong>Solicitação de Acesso</strong>
+                <p>Relatórios financeiros 2024 — João Silva</p>
+              </div>
+              <div class="record-meta">
+                <span class="pill pill-warn">Pendente</span>
+                <span style="font-size:10.5px;color:var(--muted)">há 2 dias</span>
+              </div>
+            </div>
+            <div class="record-item">
+              <div>
+                <strong>Denúncia</strong>
+                <p>Irregularidade em contrato — Anônimo</p>
+              </div>
+              <div class="record-meta">
+                <span class="pill pill-warn">Pendente</span>
+                <span style="font-size:10.5px;color:var(--muted)">há 5 dias</span>
+              </div>
+            </div>
+            <div class="record-item">
+              <div>
+                <strong>Sugestão</strong>
+                <p>Melhoria no portal de transparência</p>
+              </div>
+              <div class="record-meta">
+                <span class="pill pill-ok">Respondido</span>
+                <span style="font-size:10.5px;color:var(--muted)">há 8 dias</span>
+              </div>
+            </div>
+            <div class="record-item">
+              <div>
+                <strong>Acesso à Informação</strong>
+                <p>Lista de servidores e salários</p>
+              </div>
+              <div class="record-meta">
+                <span class="pill pill-ok">Respondido</span>
+                <span style="font-size:10.5px;color:var(--muted)">há 12 dias</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Projetos -->
+        <div class="panel-card">
+          <div class="section-head">
+            <div><div class="section-eyebrow">Projetos</div><h3>Status dos Projetos</h3></div>
+            <button class="btn btn-ghost btn-sm" onclick="showView('projetos',document.querySelector('[onclick*=projetos]'))">Ver todos →</button>
+          </div>
+          <div class="record-list">
+            <div class="record-item">
+              <div>
+                <strong>I Corrida do Servidor Público</strong>
+                <p>027/2025 – SEDEL · R$ 700.000,00</p>
+              </div>
+              <div class="record-meta">
+                <span class="pill pill-ok">Ativo</span>
+                <span style="font-size:10.5px;color:var(--muted)">28/01/2026</span>
+              </div>
+            </div>
+            <div class="record-item">
+              <div>
+                <strong>Desfile da Independência 2025</strong>
+                <p>001/2025 – PMAP · R$ 1.291.050,00</p>
+              </div>
+              <div class="record-meta">
+                <span class="pill pill-ok">Ativo</span>
+                <span style="font-size:10.5px;color:var(--muted)">13/10/2025</span>
+              </div>
+            </div>
+            <div class="record-item">
+              <div>
+                <strong>Férias Solidárias</strong>
+                <p>005/2025 – SEAS · R$ 1.490.000,00</p>
+              </div>
+              <div class="record-meta">
+                <span class="pill pill-muted">Finalizado</span>
+                <span style="font-size:10.5px;color:var(--muted)">31/12/2025</span>
+              </div>
+            </div>
+            <div class="record-item">
+              <div>
+                <strong>Show Musical 4 Cantos da Floresta</strong>
+                <p>014/2025 – SECULT · R$ 100.000,00</p>
+              </div>
+              <div class="record-meta">
+                <span class="pill pill-ok">Ativo</span>
+                <span style="font-size:10.5px;color:var(--muted)">15/12/2025</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div><!-- /dashboard -->
+
+    <!-- ══ e-SIC VIEW ══ -->
+    <div class="view" id="view-esic">
+      <div class="panel-card" style="overflow-x:auto">
+        <div class="section-head" style="margin-bottom:18px">
+          <div><div class="section-eyebrow">Pedidos de Acesso</div><h3>Gerenciar e-SIC</h3></div>
+          <button class="btn btn-gold btn-sm">+ Novo Pedido</button>
+        </div>
+        <table class="esic-table">
+          <thead>
+            <tr>
+              <th>Protocolo</th>
+              <th>Tipo</th>
+              <th>Solicitante</th>
+              <th>Data</th>
+              <th>Prazo</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="protocolo">ESIC-20250415-00001</td>
+              <td><span class="tipo-badge" style="background:rgba(96,165,250,.1);color:#60a5fa">Acesso</span></td>
+              <td>João Silva</td>
+              <td>15/04/2025</td>
+              <td>05/05/2025</td>
+              <td><span class="pill pill-warn">Pendente</span></td>
+              <td><button class="btn btn-outline btn-sm">Responder</button></td>
+            </tr>
+            <tr>
+              <td class="protocolo">ESIC-20250410-00002</td>
+              <td><span class="tipo-badge" style="background:rgba(248,113,113,.1);color:#f87171">Denúncia</span></td>
+              <td>Anônimo</td>
+              <td>10/04/2025</td>
+              <td>30/04/2025</td>
+              <td><span class="pill pill-warn">Pendente</span></td>
+              <td><button class="btn btn-outline btn-sm">Responder</button></td>
+            </tr>
+            <tr>
+              <td class="protocolo">ESIC-20250402-00003</td>
+              <td><span class="tipo-badge" style="background:rgba(245,200,0,.1);color:var(--gold)">Sugestão</span></td>
+              <td>Maria Souza</td>
+              <td>02/04/2025</td>
+              <td>22/04/2025</td>
+              <td><span class="pill pill-ok">Respondido</span></td>
+              <td><button class="btn btn-ghost btn-sm">Ver</button></td>
+            </tr>
+            <tr>
+              <td class="protocolo">ESIC-20250325-00004</td>
+              <td><span class="tipo-badge" style="background:rgba(96,165,250,.1);color:#60a5fa">Acesso</span></td>
+              <td>Carlos Lima</td>
+              <td>25/03/2025</td>
+              <td>14/04/2025</td>
+              <td><span class="pill pill-ok">Respondido</span></td>
+              <td><button class="btn btn-ghost btn-sm">Ver</button></td>
+            </tr>
+            <tr>
+              <td class="protocolo">ESIC-20250315-00005</td>
+              <td><span class="tipo-badge" style="background:rgba(74,222,128,.1);color:var(--ok)">Elogio</span></td>
+              <td>Ana Ferreira</td>
+              <td>15/03/2025</td>
+              <td>04/04/2025</td>
+              <td><span class="pill pill-ok">Respondido</span></td>
+              <td><button class="btn btn-ghost btn-sm">Ver</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ══ PROJETOS VIEW ══ -->
+    <div class="view" id="view-projetos">
+      <div class="panel-card">
+        <div class="section-head" style="margin-bottom:18px">
+          <div><div class="section-eyebrow">Termos de Fomento</div><h3>Gerenciar Projetos</h3></div>
+          <button class="btn btn-gold btn-sm">+ Novo Projeto</button>
+        </div>
+        <div class="record-list">
+          <div class="record-item"><div><strong>I Corrida do Servidor Público do Estado do Amapá</strong><p>027/2025 – SEDEL · R$ 700.000,00 · 28/10/2025 a 28/01/2026</p></div><div class="record-meta"><span class="pill pill-ok">Publicado</span><div class="action-row" style="margin-top:4px"><button class="btn btn-outline btn-sm">Editar</button></div></div></div>
+          <div class="record-item"><div><strong>Projeto Desfile da Independência 2025</strong><p>001/2025 – PMAP · R$ 1.291.050,00 · 05/09/2025 a 13/10/2025</p></div><div class="record-meta"><span class="pill pill-ok">Publicado</span><div class="action-row" style="margin-top:4px"><button class="btn btn-outline btn-sm">Editar</button></div></div></div>
+          <div class="record-item"><div><strong>Férias Solidárias</strong><p>005/2025 – SEAS · R$ 1.490.000,00 · 14/09/2025 a 31/12/2025</p></div><div class="record-meta"><span class="pill pill-muted">Finalizado</span><div class="action-row" style="margin-top:4px"><button class="btn btn-outline btn-sm">Editar</button></div></div></div>
+          <div class="record-item"><div><strong>Show Musical 4 Cantos da Floresta</strong><p>014/2025 – SECULT · R$ 100.000,00 · 08/08/2025 a 15/12/2025</p></div><div class="record-meta"><span class="pill pill-ok">Publicado</span><div class="action-row" style="margin-top:4px"><button class="btn btn-outline btn-sm">Editar</button></div></div></div>
+          <div class="record-item"><div><strong>Espetáculo Teatral "O Corpo de Cristo"</strong><p>002/2025 – SECULT · R$ 69.000,00</p></div><div class="record-meta"><span class="pill pill-muted">Finalizado</span><div class="action-row" style="margin-top:4px"><button class="btn btn-outline btn-sm">Editar</button></div></div></div>
+          <div class="record-item"><div><strong>Calçoene Verão 2025</strong><p>005/2025-SECULT · R$ 267.000,00</p></div><div class="record-meta"><span class="pill pill-muted">Finalizado</span><div class="action-row" style="margin-top:4px"><button class="btn btn-outline btn-sm">Editar</button></div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ DOCUMENTOS VIEW ══ -->
+    <div class="view" id="view-documentos">
+      <div class="panel-card">
+        <div class="section-head" style="margin-bottom:18px">
+          <div><div class="section-eyebrow">Transparência</div><h3>Documentos Publicados</h3></div>
+          <button class="btn btn-gold btn-sm">+ Upload</button>
+        </div>
+        <div class="record-list">
+          <div class="record-item"><div><strong>📊 Demonstrativo Contábil 2024</strong><p>FINANCEIROS · Publicado em 15/03/2025</p></div><div class="record-meta"><span class="pill pill-gold">Ativo</span><button class="btn btn-outline btn-sm" style="margin-top:4px">⬇ PDF</button></div></div>
+          <div class="record-item"><div><strong>🔍 Relatório de Auditoria 2024</strong><p>FINANCEIROS · Publicado em 10/02/2025</p></div><div class="record-meta"><span class="pill pill-gold">Ativo</span><button class="btn btn-outline btn-sm" style="margin-top:4px">⬇ PDF</button></div></div>
+          <div class="record-item"><div><strong>📋 Relatório de Prestação de Contas 2024</strong><p>PRESTACAO · Publicado em 20/01/2025</p></div><div class="record-meta"><span class="pill pill-gold">Ativo</span><button class="btn btn-outline btn-sm" style="margin-top:4px">⬇ PDF</button></div></div>
+          <div class="record-item"><div><strong>⚖️ Código de Ética Institucional</strong><p>POLITICAS · Publicado em 05/01/2025</p></div><div class="record-meta"><span class="pill pill-gold">Ativo</span><button class="btn btn-outline btn-sm" style="margin-top:4px">⬇ PDF</button></div></div>
+          <div class="record-item"><div><strong>🔒 Política de Privacidade — LGPD</strong><p>POLITICAS · Publicado em 05/01/2025</p></div><div class="record-meta"><span class="pill pill-gold">Ativo</span><button class="btn btn-outline btn-sm" style="margin-top:4px">⬇ PDF</button></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OTHER VIEWS (placeholders) -->
+    <div class="view" id="view-financeiro"><div class="panel-card"><div class="section-eyebrow">Transparência</div><h3 style="font-size:16px;margin:8px 0 20px">Financeiro</h3><p class="empty">Módulo financeiro disponível via Django Admin — <a href="/admin/" style="color:var(--gold)">acessar</a></p></div></div>
+    <div class="view" id="view-licitacoes"><div class="panel-card"><div class="section-eyebrow">Transparência</div><h3 style="font-size:16px;margin:8px 0 20px">Licitações</h3><p class="empty">Módulo de licitações disponível via Django Admin — <a href="/admin/" style="color:var(--gold)">acessar</a></p></div></div>
+    <div class="view" id="view-servidores"><div class="panel-card"><div class="section-eyebrow">RH</div><h3 style="font-size:16px;margin:8px 0 20px">Servidores</h3><p class="empty">Módulo de servidores disponível via Django Admin — <a href="/admin/" style="color:var(--gold)">acessar</a></p></div></div>
+    <div class="view" id="view-configuracoes"><div class="panel-card"><div class="section-eyebrow">Sistema</div><h3 style="font-size:16px;margin:8px 0 20px">Configurações</h3><p class="empty">Configurações avançadas disponíveis via Django Admin — <a href="/admin/" style="color:var(--gold)">acessar</a></p></div></div>
+
+  </main>
+</div><!-- /shell -->
+
+<script>
+/* VIEW ROUTING */
+const titles = {dashboard:'Dashboard',esic:'Pedidos e-SIC',projetos:'Projetos',documentos:'Documentos',financeiro:'Financeiro',licitacoes:'Licitações',servidores:'Servidores',configuracoes:'Configurações'};
+function showView(id, navEl) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
+  const v = document.getElementById('view-' + id);
+  if (v) v.classList.add('active');
+  if (navEl) navEl.classList.add('active');
+  document.getElementById('page-title').textContent = titles[id] || id;
+  document.getElementById('sidebar').classList.remove('open');
+}
+
+/* CLOCK */
+function updateClock() {
+  const now = new Date();
+  document.getElementById('clock').textContent =
+    now.toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+}
+updateClock(); setInterval(updateClock, 1000);
+
+/* ANIMATED COUNTERS */
+function animateCounters() {
+  document.querySelectorAll('[data-count]').forEach(el => {
+    if (el.dataset.animated) return;
+    el.dataset.animated = '1';
+    const target = +el.dataset.count;
+    let cur = 0, step = target / 40;
+    const t = setInterval(() => {
+      cur = Math.min(cur + step, target);
+      el.textContent = Math.floor(cur);
+      if (cur >= target) clearInterval(t);
+    }, 28);
+  });
+}
+// Animate progress bars
+function animateProgress() {
+  document.querySelectorAll('.progress-fill[data-w]').forEach(el => {
+    if (el.dataset.animated) return;
+    el.dataset.animated = '1';
+    setTimeout(() => { el.style.width = el.dataset.w + '%'; }, 200);
+  });
+}
+setTimeout(() => { animateCounters(); animateProgress(); }, 300);
+
+/* RESPONSIVE MENU */
+if (window.innerWidth <= 860) {
+  document.getElementById('menu-btn').style.display = 'flex';
+}
+window.addEventListener('resize', () => {
+  document.getElementById('menu-btn').style.display = window.innerWidth <= 860 ? 'flex' : 'none';
+});
+
+/* STAR CANVAS */
+(function() {
+  const canvas = document.getElementById('adminStars');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let stars = [], W, H;
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+    stars = [];
+    const count = Math.floor((W * H) / 5000);
+    for (let i = 0; i < count; i++) {
+      stars.push({
+        x: Math.random() * W, y: Math.random() * H,
+        r: Math.random() * 1.2 + 0.2,
+        alpha: Math.random() * 0.5 + 0.1,
+        phase: Math.random() * Math.PI * 2,
+        speed: Math.random() * 0.01 + 0.003
+      });
+    }
+  }
+  let t = 0;
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    t += 0.016;
+    stars.forEach(s => {
+      const a = s.alpha * (0.5 + 0.5 * Math.sin(t * s.speed * 60 + s.phase));
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = '#ffffff';
+      ctx.globalAlpha = a;
+      ctx.fill();
+    });
+    ctx.globalAlpha = 1;
+    requestAnimationFrame(draw);
+  }
+  window.addEventListener('resize', resize);
+  resize(); draw();
+})();
+</script>
+</body>
+</html>
