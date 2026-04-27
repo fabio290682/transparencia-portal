@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portal da Transparência — Instituto Meio do Mundo</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ─── TOKENS ─────────────────────────────────────────────────── */
+:root {
+  --g900: #071a0a; --g800: #0d2e10; --g700: #0f3813;
+  --g600: #144d1e; --g500: #1a5220; --g400: #1e5c24;
+  --g300: #286e2e; --g200: #4a7c52; --g100: #c8e8cf; --g50: #edf7ef;
+  --gold: #f5c800; --gold2: #e8b800; --gold3: #ffd84d;
+  --text: #0f2214; --text2: #3d5e45; --text3: #7a9e82;
+  --bg: #f3f7f3; --surface: #ffffff;
+  --border: #dce9de; --border2: rgba(26,82,32,0.12);
+  --FH: "Montserrat", sans-serif;
+  --FB: "Inter", sans-serif;
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ─── RESET ─────────────────────────────────────────────────── */
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--FB); background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+a { color: inherit; text-decoration: none; }
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--g300); border-radius: 4px; }
+
+/* ─── TOPBAR ─────────────────────────────────────────────────── */
+.topbar {
+  background: var(--g900);
+  padding: 6px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  font-family: var(--FH);
+  color: rgba(255,255,255,0.38);
+  position: relative;
+  z-index: 200;
+}
+.topbar a { color: var(--gold); transition: opacity .15s; }
+.topbar a:hover { opacity: .75; }
+.topbar-admin {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 3px 12px; border: 1px solid rgba(245,200,0,0.3);
+  border-radius: 999px; font-weight: 700; color: rgba(255,255,255,0.8);
+  background: rgba(245,200,0,0.08); transition: all .2s;
+  cursor: pointer; margin-left: 14px;
+}
+.topbar-admin:hover { background: rgba(245,200,0,0.18); color: var(--gold); }
+.topbar-dot { width: 5px; height: 5px; background: var(--gold); border-radius: 50%; animation: pulse-dot 2s ease-in-out infinite; }
+@keyframes pulse-dot { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:.5; transform:scale(.7); } }
+
+/* ─── NAV ────────────────────────────────────────────────────── */
+.nav-wrap {
+  position: sticky; top: 0; z-index: 150;
+  background: rgba(7,26,10,0.85);
+  backdrop-filter: blur(20px) saturate(1.5);
+  -webkit-backdrop-filter: blur(20px) saturate(1.5);
+  border-bottom: 1px solid rgba(245,200,0,0.12);
+  transition: background .3s;
+}
+.nav-wrap.scrolled {
+  background: rgba(7,26,10,0.97);
+  box-shadow: 0 4px 30px rgba(0,0,0,0.35);
+}
+.nav-inner {
+  max-width: 1140px; margin: 0 auto;
+  display: flex; align-items: center; gap: 2px; padding: 0 24px;
+}
+.nav-logo {
+  margin-right: auto;
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 0;
+}
+.nav-logo img { height: 32px; width: auto; filter: brightness(1.1); }
+.nav-item {
+  padding: 15px 14px; color: rgba(255,255,255,0.62);
+  font-family: var(--FH); font-size: 12.5px; font-weight: 600;
+  border-bottom: 2px solid transparent; cursor: pointer;
+  transition: all .2s var(--ease); white-space: nowrap;
+  position: relative;
+}
+.nav-item:hover, .nav-item.active { color: var(--gold); border-bottom-color: var(--gold); }
+.nav-dd { position: relative; }
+.nav-dd .dd-panel {
+  display: none; position: absolute; top: calc(100% + 1px);
+  left: 50%; transform: translateX(-50%);
+  background: rgba(9,28,12,0.97);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(245,200,0,0.15);
+  border-radius: 16px; padding: 10px 8px;
+  min-width: 240px;
+  box-shadow: 0 24px 48px rgba(0,0,0,0.5);
+  animation: dd-in .18s var(--ease) forwards;
+}
+@keyframes dd-in { from { opacity:0; transform:translateX(-50%) translateY(-8px); } to { opacity:1; transform:translateX(-50%) translateY(0); } }
+.nav-dd:hover .dd-panel { display: block; }
+.dd-head { padding: 4px 12px; font-size: 9px; font-family: var(--FH); font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(245,200,0,0.5); margin-top: 4px; }
+.dd-item { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 10px; color: rgba(255,255,255,0.62); font-size: 12.5px; font-family: var(--FH); font-weight: 500; cursor: pointer; transition: all .15s; }
+.dd-item:hover { background: rgba(245,200,0,0.08); color: var(--gold); padding-left: 16px; }
+.dd-sep { height: 1px; background: rgba(255,255,255,0.06); margin: 6px 4px; }
+.dd-icon { font-size: 14px; opacity: .7; }
+
+/* ─── HERO ───────────────────────────────────────────────────── */
+.hero {
+  position: relative; overflow: hidden;
+  min-height: 520px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 80px 40px 100px;
+  background: var(--g900);
+}
+/* Animated orbs */
+.hero-orb {
+  position: absolute; border-radius: 50%;
+  pointer-events: none; will-change: transform;
+}
+.hero-orb-1 {
+  width: 600px; height: 600px; top: -200px; right: -150px;
+  background: radial-gradient(circle, rgba(245,200,0,0.07) 0%, transparent 70%);
+  animation: orb-drift1 12s ease-in-out infinite;
+}
+.hero-orb-2 {
+  width: 400px; height: 400px; bottom: -100px; left: -100px;
+  background: radial-gradient(circle, rgba(26,82,32,0.6) 0%, transparent 70%);
+  animation: orb-drift2 15s ease-in-out infinite;
+}
+.hero-orb-3 {
+  width: 300px; height: 300px; top: 40%; left: 30%;
+  background: radial-gradient(circle, rgba(245,200,0,0.04) 0%, transparent 70%);
+  animation: orb-drift3 18s ease-in-out infinite;
+}
+@keyframes orb-drift1 { 0%,100% { transform:translate(0,0) scale(1); } 50% { transform:translate(-30px,20px) scale(1.08); } }
+@keyframes orb-drift2 { 0%,100% { transform:translate(0,0) scale(1); } 50% { transform:translate(20px,-30px) scale(1.1); } }
+@keyframes orb-drift3 { 0%,100% { transform:translate(0,0); } 33% { transform:translate(15px,-10px); } 66% { transform:translate(-10px,20px); } }
+/* Grid texture */
+.hero::before {
+  content:''; position:absolute; inset:0;
+  background-image: linear-gradient(rgba(245,200,0,0.04) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(245,200,0,0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 0%, transparent 100%);
+}
+.hero-content { position: relative; z-index: 1; text-align: center; max-width: 720px; }
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(245,200,0,0.1); border: 1px solid rgba(245,200,0,0.25);
+  border-radius: 999px; padding: 6px 16px; margin-bottom: 28px;
+  font-family: var(--FH); font-size: 11px; font-weight: 700;
+  color: rgba(245,200,0,0.9); letter-spacing: 0.08em; text-transform: uppercase;
+  animation: fade-up .6s var(--ease) both;
+}
+.hero-badge .live-dot { width: 6px; height: 6px; background: var(--gold); border-radius: 50%; animation: pulse-dot 1.8s infinite; }
+.hero h1 {
+  font-family: var(--FH); font-size: clamp(32px, 5vw, 58px); font-weight: 900;
+  color: #fff; letter-spacing: -1.5px; line-height: 1.04;
+  margin-bottom: 20px;
+  animation: fade-up .7s .1s var(--ease) both;
+}
+.hero h1 .accent { color: var(--gold); }
+.hero p {
+  font-size: 15px; color: rgba(255,255,255,0.52); line-height: 1.75;
+  max-width: 480px; margin: 0 auto 36px;
+  animation: fade-up .7s .2s var(--ease) both;
+}
+.hero-badges {
+  display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;
+  animation: fade-up .7s .3s var(--ease) both;
+}
+.hbadge {
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 999px; padding: 6px 14px; font-size: 11px;
+  font-family: var(--FH); font-weight: 600; color: rgba(255,255,255,0.55);
+  transition: all .2s;
+}
+.hbadge:hover { background: rgba(245,200,0,0.1); border-color: rgba(245,200,0,0.3); color: rgba(255,255,255,0.85); }
+/* Wave separator */
+.hero-wave {
+  position: absolute; bottom: -1px; left: 0; right: 0;
+  height: 60px; overflow: hidden;
+}
+.hero-wave svg { display: block; width: 100%; height: 100%; }
+
+/* ─── MAIN LAYOUT ────────────────────────────────────────────── */
+.wrap { max-width: 1140px; margin: 0 auto; padding: 0 24px; }
+section { padding: 64px 0; }
+
+/* ─── SECTION HEADERS ────────────────────────────────────────── */
+.sec-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--FH); font-size: 10.5px; font-weight: 800;
+  text-transform: uppercase; letter-spacing: .2em; color: var(--g400);
+  margin-bottom: 10px;
+}
+.sec-eyebrow::before { content:''; width: 24px; height: 2.5px; background: var(--gold); border-radius: 2px; flex-shrink: 0; }
+.sec-title { font-family: var(--FH); font-size: clamp(22px, 3vw, 30px); font-weight: 900; color: var(--g800); letter-spacing: -.5px; }
+
+/* ─── ICON GRID ──────────────────────────────────────────────── */
+.icon-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.icon-card {
+  background: var(--g700);
+  border-radius: 20px; padding: 32px 26px 28px;
+  text-align: center; cursor: pointer;
+  border: 1px solid rgba(245,200,0,0.08);
+  position: relative; overflow: hidden;
+  transition: transform .3s var(--ease-spring), border-color .3s, box-shadow .3s;
+  will-change: transform;
+}
+.icon-card::after {
+  content:''; position:absolute; inset:0; border-radius: 20px;
+  background: radial-gradient(circle at 50% 120%, rgba(245,200,0,0.12) 0%, transparent 60%);
+  opacity: 0; transition: opacity .3s;
+}
+.icon-card:hover { transform: translateY(-6px); border-color: rgba(245,200,0,0.3); box-shadow: 0 20px 50px rgba(0,0,0,0.3), 0 0 0 1px rgba(245,200,0,0.15); }
+.icon-card:hover::after { opacity: 1; }
+.card-icon-wrap {
+  width: 80px; height: 80px; margin: 0 auto 20px;
+  background: rgba(245,200,0,0.08); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  transition: transform .3s var(--ease-spring), background .3s;
+}
+.icon-card:hover .card-icon-wrap { transform: scale(1.12) rotate(-3deg); background: rgba(245,200,0,0.15); }
+.card-icon-wrap img { width: 42px; height: 42px; object-fit: contain; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3)); }
+.icon-card h3 { font-family: var(--FH); font-size: 14.5px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+.icon-card p { font-size: 12.5px; color: rgba(255,255,255,0.45); line-height: 1.6; }
+.card-link {
+  display: inline-flex; align-items: center; gap: 4px;
+  margin-top: 16px; font-size: 12px; font-family: var(--FH);
+  font-weight: 700; color: var(--gold); opacity: .7;
+  transition: opacity .2s, gap .2s;
+}
+.icon-card:hover .card-link { opacity: 1; gap: 8px; }
+
+/* ─── PROJECTS ───────────────────────────────────────────────── */
+.proj-header { display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 24px; }
+.proj-filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.filter-btn {
+  padding: 8px 18px; border-radius: 999px;
+  font-family: var(--FH); font-size: 12px; font-weight: 600;
+  cursor: pointer; border: 1.5px solid var(--border);
+  background: var(--surface); color: var(--text2);
+  transition: all .2s; outline: none;
+}
+.filter-btn:hover, .filter-btn.active { background: var(--g600); color: #fff; border-color: var(--g600); }
+.proj-list { display: flex; flex-direction: column; gap: 10px; }
+.proj-card {
+  background: var(--surface); border-radius: 16px;
+  border: 1.5px solid var(--border); overflow: hidden;
+  transition: transform .25s var(--ease), box-shadow .25s, border-color .25s;
+  cursor: pointer;
+}
+.proj-card:hover { box-shadow: 0 8px 32px rgba(20,77,30,0.12); border-color: rgba(26,82,32,0.25); transform: translateY(-2px); }
+.proj-card-head { padding: 18px 22px; display: flex; align-items: center; gap: 16px; justify-content: space-between; flex-wrap: wrap; }
+.proj-card-left { display: flex; align-items: center; gap: 14px; flex: 1; min-width: 0; }
+.proj-thumb {
+  width: 48px; height: 48px; border-radius: 12px;
+  background: linear-gradient(135deg, var(--g600), var(--g400));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(14,56,19,0.3);
+}
+.proj-info h3 { font-family: var(--FH); font-size: 14px; font-weight: 700; color: var(--g800); margin-bottom: 3px; }
+.proj-info .sub { font-size: 11.5px; color: var(--text2); font-family: var(--FH); }
+.proj-meta { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.proj-value { font-family: var(--FH); font-size: 15px; font-weight: 800; color: var(--g500); }
+.proj-tag { display: inline-block; padding: 4px 12px; border-radius: 999px; font-size: 11px; font-family: var(--FH); font-weight: 700; letter-spacing: .3px; }
+.tag-a { background: #e4f8ed; color: #0a5e2c; }
+.tag-f { background: #e3eeff; color: #1255a8; }
+.chevron { font-size: 11px; color: var(--text3); transition: transform .3s var(--ease); }
+.proj-card.open .chevron { transform: rotate(180deg); }
+.proj-card-body { display: none; padding: 0 22px 20px; border-top: 1px solid var(--border); padding-top: 18px; }
+.proj-card.open .proj-card-body { display: block; animation: slide-down .25s var(--ease); }
+@keyframes slide-down { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
+.proj-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.proj-table tr:nth-child(even) { background: #f7faf7; }
+.proj-table td { padding: 9px 14px; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.55; }
+.proj-table td:first-child { font-family: var(--FH); font-weight: 600; color: var(--g500); white-space: nowrap; width: 220px; min-width: 180px; }
+.proj-dl-btn {
+  display: inline-flex; align-items: center; gap: 8px; margin-top: 14px;
+  padding: 10px 18px; background: var(--g700); color: #fff;
+  border-radius: 10px; font-family: var(--FH); font-size: 12.5px;
+  font-weight: 700; text-decoration: none; transition: all .2s;
+}
+.proj-dl-btn:hover { background: var(--g500); transform: translateY(-1px); }
+
+/* ─── IMPACT SECTION ─────────────────────────────────────────── */
+.impact-section {
+  position: relative; overflow: hidden; border-radius: 24px;
+  background: linear-gradient(135deg, var(--g900) 0%, var(--g800) 60%, #0e3c14 100%);
+  padding: 56px 52px; border: 1px solid rgba(245,200,0,0.1);
+}
+.impact-section::before {
+  content:''; position:absolute; top:-120px; right:-80px;
+  width:420px; height:420px; border-radius:50%;
+  border: 1px solid rgba(245,200,0,0.07);
+  pointer-events: none;
+}
+.impact-section::after {
+  content:''; position:absolute; bottom:-80px; left:40%;
+  width:280px; height:280px; border-radius:50%;
+  background: radial-gradient(circle, rgba(245,200,0,0.05) 0%, transparent 70%);
+  pointer-events: none;
+}
+.impact-inner { position:relative; z-index:1; }
+.impact-header { margin-bottom: 40px; }
+.impact-header .sec-eyebrow { color: rgba(245,200,0,0.6); }
+.impact-header .sec-eyebrow::before { background: var(--gold); }
+.impact-header .sec-title { color: #fff; }
+.impact-header .sub { font-size: 13.5px; color: rgba(255,255,255,0.4); margin-top: 4px; }
+.impact-stats { display: grid; grid-template-columns: repeat(4,1fr); border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; overflow: hidden; }
+.istat { padding: 24px 28px; border-right: 1px solid rgba(255,255,255,0.07); transition: background .2s; }
+.istat:last-child { border-right: none; }
+.istat:hover { background: rgba(245,200,0,0.04); }
+.istat .num { font-family: var(--FH); font-size: 38px; font-weight: 900; color: #fff; letter-spacing: -2px; line-height: 1; margin-bottom: 6px; }
+.istat .num em { color: var(--gold); font-style: normal; font-size: 20px; }
+.istat .lbl { font-size: 12px; color: rgba(255,255,255,0.4); line-height: 1.4; }
+
+/* ─── CONTACT STRIP ──────────────────────────────────────────── */
+.contact-strip {
+  border-radius: 20px; padding: 44px 48px;
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 28px; background: var(--surface);
+  border: 1.5px solid var(--border);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.05);
+}
+.contact-strip h2 { font-family: var(--FH); font-size: 22px; font-weight: 800; color: var(--g800); margin-bottom: 5px; }
+.contact-strip .sub { font-size: 13px; color: var(--text2); margin-bottom: 14px; }
+.cdetail { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--text2); margin-bottom: 6px; }
+.cdetail strong { color: var(--text); }
+.cdetail-icon { width: 28px; height: 28px; border-radius: 7px; background: var(--g50); border: 1px solid var(--g100); display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+.cbtns { display: flex; gap: 10px; flex-shrink: 0; flex-wrap: wrap; }
+
+/* ─── BUTTONS ────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 11px 22px; border-radius: 10px;
+  font-family: var(--FH); font-size: 13px; font-weight: 700;
+  cursor: pointer; border: none; transition: all .2s var(--ease-spring);
+  text-decoration: none; white-space: nowrap;
+}
+.btn:active { transform: scale(0.97) !important; }
+.btn-gold { background: var(--gold); color: var(--g900); box-shadow: 0 4px 18px rgba(245,200,0,0.35); }
+.btn-gold:hover { background: var(--gold3); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(245,200,0,0.4); }
+.btn-dark { background: var(--g700); color: #fff; }
+.btn-dark:hover { background: var(--g500); transform: translateY(-2px); }
+.btn-outline { background: none; border: 1.5px solid var(--border2); color: var(--g600); }
+.btn-outline:hover { background: var(--g50); border-color: var(--g300); }
+.btn-sm { padding: 8px 16px; font-size: 12px; border-radius: 8px; }
+
+/* ─── FORM ───────────────────────────────────────────────────── */
+.lai-layout { display: grid; grid-template-columns: 1fr 1.15fr; gap: 36px; align-items: start; }
+.lai-features { display: flex; flex-direction: column; gap: 14px; margin-top: 24px; }
+.feat { display: flex; gap: 14px; align-items: flex-start; }
+.feat-ico {
+  width: 38px; height: 38px; border-radius: 10px;
+  background: var(--g50); border: 1px solid var(--g100);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; flex-shrink: 0;
+}
+.feat-txt strong { font-size: 13px; font-weight: 600; color: var(--g700); display: block; margin-bottom: 1px; }
+.feat-txt span { font-size: 12px; color: var(--text2); line-height: 1.5; }
+.form-card {
+  background: var(--surface); border-radius: 20px;
+  padding: 36px 32px; border: 1.5px solid var(--border);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+}
+.form-title { font-family: var(--FH); font-size: 18px; font-weight: 800; color: var(--g800); margin-bottom: 4px; }
+.form-sub { font-size: 12.5px; color: var(--text2); margin-bottom: 20px; }
+.form-note {
+  background: var(--g50); border-left: 3px solid var(--g400);
+  border-radius: 0 8px 8px 0; padding: 10px 14px;
+  font-size: 12.5px; color: var(--g600); margin-bottom: 18px; line-height: 1.55;
+}
+.form-group { margin-bottom: 14px; }
+.form-label { display: block; font-size: 10.5px; font-family: var(--FH); font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: var(--g400); margin-bottom: 6px; }
+.form-ctrl {
+  width: 100%; border: 1.5px solid var(--border);
+  border-radius: 10px; padding: 10px 14px;
+  font-family: var(--FB); font-size: 13.5px; color: var(--text);
+  background: var(--bg); outline: none; transition: all .2s;
+  resize: vertical; -webkit-appearance: none;
+}
+.form-ctrl:focus { border-color: var(--g400); background: #fff; box-shadow: 0 0 0 3px rgba(26,82,32,0.1); }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-status { display: none; margin-top: 10px; padding: 10px 12px; border-radius: 10px; font-size: 13px; font-family: var(--FH); font-weight: 600; }
+.form-status.error { display:block; background:#fff1f0; color:#8a1f11; border:1px solid #f0b5ad; }
+.form-status.success { display:block; background:#e9f8ef; color:#0f5e2d; border:1px solid #a6dfb8; }
+
+/* ─── TRANSPARENCY SECTIONS ──────────────────────────────────── */
+.info-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 14px; }
+.info-card {
+  background: var(--surface); border: 1.5px solid var(--border);
+  border-radius: 14px; padding: 20px; display: flex;
+  align-items: flex-start; gap: 14px;
+  transition: transform .2s, box-shadow .2s, border-color .2s;
+}
+.info-card:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(20,77,30,0.1); border-color: rgba(26,82,32,0.2); }
+.info-card-icon { font-size: 22px; line-height: 1; flex-shrink: 0; margin-top: 2px; }
+.info-card-body h4 { font-family: var(--FH); font-size: 13.5px; font-weight: 700; color: var(--g700); margin-bottom: 4px; }
+.info-card-body p { font-size: 12px; color: var(--text2); line-height: 1.55; }
+.info-card-body a { color: var(--g400); font-size: 12px; font-weight: 600; display: inline-block; margin-top: 8px; text-decoration: underline; }
+
+/* ─── FOOTER ─────────────────────────────────────────────────── */
+footer { background: var(--g900); padding: 52px 40px 28px; }
+.ft-inner { max-width: 1140px; margin: 0 auto; }
+.ft-top { display: grid; grid-template-columns: 1.8fr 1fr 1fr 1fr; gap: 40px; padding-bottom: 36px; border-bottom: 1px solid rgba(255,255,255,0.07); margin-bottom: 24px; }
+.ft-logo img { height: 52px; width: auto; margin-bottom: 14px; filter: brightness(1.05); }
+.ft-desc { font-size: 12.5px; color: rgba(255,255,255,0.35); line-height: 1.65; max-width: 240px; }
+.ft-col h4 { font-family: var(--FH); font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.6px; color: var(--gold); margin-bottom: 14px; opacity: .8; }
+.ft-col a { display: block; font-size: 12.5px; color: rgba(255,255,255,0.38); text-decoration: none; margin-bottom: 8px; cursor: pointer; transition: color .15s; }
+.ft-col a:hover { color: rgba(255,255,255,0.75); }
+.ft-bottom { display: flex; justify-content: space-between; align-items: center; font-size: 11.5px; color: rgba(255,255,255,0.25); font-family: var(--FH); flex-wrap: wrap; gap: 8px; }
+.ft-bottom a { color: var(--gold); opacity: .6; }
+
+/* ─── PAGE SYSTEM ────────────────────────────────────────────── */
+.page { display: none; }
+.page.active { display: block; animation: page-in .35s var(--ease) both; }
+@keyframes page-in { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
+
+/* ─── SCROLL REVEAL ──────────────────────────────────────────── */
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity .55s var(--ease), transform .55s var(--ease); }
+.reveal.revealed { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: .1s; }
+.reveal-delay-2 { transition-delay: .2s; }
+.reveal-delay-3 { transition-delay: .3s; }
+.reveal-delay-4 { transition-delay: .4s; }
+.reveal-delay-5 { transition-delay: .5s; }
+
+/* ─── RESPONSIVE ─────────────────────────────────────────────── */
+@media (max-width:980px) {
+  .icon-grid { grid-template-columns: repeat(2,1fr); }
+  .impact-stats { grid-template-columns: repeat(2,1fr); }
+  .ft-top { grid-template-columns: 1fr 1fr; }
+  .lai-layout { grid-template-columns: 1fr; }
+}
+@media (max-width:640px) {
+  .icon-grid { grid-template-columns: 1fr; }
+  .contact-strip { flex-direction:column; padding:28px 24px; }
+  .ft-top { grid-template-columns:1fr; gap:20px; }
+  .topbar { flex-direction:column; gap:4px; text-align:center; font-size:10px; }
+  .nav-inner { overflow-x:auto; scrollbar-width:none; }
+  .form-row { grid-template-columns:1fr; }
+  .info-grid { grid-template-columns:1fr; }
+  .impact-section { padding:36px 24px; }
+  .impact-stats { grid-template-columns: repeat(2,1fr); }
+  .hero { padding: 60px 24px 80px; min-height:auto; }
+}
+
+/* ─── ANIMATIONS ─────────────────────────────────────────────── */
+@keyframes fade-up { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+@keyframes counter-in { from { opacity:0; transform:scale(.8); } to { opacity:1; transform:scale(1); } }
+</style>
+</head>
+<body>
+
+<!-- ══ TOPBAR ══ -->
+<div class="topbar">
+  <span>OSCIP · Macapá – Amapá · CNPJ 08.962.333/0001-03</span>
+  <span>
+    <a href="tel:5596981162362">+55 96 98116-2362</a>
+    &nbsp;·&nbsp;
+    <a href="https://wa.me/5596981134444">WhatsApp</a>
+    &nbsp;·&nbsp;
+    <a href="mailto:contato@institutomeiodomundo.org">contato@institutomeiodomundo.org</a>
+    <span class="topbar-admin" onclick="alert('Redirecionando para o painel administrativo...')">
+      <span class="topbar-dot"></span> Acesso Admin
+    </span>
+  </span>
+</div>
+
+<!-- ══ NAV ══ -->
+<div class="nav-wrap" id="navbar">
+  <div class="nav-inner">
+    <div class="nav-logo">
+      <img src="assets/logo-portal.svg" alt="Instituto Meio do Mundo" onerror="this.style.display='none'">
+    </div>
+    <span class="nav-item active" onclick="showPage('home')">Início</span>
+    <span class="nav-item" onclick="showPage('acesso')">e-SIC / LAI</span>
+    <span class="nav-item nav-dd">Transparência ▾
+      <div class="dd-panel">
+        <div class="dd-head">Relatórios Financeiros</div>
+        <div class="dd-item" onclick="showPage('financeiros')"><span class="dd-icon">📊</span>Demonstrativos Contábeis</div>
+        <div class="dd-item" onclick="showPage('financeiros')"><span class="dd-icon">🔍</span>Auditorias</div>
+        <div class="dd-item" onclick="showPage('financeiros')"><span class="dd-icon">📅</span>Orçamento Anual</div>
+        <div class="dd-sep"></div>
+        <div class="dd-head">Prestação de Contas</div>
+        <div class="dd-item" onclick="showPage('prestacao')"><span class="dd-icon">📋</span>Relatório Contábil</div>
+        <div class="dd-item" onclick="showPage('prestacao')"><span class="dd-icon">🤝</span>Termos de Fomento</div>
+        <div class="dd-item" onclick="showPage('prestacao')"><span class="dd-icon">💝</span>Doações Recebidas</div>
+        <div class="dd-sep"></div>
+        <div class="dd-head">Outros</div>
+        <div class="dd-item" onclick="showPage('contratacoes')"><span class="dd-icon">📑</span>Contratações & Editais</div>
+        <div class="dd-item" onclick="showPage('politicas')"><span class="dd-icon">⚖️</span>Código de Ética</div>
+        <div class="dd-item" onclick="showPage('politicas')"><span class="dd-icon">🔒</span>LGPD</div>
+      </div>
+    </span>
+    <span class="nav-item nav-dd">Projetos ▾
+      <div class="dd-panel">
+        <div class="dd-item" onclick="showPage('projetos')"><span class="dd-icon">🌱</span>Em Andamento</div>
+        <div class="dd-item" onclick="showPage('projetos')"><span class="dd-icon">✅</span>Finalizados</div>
+        <div class="dd-item" onclick="showPage('projetos')"><span class="dd-icon">🤝</span>Parceiros</div>
+        <div class="dd-item" onclick="showPage('projetos')"><span class="dd-icon">📈</span>Impactos e Resultados</div>
+      </div>
+    </span>
+    <span class="nav-item" onclick="showPage('acesso')">Fale Conosco</span>
+  </div>
+</div>
+
+<!-- ══════════ HOME ══════════ -->
+<div id="page-home" class="page active">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-orb hero-orb-1"></div>
+    <div class="hero-orb hero-orb-2"></div>
+    <div class="hero-orb hero-orb-3"></div>
+    <div class="hero-content">
+      <div class="hero-badge"><span class="live-dot"></span> Portal Ativo · 2025</div>
+      <h1>Portal da <span class="accent">Transparência</span></h1>
+      <p>Comprometidos com a transparência pública, o Instituto Meio do Mundo disponibiliza acesso livre a documentos, projetos e informações institucionais.</p>
+      <div class="hero-badges">
+        <a class="hbadge" href="https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2011/lei/l12527.htm" target="_blank">Lei 12.527/2011 — LAI</a>
+        <a class="hbadge" href="https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/L13709.htm" target="_blank">LGPD · Lei 13.709/2018</a>
+        <span class="hbadge">OSCIP · Amapá</span>
+      </div>
+    </div>
+    <div class="hero-wave">
+      <svg viewBox="0 0 1440 60" preserveAspectRatio="none" fill="#f3f7f3">
+        <path d="M0,40 C360,80 1080,0 1440,40 L1440,60 L0,60 Z"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- ACESSO RÁPIDO -->
+  <section>
+    <div class="wrap">
+      <div style="text-align:center;margin-bottom:40px" class="reveal">
+        <div class="sec-eyebrow" style="justify-content:center">Acesso Rápido</div>
+        <div class="sec-title">O que você procura?</div>
+      </div>
+      <div class="icon-grid">
+        <div class="icon-card reveal reveal-delay-1" onclick="showPage('acesso')">
+          <div class="card-icon-wrap"><img src="assets/icons/icon-location.svg" alt="Localização"></div>
+          <h3>Localização & Sede</h3>
+          <p>Rua Desidério Antonio Coelho, 511-A, Trem, Macapá – AP, CEP 68901-080.</p>
+          <div class="card-link">Ver localização →</div>
+        </div>
+        <div class="icon-card reveal reveal-delay-2" onclick="showPage('projetos')">
+          <div class="card-icon-wrap"><img src="assets/icons/icon-group.svg" alt="Beneficiários"></div>
+          <h3>Beneficiários & Comunidades</h3>
+          <p>Conheça as comunidades e pessoas impactadas pelos projetos do Instituto.</p>
+          <div class="card-link">Ver projetos →</div>
+        </div>
+        <div class="icon-card reveal reveal-delay-3" onclick="showPage('acesso')">
+          <div class="card-icon-wrap"><img src="assets/icons/icon-chat.svg" alt="Fale Conosco"></div>
+          <h3>Fale Conosco</h3>
+          <p>Envie pedidos de informação, sugestões e solicitações via e-SIC / LAI.</p>
+          <div class="card-link">Fazer solicitação →</div>
+        </div>
+        <div class="icon-card reveal reveal-delay-1" onclick="showPage('projetos')">
+          <div class="card-icon-wrap"><img src="assets/icons/icon-impact.svg" alt="Resultados"></div>
+          <h3>Impactos e Resultados</h3>
+          <p>Indicadores de desempenho e relatórios de avaliação de impacto social.</p>
+          <div class="card-link">Ver indicadores →</div>
+        </div>
+        <div class="icon-card reveal reveal-delay-2" onclick="showPage('prestacao')">
+          <div class="card-icon-wrap"><img src="assets/icons/icon-partnership.svg" alt="Parcerias"></div>
+          <h3>Parcerias & Termos de Fomento</h3>
+          <p>Termos de fomento, patrocínio e contratos com órgãos públicos e privados.</p>
+          <div class="card-link">Ver termos →</div>
+        </div>
+        <div class="icon-card reveal reveal-delay-3" onclick="showPage('acesso')">
+          <div class="card-icon-wrap"><img src="assets/icons/icon-tower.svg" alt="Acesso à Informação"></div>
+          <h3>Acesso à Informação</h3>
+          <p>Solicite informações e acompanhe seu protocolo — Lei 12.527/2011 (LAI).</p>
+          <div class="card-link">Solicitar informação →</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJETOS RECENTES -->
+  <section style="padding-top:0">
+    <div class="wrap">
+      <div class="proj-header reveal">
+        <div>
+          <div class="sec-eyebrow">Últimos registros</div>
+          <div class="sec-title">Projetos Recentes</div>
+        </div>
+        <button class="btn btn-outline btn-sm" onclick="showPage('projetos')">Ver todos os projetos →</button>
+      </div>
+      <div class="proj-list">
+        <div class="proj-card reveal" onclick="toggleProj(this)">
+          <div class="proj-card-head">
+            <div class="proj-card-left">
+              <div class="proj-thumb">🏃</div>
+              <div class="proj-info">
+                <h3>I CORRIDA DO SERVIDOR PÚBLICO DO ESTADO DO AMAPÁ</h3>
+                <div class="sub">Instrumento nº 027/2025 – SEDEL &nbsp;·&nbsp; Início: 28/10/2025</div>
+              </div>
+            </div>
+            <div class="proj-meta">
+              <span class="proj-value">R$ 700.000,00</span>
+              <span class="proj-tag tag-a">Em Andamento</span>
+              <span class="chevron">▼</span>
+            </div>
+          </div>
+          <div class="proj-card-body">
+            <table class="proj-table">
+              <tr><td>Número do Instrumento</td><td>027/2025 – SEDEL</td></tr>
+              <tr><td>Recurso Financeiro</td><td>R$ 700.000,00</td></tr>
+              <tr><td>Fonte de Recurso</td><td>Estadual (500)</td></tr>
+              <tr><td>Autoria da Emenda</td><td>Emenda Parlamentar Impositiva I0371 – Dep. Rodolfo Vale (R$ 200.000,00) + Tesouro Estadual (R$ 500.000,00)</td></tr>
+              <tr><td>Objeto</td><td>Execução do Projeto "CORRIDA DO SERVIDOR PÚBLICO DO ESTADO DO AMAPÁ", incluindo pré-produção, produção e pós-produção do evento esportivo para 4.000 participantes.</td></tr>
+              <tr><td>Período</td><td>28/10/2025 a 28/01/2026</td></tr>
+            </table>
+            <a href="https://institutomeiodomundo.org/transparencia/wp-content/uploads/2025/12/FOMENTO-No-027-2025-IMM-CORRIDA-DO-SERVIDOR-assinado.pdf" target="_blank" class="proj-dl-btn">⬇ Baixar Documento PDF</a>
+          </div>
+        </div>
+
+        <div class="proj-card reveal reveal-delay-1" onclick="toggleProj(this)">
+          <div class="proj-card-head">
+            <div class="proj-card-left">
+              <div class="proj-thumb">🎖️</div>
+              <div class="proj-info">
+                <h3>PROJETO DESFILE DA INDEPENDÊNCIA 2025</h3>
+                <div class="sub">Instrumento nº 001/2025 – PMAP &nbsp;·&nbsp; Início: 05/09/2025</div>
+              </div>
+            </div>
+            <div class="proj-meta">
+              <span class="proj-value">R$ 1.291.050,00</span>
+              <span class="proj-tag tag-a">Em Andamento</span>
+              <span class="chevron">▼</span>
+            </div>
+          </div>
+          <div class="proj-card-body">
+            <table class="proj-table">
+              <tr><td>Número do Instrumento</td><td>001/2025 – PMAP</td></tr>
+              <tr><td>Recurso Financeiro</td><td>R$ 1.291.050,00</td></tr>
+              <tr><td>Fonte de Recurso</td><td>Estadual (500)</td></tr>
+              <tr><td>Objeto</td><td>Execução do projeto "PROJETO DESFILE DA INDEPENDÊNCIA 2025", por meio de ações formativas, conforme plano de trabalho.</td></tr>
+              <tr><td>Período</td><td>05/09/2025 a 13/10/2025</td></tr>
+            </table>
+            <a href="https://institutomeiodomundo.org/transparencia/wp-content/uploads/2025/09/TERMO-DE-FOMENTO_PMAP-X-IMM-2025-1.pdf" target="_blank" class="proj-dl-btn">⬇ Baixar Documento PDF</a>
+          </div>
+        </div>
+
+        <div class="proj-card reveal reveal-delay-2" onclick="toggleProj(this)">
+          <div class="proj-card-head">
+            <div class="proj-card-left">
+              <div class="proj-thumb">🎵</div>
+              <div class="proj-info">
+                <h3>SHOW MUSICAL 4 CANTOS DA FLORESTA</h3>
+                <div class="sub">Instrumento nº 014/2025 – SECULT &nbsp;·&nbsp; Início: 08/08/2025</div>
+              </div>
+            </div>
+            <div class="proj-meta">
+              <span class="proj-value">R$ 100.000,00</span>
+              <span class="proj-tag tag-a">Em Andamento</span>
+              <span class="chevron">▼</span>
+            </div>
+          </div>
+          <div class="proj-card-body">
+            <table class="proj-table">
+              <tr><td>Número do Instrumento</td><td>014/2025 – SECULT</td></tr>
+              <tr><td>Recurso Financeiro</td><td>R$ 100.000,00</td></tr>
+              <tr><td>Autoria da Emenda</td><td>Emenda Parlamentar nº I0100 – Dep. Jack JK</td></tr>
+              <tr><td>Período</td><td>08/08/2025 a 15/12/2025</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- IMPACTO -->
+  <section>
+    <div class="wrap">
+      <div class="impact-section reveal">
+        <div class="impact-inner">
+          <div class="impact-header">
+            <div class="sec-eyebrow">Transparência pública</div>
+            <div class="sec-title">Instituto Meio do Mundo</div>
+            <div class="sub">OSCIP comprometida com o desenvolvimento social no Amapá</div>
+          </div>
+          <div class="impact-stats">
+            <div class="istat">
+              <div class="num" data-count="10">0<em>+</em></div>
+              <div class="lbl">Projetos registrados no portal</div>
+            </div>
+            <div class="istat">
+              <div class="num">R$5<em>M+</em></div>
+              <div class="lbl">Em recursos gerenciados (2024–2025)</div>
+            </div>
+            <div class="istat">
+              <div class="num" data-count="5">0<em> órgãos</em></div>
+              <div class="lbl">Parceiros governamentais ativos</div>
+            </div>
+            <div class="istat">
+              <div class="num" data-count="100">0<em>%</em></div>
+              <div class="lbl">Documentos publicados com acesso livre</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTATO -->
+  <section style="padding-top:0;padding-bottom:72px">
+    <div class="wrap">
+      <div class="contact-strip reveal">
+        <div>
+          <h2>Informações de Contato</h2>
+          <div class="sub">Este espaço representa mais uma ação de promoção da transparência pública.</div>
+          <div class="cdetail"><div class="cdetail-icon">📞</div> <strong>+55 96 98116-2362</strong></div>
+          <div class="cdetail"><div class="cdetail-icon">💬</div> <strong>WhatsApp: 55 96 98113-4444</strong></div>
+          <div class="cdetail"><div class="cdetail-icon">📧</div> <strong>contato@institutomeiodomundo.org</strong></div>
+          <div class="cdetail"><div class="cdetail-icon">📍</div> <strong>Rua Desidério Antonio Coelho, 511-A, Trem, Macapá – AP</strong></div>
+        </div>
+        <div class="cbtns">
+          <button class="btn btn-gold" onclick="showPage('acesso')">📬 Solicitar via e-SIC</button>
+          <a href="https://wa.me/5596981134444" target="_blank" class="btn btn-dark">💬 WhatsApp</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div><!-- /home -->
+
+<!-- ══════════ PROJETOS ══════════ -->
+<div id="page-projetos" class="page">
+  <section>
+    <div class="wrap">
+      <div class="sec-eyebrow">Termos de Fomento e Patrocínio</div>
+      <div class="sec-title" style="margin-bottom:8px">Projetos</div>
+      <p style="font-size:13.5px;color:var(--text2);margin-bottom:28px;line-height:1.65">Todos os projetos executados pelo Instituto Meio do Mundo com recursos públicos e privados.</p>
+      <div class="proj-filters" id="proj-filter">
+        <button class="filter-btn active" onclick="filtrarProjetos('todos',this)">Todos</button>
+        <button class="filter-btn" onclick="filtrarProjetos('Em Andamento',this)">Em Andamento</button>
+        <button class="filter-btn" onclick="filtrarProjetos('Finalizado',this)">Finalizados</button>
+      </div>
+      <div class="proj-list" id="proj-lista">
+        <div class="proj-card" data-status="Em Andamento" onclick="toggleProj(this)">
+          <div class="proj-card-head"><div class="proj-card-left"><div class="proj-thumb">🏃</div><div class="proj-info"><h3>I CORRIDA DO SERVIDOR PÚBLICO DO ESTADO DO AMAPÁ</h3><div class="sub">027/2025 – SEDEL · 28/10/2025 a 28/01/2026</div></div></div><div class="proj-meta"><span class="proj-value">R$ 700.000,00</span><span class="proj-tag tag-a">Em Andamento</span><span class="chevron">▼</span></div></div>
+          <div class="proj-card-body"><table class="proj-table"><tr><td>Instrumento</td><td>027/2025 – SEDEL</td></tr><tr><td>Recurso</td><td>R$ 700.000,00</td></tr><tr><td>Fonte</td><td>Estadual (500)</td></tr><tr><td>Emenda</td><td>I0371 – Dep. Rodolfo Vale (R$ 200.000,00) + Tesouro Estadual (R$ 500.000,00)</td></tr><tr><td>Objeto</td><td>Execução do Projeto "CORRIDA DO SERVIDOR PÚBLICO DO ESTADO DO AMAPÁ", evento esportivo para 4.000 participantes.</td></tr></table><a href="https://institutomeiodomundo.org/transparencia/wp-content/uploads/2025/12/FOMENTO-No-027-2025-IMM-CORRIDA-DO-SERVIDOR-assinado.pdf" target="_blank" class="proj-dl-btn">⬇ Baixar PDF</a></div>
+        </div>
+        <div class="proj-card" data-status="Em Andamento" onclick="toggleProj(this)">
+          <div class="proj-card-head"><div class="proj-card-left"><div class="proj-thumb">🎖️</div><div class="proj-info"><h3>PROJETO DESFILE DA INDEPENDÊNCIA 2025</h3><div class="sub">001/2025 – PMAP · 05/09/2025 a 13/10/2025</div></div></div><div class="proj-meta"><span class="proj-value">R$ 1.291.050,00</span><span class="proj-tag tag-a">Em Andamento</span><span class="chevron">▼</span></div></div>
+          <div class="proj-card-body"><table class="proj-table"><tr><td>Instrumento</td><td>001/2025 – PMAP</td></tr><tr><td>Recurso</td><td>R$ 1.291.050,00</td></tr><tr><td>Fonte</td><td>Estadual (500)</td></tr><tr><td>Objeto</td><td>Execução do projeto "DESFILE DA INDEPENDÊNCIA 2025", por meio de ações formativas.</td></tr></table><a href="https://institutomeiodomundo.org/transparencia/wp-content/uploads/2025/09/TERMO-DE-FOMENTO_PMAP-X-IMM-2025-1.pdf" target="_blank" class="proj-dl-btn">⬇ Baixar PDF</a></div>
+        </div>
+        <div class="proj-card" data-status="Finalizado" onclick="toggleProj(this)">
+          <div class="proj-card-head"><div class="proj-card-left"><div class="proj-thumb">🌴</div><div class="proj-info"><h3>FÉRIAS SOLIDÁRIAS</h3><div class="sub">005/2025 – SEAS · 14/09/2025 a 31/12/2025</div></div></div><div class="proj-meta"><span class="proj-value">R$ 1.490.000,00</span><span class="proj-tag tag-f">Finalizado</span><span class="chevron">▼</span></div></div>
+          <div class="proj-card-body"><table class="proj-table"><tr><td>Instrumento</td><td>005/2025 – SEAS</td></tr><tr><td>Recurso</td><td>R$ 1.490.000,00</td></tr><tr><td>Emenda</td><td>Emenda Parlamentar Impositiva nº 10250</td></tr><tr><td>Objeto</td><td>Execução do Projeto Social "FÉRIAS SOLIDÁRIAS", assegurando direitos de pessoas em situação de vulnerabilidade.</td></tr></table><a href="https://institutomeiodomundo.org/transparencia/wp-content/uploads/2025/12/TERMO_DE_FOMENTO_-_005-2025-SEAS_-_INSTITUTO_MEIO_DO_MUNDO_assinado.pdf" target="_blank" class="proj-dl-btn">⬇ Baixar PDF</a></div>
+        </div>
+        <div class="proj-card" data-status="Em Andamento" onclick="toggleProj(this)">
+          <div class="proj-card-head"><div class="proj-card-left"><div class="proj-thumb">🎵</div><div class="proj-info"><h3>SHOW MUSICAL 4 CANTOS DA FLORESTA</h3><div class="sub">014/2025 – SECULT · 08/08/2025 a 15/12/2025</div></div></div><div class="proj-meta"><span class="proj-value">R$ 100.000,00</span><span class="proj-tag tag-a">Em Andamento</span><span class="chevron">▼</span></div></div>
+          <div class="proj-card-body"><table class="proj-table"><tr><td>Instrumento</td><td>014/2025 – SECULT</td></tr><tr><td>Recurso</td><td>R$ 100.000,00</td></tr><tr><td>Emenda</td><td>I0100 – Dep. Jack JK</td></tr></table></div>
+        </div>
+        <div class="proj-card" data-status="Finalizado" onclick="toggleProj(this)">
+          <div class="proj-card-head"><div class="proj-card-left"><div class="proj-thumb">🎭</div><div class="proj-info"><h3>ESPETÁCULO TEATRAL "O CORPO DE CRISTO – ELE RESSUSCITOU"</h3><div class="sub">002/2025 – SECULT</div></div></div><div class="proj-meta"><span class="proj-value">R$ 69.000,00</span><span class="proj-tag tag-f">Finalizado</span><span class="chevron">▼</span></div></div>
+          <div class="proj-card-body"><table class="proj-table"><tr><td>Instrumento</td><td>002/2025 – SECULT</td></tr><tr><td>Recurso</td><td>R$ 69.000,00</td></tr><tr><td>Fonte</td><td>Estadual (500) – recurso direto da SECULT</td></tr></table></div>
+        </div>
+        <div class="proj-card" data-status="Finalizado" onclick="toggleProj(this)">
+          <div class="proj-card-head"><div class="proj-card-left"><div class="proj-thumb">🏖️</div><div class="proj-info"><h3>CALÇOENE VERÃO 2025</h3><div class="sub">005/2025-SECULT · Processo 0054.1402.2361.0007/2025</div></div></div><div class="proj-meta"><span class="proj-value">R$ 267.000,00</span><span class="proj-tag tag-f">Finalizado</span><span class="chevron">▼</span></div></div>
+          <div class="proj-card-body"><table class="proj-table"><tr><td>Instrumento</td><td>005/2025-SECULT</td></tr><tr><td>Recurso</td><td>R$ 267.000,00</td></tr></table></div>
+        </div>
+        <div class="proj-card" data-status="Finalizado" onclick="toggleProj(this)">
+          <div class="proj-card-head"><div class="proj-card-left"><div class="proj-thumb">🏅</div><div class="proj-info"><h3>V CORRIDA DE RUA DA POLÍCIA CIVIL DO AMAPÁ</h3><div class="sub">014/2025 – SEDEL</div></div></div><div class="proj-meta"><span class="proj-value">R$ 969.185,00</span><span class="proj-tag tag-f">Finalizado</span><span class="chevron">▼</span></div></div>
+          <div class="proj-card-body"><table class="proj-table"><tr><td>Instrumento</td><td>014/2025 – SEDEL</td></tr><tr><td>Recurso</td><td>R$ 969.185,00</td></tr><tr><td>Emenda</td><td>I0179 – Dep. Estadual</td></tr></table></div>
+        </div>
+        <div class="proj-card" data-status="Finalizado" onclick="toggleProj(this)">
+          <div class="proj-card-head"><div class="proj-card-left"><div class="proj-thumb">👩</div><div class="proj-info"><h3>I CORRIDA DA VISIBILIDADE FEMININA EM SANTANA</h3><div class="sub">Termo de Fomento nº 008/2025 SEDEL-GEA</div></div></div><div class="proj-meta"><span class="proj-value">R$ 350.000,00</span><span class="proj-tag tag-f">Finalizado</span><span class="chevron">▼</span></div></div>
+          <div class="proj-card-body"><table class="proj-table"><tr><td>Instrumento</td><td>008/2025 SEDEL-GEA</td></tr><tr><td>Recurso</td><td>R$ 350.000,00</td></tr></table></div>
+        </div>
+        <div class="proj-card" data-status="Finalizado" onclick="toggleProj(this)">
+          <div class="proj-card-head"><div class="proj-card-left"><div class="proj-thumb">🎄</div><div class="proj-info"><h3>NATAL SOLIDÁRIO – Bairro das Pedrinhas 2024</h3><div class="sub">Termo de Fomento 021/2024 – SEAS</div></div></div><div class="proj-meta"><span class="proj-value">R$ 250.000,00</span><span class="proj-tag tag-f">Finalizado</span><span class="chevron">▼</span></div></div>
+          <div class="proj-card-body"><table class="proj-table"><tr><td>Instrumento</td><td>021/2024 – SEAS</td></tr><tr><td>Recurso</td><td>R$ 250.000,00</td></tr></table></div>
+        </div>
+        <div class="proj-card" data-status="Finalizado" onclick="toggleProj(this)">
+          <div class="proj-card-head"><div class="proj-card-left"><div class="proj-thumb">🌿</div><div class="proj-info"><h3>CONEXÃO AMAZÔNIA</h3><div class="sub">037/2024 – SECULT · Emenda Camilo Capiberibe</div></div></div><div class="proj-meta"><span class="proj-value">R$ 251.200,00</span><span class="proj-tag tag-f">Finalizado</span><span class="chevron">▼</span></div></div>
+          <div class="proj-card-body"><table class="proj-table"><tr><td>Instrumento</td><td>037/2024 – SECULT</td></tr><tr><td>Recurso</td><td>R$ 251.200,00</td></tr><tr><td>Fonte</td><td>Federal (706)</td></tr><tr><td>Emenda</td><td>Camilo Capiberibe</td></tr></table></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ══════════ ACESSO À INFORMAÇÃO ══════════ -->
+<div id="page-acesso" class="page">
+  <section>
+    <div class="wrap">
+      <div class="lai-layout">
+        <div>
+          <div class="sec-eyebrow">Lei 12.527/2011</div>
+          <div class="sec-title">Acesso a Informação</div>
+          <p style="font-size:14.5px;color:var(--text2);line-height:1.75;margin:16px 0 28px;font-weight:300">
+            O acesso à informação pública é um direito fundamental garantido pela <strong style="color:var(--g700)">Lei Federal 12.527 (LAI)</strong>. O Instituto Meio do Mundo disponibiliza o <strong style="color:var(--g700)">Portal de Transparência</strong> para qualquer pessoa solicitar informações de forma ágil e segura.
+          </p>
+          <div class="lai-features">
+            <div class="feat"><div class="feat-ico">📋</div><div class="feat-txt"><strong>Especificar a unidade ou área</strong><span>do Instituto Meio do Mundo que deseja contatar.</span></div></div>
+            <div class="feat"><div class="feat-ico">✍️</div><div class="feat-txt"><strong>Inserir descrição detalhada</strong><span>do pedido de informação desejado.</span></div></div>
+            <div class="feat"><div class="feat-ico">📎</div><div class="feat-txt"><strong>Anexar documentos em PDF</strong><span>relevantes ao pedido (até 3MB).</span></div></div>
+            <div class="feat"><div class="feat-ico">📬</div><div class="feat-txt"><strong>Escolher a forma preferida</strong><span>para receber a resposta ao pedido.</span></div></div>
+            <div class="feat"><div class="feat-ico">🔄</div><div class="feat-txt"><strong>Acompanhar em tempo real</strong><span>o andamento via protocolo único enviado por e-mail.</span></div></div>
+          </div>
+        </div>
+        <div class="form-card">
+          <div class="form-title">Formulário e-SIC</div>
+          <div class="form-sub">Prazo de resposta: até 20 dias úteis</div>
+          <div class="form-note">ℹ️ Preencha o formulário abaixo. Após o envio, você receberá um número de protocolo por e-mail para acompanhar sua solicitação.</div>
+          <form id="esic-form" onsubmit="submitEsic(event)">
+            <div class="form-group">
+              <label class="form-label">Tipo de Solicitação</label>
+              <select class="form-ctrl" name="tipo" required>
+                <option value="">Selecione...</option>
+                <option>Acesso à Informação</option>
+                <option>Reclamação</option>
+                <option>Denúncia</option>
+                <option>Sugestão</option>
+                <option>Elogio</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Nome Completo</label>
+                <input class="form-ctrl" type="text" name="nome" placeholder="Seu nome">
+              </div>
+              <div class="form-group">
+                <label class="form-label">E-mail</label>
+                <input class="form-ctrl" type="email" name="email" placeholder="seu@email.com">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Setor / Área</label>
+              <select class="form-ctrl" name="setor">
+                <option>Selecione...</option>
+                <option>Diretoria Executiva</option>
+                <option>Financeiro</option>
+                <option>Projetos Sociais</option>
+                <option>Recursos Humanos</option>
+                <option>Comunicação</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Descrição do Pedido</label>
+              <textarea class="form-ctrl" name="descricao" rows="4" placeholder="Descreva detalhadamente sua solicitação..." required></textarea>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Formato de Resposta</label>
+                <select class="form-ctrl" name="formato_resposta">
+                  <option>E-mail</option>
+                  <option>Carta</option>
+                  <option>Portal (online)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Anexo PDF (máx. 3MB)</label>
+                <input class="form-ctrl" type="file" name="anexo" accept=".pdf">
+              </div>
+            </div>
+            <button type="submit" class="btn btn-gold" style="width:100%;justify-content:center;margin-top:4px" id="esic-btn">📬 Enviar Solicitação</button>
+            <div class="form-status" id="esic-status"></div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ══════════ TRANSPARÊNCIA SECTIONS ══════════ -->
+<div id="page-financeiros" class="page">
+  <section><div class="wrap">
+    <div class="sec-eyebrow">Transparência</div>
+    <div class="sec-title" style="margin-bottom:24px">Relatórios Financeiros</div>
+    <div class="info-grid" id="financeiros-grid"><div style="color:var(--text2);font-size:14px;padding:20px 0">Carregando informações financeiras...</div></div>
+  </div></section>
+</div>
+<div id="page-prestacao" class="page">
+  <section><div class="wrap">
+    <div class="sec-eyebrow">Transparência</div>
+    <div class="sec-title" style="margin-bottom:24px">Prestação de Contas</div>
+    <div class="info-grid" id="prestacao-grid"><div style="color:var(--text2);font-size:14px;padding:20px 0">Carregando informações...</div></div>
+  </div></section>
+</div>
+<div id="page-contratacoes" class="page">
+  <section><div class="wrap">
+    <div class="sec-eyebrow">Transparência</div>
+    <div class="sec-title" style="margin-bottom:24px">Contratações</div>
+    <div class="info-grid" id="contratacoes-grid"><div style="color:var(--text2);font-size:14px;padding:20px 0">Carregando informações...</div></div>
+  </div></section>
+</div>
+<div id="page-politicas" class="page">
+  <section><div class="wrap">
+    <div class="sec-eyebrow">Governança</div>
+    <div class="sec-title" style="margin-bottom:24px">Políticas Institucionais</div>
+    <div class="info-grid" id="politicas-grid"><div style="color:var(--text2);font-size:14px;padding:20px 0">Carregando informações...</div></div>
+  </div></section>
+</div>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div class="ft-inner">
+    <div class="ft-top">
+      <div>
+        <div class="ft-logo">
+          <img src="assets/logo-portal.svg" alt="Instituto Meio do Mundo" onerror="this.style.display='none'">
+        </div>
+        <div class="ft-desc">OSCIP comprometida com o desenvolvimento social, cultural e ambiental no Estado do Amapá. CNPJ 08.962.333/0001-03.</div>
+      </div>
+      <div class="ft-col">
+        <h4>Portal</h4>
+        <a onclick="showPage('home')">Página Inicial</a>
+        <a onclick="showPage('projetos')">Projetos</a>
+        <a onclick="showPage('financeiros')">Financeiro</a>
+        <a onclick="showPage('prestacao')">Prestação de Contas</a>
+      </div>
+      <div class="ft-col">
+        <h4>Transparência</h4>
+        <a onclick="showPage('contratacoes')">Contratações</a>
+        <a onclick="showPage('politicas')">Código de Ética</a>
+        <a onclick="showPage('politicas')">LGPD</a>
+      </div>
+      <div class="ft-col">
+        <h4>Contato</h4>
+        <a href="tel:5596981162362">+55 96 98116-2362</a>
+        <a href="https://wa.me/5596981134444">WhatsApp</a>
+        <a href="mailto:contato@institutomeiodomundo.org">E-mail</a>
+        <a onclick="showPage('acesso')">Solicitar via e-SIC</a>
+      </div>
+    </div>
+    <div class="ft-bottom">
+      <span>© 2025 Instituto Meio do Mundo. Todos os direitos reservados.</span>
+      <span>Desenvolvido conforme a <a href="#">Lei 12.527/2011</a> · <a href="#">LGPD</a></span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ── PAGE ROUTING ─────────────────────────────────────────────── */
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const page = document.getElementById('page-' + id);
+  if (page) { page.classList.add('active'); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+  const navMap = { home:'Início', projetos:'Projetos ▾', acesso:'e-SIC / LAI', financeiros:'Transparência ▾', prestacao:'Transparência ▾', contratacoes:'Transparência ▾', politicas:'Transparência ▾' };
+  document.querySelectorAll('.nav-item').forEach(n => { if (n.textContent.trim() === (navMap[id] || '')) n.classList.add('active'); });
+  // Load portal info on first visit
+  if (['financeiros','prestacao','contratacoes','politicas'].includes(id)) loadPortalInfo(id);
+  // Trigger reveals
+  setTimeout(initReveal, 100);
+}
+
+/* ── PORTAL INFO API ──────────────────────────────────────────── */
+async function loadPortalInfo(section) {
+  const map = { financeiros:'FINANCEIROS', prestacao:'PRESTACAO', contratacoes:'CONTRATACOES', politicas:'POLITICAS' };
+  const gridId = section + '-grid';
+  const grid = document.getElementById(gridId);
+  if (!grid || grid.dataset.loaded) return;
+  grid.dataset.loaded = '1';
+  try {
+    const r = await fetch('/api/public/portal-info/');
+    const data = await r.json();
+    const items = data.items[map[section]] || [];
+    if (!items.length) { grid.innerHTML = '<div style="color:var(--text2);padding:20px 0;font-size:14px">Nenhum documento disponível no momento.</div>'; return; }
+    grid.innerHTML = items.map(item => `
+      <div class="info-card">
+        <div class="info-card-icon">${item.possui_arquivo ? '📄' : '📋'}</div>
+        <div class="info-card-body">
+          <h4>${item.titulo}</h4>
+          <p>${item.descricao || ''}</p>
+          ${item.url_documento ? `<a href="${item.url_documento}" target="_blank">⬇ Acessar documento</a>` : ''}
+        </div>
+      </div>`).join('');
+  } catch {
+    grid.innerHTML = '<div style="color:var(--text2);padding:20px 0;font-size:13px">⚠️ Não foi possível carregar os dados. Verifique a conexão com o servidor.</div>';
+  }
+}
+
+/* ── PROJECT TOGGLE ──────────────────────────────────────────── */
+function toggleProj(el) { el.classList.toggle('open'); }
+
+/* ── PROJECT FILTER ──────────────────────────────────────────── */
+function filtrarProjetos(status, btn) {
+  document.querySelectorAll('#proj-filter .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('#proj-lista .proj-card').forEach(card => {
+    const s = card.dataset.status || '';
+    card.style.display = (status === 'todos' || s === status) ? '' : 'none';
+  });
+}
+
+/* ── FORM SUBMIT ─────────────────────────────────────────────── */
+async function submitEsic(e) {
+  e.preventDefault();
+  const btn = document.getElementById('esic-btn');
+  const status = document.getElementById('esic-status');
+  btn.disabled = true; btn.textContent = 'Enviando...';
+  const form = e.target;
+  const fd = new FormData(form);
+  try {
+    const r = await fetch('/api/esic/submit/', { method:'POST', body: fd });
+    const data = await r.json();
+    if (r.ok) {
+      status.className = 'form-status success';
+      status.textContent = `✅ Solicitação enviada! Protocolo: ${data.protocolo}`;
+      form.reset();
+    } else {
+      status.className = 'form-status error';
+      status.textContent = '❌ ' + (data.error || 'Erro ao enviar. Tente novamente.');
+    }
+  } catch {
+    status.className = 'form-status error';
+    status.textContent = '❌ Servidor indisponível. Tente novamente em instantes.';
+  }
+  btn.disabled = false; btn.textContent = '📬 Enviar Solicitação';
+}
+
+/* ── NAVBAR SCROLL ───────────────────────────────────────────── */
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 30);
+}, { passive: true });
+
+/* ── SCROLL REVEAL ───────────────────────────────────────────── */
+function initReveal() {
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('revealed'); io.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal:not(.revealed)').forEach(el => io.observe(el));
+}
+initReveal();
+
+/* ── COUNTER ANIMATION ───────────────────────────────────────── */
+function animateCounters() {
+  document.querySelectorAll('[data-count]').forEach(el => {
+    if (el.dataset.animated) return;
+    el.dataset.animated = '1';
+    const target = +el.dataset.count;
+    const suffix = el.innerHTML.match(/<em>(.*?)<\/em>/)?.[1] || '';
+    let current = 0;
+    const step = target / 40;
+    const timer = setInterval(() => {
+      current = Math.min(current + step, target);
+      el.innerHTML = Math.floor(current) + (suffix ? `<em>${suffix}</em>` : '');
+      if (current >= target) clearInterval(timer);
+    }, 30);
+  });
+}
+const counterObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) animateCounters(); });
+}, { threshold: 0.3 });
+document.querySelectorAll('.impact-section').forEach(el => counterObserver.observe(el));
+</script>
+</body>
+</html>
