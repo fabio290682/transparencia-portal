@@ -305,19 +305,9 @@ def submit_esic_request(request):
 
 
 def home(request):
+    from django.http import HttpResponse
     _seed_portal_info_if_needed()
-    infos_por_secao = _safe_infos_por_secao()
-    projetos = _safe_projetos()
-    termos_fomento = _safe_termos_fomento(projetos)
-    return render(
-        request,
-        "portal_transparencia.html",
-        {
-            "infos_por_secao": infos_por_secao,
-            "projetos": projetos,
-            "termos_fomento": termos_fomento,
-        },
-    )
+    return HttpResponse(_serve_html_file("portal-3d.html"), content_type="text/html; charset=utf-8")
 
 
 def _serve_html_file(filename):
