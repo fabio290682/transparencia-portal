@@ -296,6 +296,10 @@ if IS_VERCEL:
     STATIC_ROOT = BASE_DIR / "static"
     STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
     WHITENOISE_USE_FINDERS = True
+    # Use cookie-based sessions so they persist across serverless instances.
+    # Database sessions are tied to a single /tmp/sqlite instance and get
+    # lost when a new function instance handles the next request.
+    SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
