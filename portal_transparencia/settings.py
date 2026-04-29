@@ -108,6 +108,18 @@ CSRF_TRUSTED_ORIGINS = [
     for origin in os.getenv("DJANGO_CSRF_TRUSTED_ORIGINS", "").split(",")
     if origin.strip()
 ]
+
+if IS_VERCEL:
+    _vercel_url = os.getenv("VERCEL_URL", "")
+    _vercel_branch_url = os.getenv("VERCEL_BRANCH_URL", "")
+    _vercel_project_url = os.getenv("VERCEL_PROJECT_PRODUCTION_URL", "")
+    for _vurl in (_vercel_url, _vercel_branch_url, _vercel_project_url):
+        if _vurl:
+            _origin = f"https://{_vurl}" if not _vurl.startswith("https://") else _vurl
+            if _origin not in CSRF_TRUSTED_ORIGINS:
+                CSRF_TRUSTED_ORIGINS.append(_origin)
+    if not any(".vercel.app" in o for o in CSRF_TRUSTED_ORIGINS):
+        CSRF_TRUSTED_ORIGINS.append("https://*.vercel.app")
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 SECURE_SSL_REDIRECT = _env_bool(
