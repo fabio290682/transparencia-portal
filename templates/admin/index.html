@@ -1,442 +1,483 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel Administrativo | Instituto Meio do Mundo</title>
-    <link rel="stylesheet" href="{% static 'css/admin-dashboard.css' %}">
-</head>
-<body>
-    <canvas id="adminStars"></canvas>
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
 
-    <div class="shell">
-        <aside class="sidebar" id="sidebar">
-            <div class="sidebar-logo">
-                <img
-                    src="{% static 'img/logo-header.png' %}"
-                    alt="Instituto Meio do Mundo"
-                    onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
-                >
-                <div class="sidebar-logo-fallback" style="display:none;">IMM</div>
-                <div class="sidebar-brand">
-                    Instituto Meio do Mundo
-                    <span>Painel Administrativo</span>
-                </div>
-            </div>
+{% block title %}Dashboard | Painel Administrativo{% endblock %}
 
-            <div class="nav-group">
-                <div class="nav-label">Principal</div>
-                <button type="button" class="nav-link active" data-view="dashboard">
-                    <span class="ico">Dashboard</span>
-                </button>
-                <button type="button" class="nav-link" data-view="esic">
-                    <span class="ico">e-SIC</span>
-                    <span class="badge">{{ pending_esic_count }}</span>
-                </button>
-                <button type="button" class="nav-link" data-view="projetos">
-                    <span class="ico">Projetos</span>
-                </button>
-                <button type="button" class="nav-link" data-view="documentos">
-                    <span class="ico">Documentos</span>
-                </button>
-            </div>
+{% block extrastyle %}
+  {{ block.super }}
+  <style>
+    #adminStars {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.35;
+    }
 
-            <div class="nav-sep"></div>
+    #content { position: relative; z-index: 1; }
 
-            <div class="nav-group">
-                <div class="nav-label">Ações</div>
-                <a href="{% url 'admin:core_esicpedido_add' %}" class="nav-link">
-                    <span class="ico">Novo</span> Novo pedido e-SIC
-                </a>
-                <a href="{% url 'admin:core_projeto_add' %}" class="nav-link">
-                    <span class="ico">Novo</span> Novo projeto
-                </a>
-                <a href="{% url 'admin:core_portalinformacao_add' %}" class="nav-link">
-                    <span class="ico">Upload</span> Novo documento
-                </a>
-            </div>
+    .imm-dash-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-block-end: 24px;
+    }
 
-            <div class="nav-sep"></div>
+    .imm-stat-card {
+      background: linear-gradient(180deg, rgba(14, 34, 19, 0.96), rgba(11, 27, 16, 0.96));
+      border: 1px solid rgba(245, 200, 0, 0.12);
+      border-radius: 16px;
+      padding: 22px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
 
-            <div class="nav-group">
-                <div class="nav-label">Sistema</div>
-                <a href="{% url 'admin:password_change' %}" class="nav-link">
-                    <span class="ico">Conta</span> Configurações
-                </a>
-                <a href="{{ portal_public_url }}" class="nav-link" target="_blank" rel="noopener">
-                    <span class="ico">Portal</span> Ver Portal Público
-                </a>
-                <a href="{% url 'admin:logout' %}" class="nav-link">
-                    <span class="ico">Sair</span> Encerrar sessão
-                </a>
-            </div>
+    .imm-stat-card:hover {
+      transform: translateY(-4px) scale(1.01);
+      border-color: rgba(245, 200, 0, 0.28);
+      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.4);
+    }
 
-            <div class="sidebar-footer">
-                <div class="sidebar-user">
-                    <div class="sidebar-avatar">IMM</div>
-                    <div>
-                        <div class="sf-name">{{ request.user.get_full_name|default:request.user.username }}</div>
-                        <div class="sf-role"><span class="sf-dot"></span>Online agora</div>
-                    </div>
-                </div>
-            </div>
-        </aside>
+    .imm-stat-label {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(237, 244, 238, 0.55);
+    }
 
-        <main class="main">
-            <div class="topbar">
-                <div class="topbar-left">
-                    <div class="eyebrow">Instituto Meio do Mundo</div>
-                    <h2 id="page-title">Dashboard</h2>
-                </div>
-                <div class="topbar-right">
-                    <div class="time-badge" id="clock">--:--</div>
-                    <a href="{{ portal_public_url }}" class="btn btn-outline btn-sm" target="_blank" rel="noopener">Portal</a>
-                    <button class="notif" type="button" title="Pendências">
-                        <span>!</span><span class="notif-dot"></span>
-                    </button>
-                    <button class="notif menu-toggle" type="button" id="menu-btn" title="Menu">≡</button>
-                </div>
-            </div>
+    .imm-stat-value {
+      font-size: 34px;
+      font-weight: 900;
+      color: #f5c800;
+      letter-spacing: -2px;
+      line-height: 1;
+    }
 
-            <div class="view active" id="view-dashboard">
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-label">Pedidos e-SIC</div>
-                        <div class="stat-value" data-count="{{ esic_count }}">0</div>
-                        <div class="stat-sub">Total recebidos</div>
-                        <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" style="width:0%" data-w="{% if esic_count %}100{% else %}0{% endif %}"></div></div></div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Aguardando resposta</div>
-                        <div class="stat-value warn" data-count="{{ pending_esic_count }}">0</div>
-                        <div class="stat-sub">Protocolos em tratamento</div>
-                        <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill is-warn" style="width:0%" data-w="{% if esic_count %}{% widthratio pending_esic_count esic_count 100 %}{% else %}0{% endif %}"></div></div></div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Projetos</div>
-                        <div class="stat-value ok" data-count="{{ project_count }}">0</div>
-                        <div class="stat-sub">Cadastros disponíveis no painel</div>
-                        <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill is-ok" style="width:0%" data-w="{% if project_count %}100{% else %}0{% endif %}"></div></div></div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Documentos</div>
-                        <div class="stat-value" data-count="{{ document_count }}">0</div>
-                        <div class="stat-sub">Itens publicados na transparência</div>
-                        <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" style="width:0%" data-w="{% if document_count %}100{% else %}0{% endif %}"></div></div></div>
-                    </div>
-                </div>
+    .imm-stat-value.warn { color: #fb923c; }
+    .imm-stat-value.ok   { color: #4ade80; }
 
-                <div>
-                    <div class="section-head">
-                        <div>
-                            <div class="section-eyebrow">Ações rápidas</div>
-                            <h3>O que deseja fazer?</h3>
-                        </div>
-                    </div>
-                    <div class="action-grid">
-                        {% for item in dashboard_links %}
-                        <div class="action-card">
-                            <div>
-                                <h4>{{ item.label }}</h4>
-                                <p>{{ item.hint }}</p>
-                            </div>
-                            <div class="action-row">
-                                <a href="{{ item.url }}" class="btn btn-gold btn-sm"{% if item.label == 'Portal Público' %} target="_blank" rel="noopener"{% endif %}>Abrir</a>
-                                <a href="{{ item.add_url }}" class="btn btn-outline btn-sm"{% if item.label == 'Portal Público' %} target="_blank" rel="noopener"{% endif %}>Ir direto</a>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
+    .imm-stat-sub {
+      font-size: 11px;
+      color: rgba(237, 244, 238, 0.45);
+    }
 
-                <div class="content-grid">
-                    <div class="panel-card">
-                        <div class="section-head">
-                            <div>
-                                <div class="section-eyebrow">e-SIC</div>
-                                <h3>Pedidos recentes</h3>
-                            </div>
-                            <a href="{% url 'admin:core_esicpedido_changelist' %}" class="btn btn-ghost btn-sm">Ver todos</a>
-                        </div>
-                        {% if recent_esic %}
-                        <div class="record-list">
-                            {% for pedido in recent_esic %}
-                            <a href="{% url 'admin:core_esicpedido_change' pedido.id %}" class="record-item">
-                                <div>
-                                    <strong>#{{ pedido.protocolo }}</strong>
-                                    <p>{{ pedido.email|default:"Sem e-mail informado" }}</p>
-                                </div>
-                                <div class="record-meta">
-                                    <span class="pill {% if pedido.status == 'ABERTO' %}pill-warn{% else %}pill-muted{% endif %}">{{ pedido.get_status_display }}</span>
-                                    {% if pedido.prazo %}
-                                    <span class="record-date">{{ pedido.prazo|date:"d/m/Y" }}</span>
-                                    {% endif %}
-                                </div>
-                            </a>
-                            {% endfor %}
-                        </div>
-                        {% else %}
-                        <p class="empty">Nenhum pedido registrado até agora.</p>
-                        {% endif %}
-                    </div>
+    .imm-progress-bar {
+      block-size: 3px;
+      border-radius: 2px;
+      background: rgba(255,255,255,0.06);
+      overflow: hidden;
+      margin-block-start: 6px;
+    }
 
-                    <div class="panel-card">
-                        <div class="section-head">
-                            <div>
-                                <div class="section-eyebrow">Projetos</div>
-                                <h3>Status dos projetos</h3>
-                            </div>
-                            <a href="{% url 'admin:core_projeto_changelist' %}" class="btn btn-ghost btn-sm">Ver todos</a>
-                        </div>
-                        {% if recent_projects %}
-                        <div class="record-list">
-                            {% for projeto in recent_projects %}
-                            <a href="{% url 'admin:core_projeto_change' projeto.id %}" class="record-item">
-                                <div>
-                                    <strong>{{ projeto.titulo }}</strong>
-                                    <p>
-                                        {{ projeto.instrumento|default:"Sem instrumento" }}
-                                        {% if projeto.valor %} · R$ {{ projeto.valor }}{% endif %}
-                                    </p>
-                                </div>
-                                <div class="record-meta">
-                                    <span class="pill {% if projeto.status == 'EM_ANDAMENTO' %}pill-ok{% else %}pill-muted{% endif %}">{{ projeto.get_status_display }}</span>
-                                    {% if projeto.data_inicio %}
-                                    <span class="record-date">{{ projeto.data_inicio }}</span>
-                                    {% endif %}
-                                </div>
-                            </a>
-                            {% endfor %}
-                        </div>
-                        {% else %}
-                        <p class="empty">Nenhum projeto encontrado.</p>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
+    .imm-progress-fill {
+      block-size: 100%;
+      border-radius: 2px;
+      background: linear-gradient(90deg, #f5c800, #e8b800);
+      transition: width 1s cubic-bezier(.22,1,.36,1);
+    }
 
-            <div class="view" id="view-esic">
-                <div class="panel-card">
-                    <div class="section-head spaced">
-                        <div>
-                            <div class="section-eyebrow">Pedidos de Acesso</div>
-                            <h3>Gerenciar e-SIC</h3>
-                        </div>
-                        <a href="{% url 'admin:core_esicpedido_add' %}" class="btn btn-gold btn-sm">Novo pedido</a>
-                    </div>
-                    {% if recent_esic %}
-                    <div class="record-list">
-                        {% for pedido in recent_esic %}
-                        <a href="{% url 'admin:core_esicpedido_change' pedido.id %}" class="record-item">
-                            <div>
-                                <strong>#{{ pedido.protocolo }}</strong>
-                                <p>{{ pedido.get_tipo_display }} · {{ pedido.email|default:"Sem e-mail informado" }}</p>
-                            </div>
-                            <div class="record-meta">
-                                <span class="pill {% if pedido.status == 'ABERTO' %}pill-warn{% else %}pill-muted{% endif %}">{{ pedido.get_status_display }}</span>
-                                {% if pedido.prazo %}
-                                <span class="record-date">Prazo {{ pedido.prazo|date:"d/m/Y" }}</span>
-                                {% endif %}
-                            </div>
-                        </a>
-                        {% endfor %}
-                    </div>
-                    {% else %}
-                    <p class="empty">Nenhum pedido e-SIC disponível.</p>
-                    {% endif %}
-                </div>
-            </div>
+    .imm-progress-fill.is-warn { background: #fb923c; }
+    .imm-progress-fill.is-ok   { background: #4ade80; }
 
-            <div class="view" id="view-projetos">
-                <div class="panel-card">
-                    <div class="section-head spaced">
-                        <div>
-                            <div class="section-eyebrow">Termos e Projetos</div>
-                            <h3>Gerenciar projetos</h3>
-                        </div>
-                        <a href="{% url 'admin:core_projeto_add' %}" class="btn btn-gold btn-sm">Novo projeto</a>
-                    </div>
-                    {% if recent_projects %}
-                    <div class="record-list">
-                        {% for projeto in recent_projects %}
-                        <a href="{% url 'admin:core_projeto_change' projeto.id %}" class="record-item">
-                            <div>
-                                <strong>{{ projeto.titulo }}</strong>
-                                <p>
-                                    {{ projeto.instrumento|default:"Sem instrumento" }}
-                                    {% if projeto.data_inicio or projeto.data_finalizacao %}
-                                     · {% if projeto.data_inicio %}{{ projeto.data_inicio }}{% endif %}{% if projeto.data_finalizacao %} a {{ projeto.data_finalizacao }}{% endif %}
-                                    {% endif %}
-                                </p>
-                            </div>
-                            <div class="record-meta">
-                                <span class="pill {% if projeto.status == 'EM_ANDAMENTO' %}pill-ok{% else %}pill-muted{% endif %}">{{ projeto.get_status_display }}</span>
-                            </div>
-                        </a>
-                        {% endfor %}
-                    </div>
-                    {% else %}
-                    <p class="empty">Nenhum projeto cadastrado.</p>
-                    {% endif %}
-                </div>
-            </div>
+    .imm-dash-section { margin-block-end: 24px; }
 
-            <div class="view" id="view-documentos">
-                <div class="panel-card">
-                    <div class="section-head spaced">
-                        <div>
-                            <div class="section-eyebrow">Transparência</div>
-                            <h3>Documentos publicados</h3>
-                        </div>
-                        <a href="{% url 'admin:core_portalinformacao_add' %}" class="btn btn-gold btn-sm">Novo documento</a>
-                    </div>
-                    {% if recent_documents %}
-                    <div class="record-list">
-                        {% for documento in recent_documents %}
-                        <a href="{% url 'admin:core_portalinformacao_change' documento.id %}" class="record-item">
-                            <div>
-                                <strong>{{ documento.titulo }}</strong>
-                                <p>{{ documento.get_secao_display }}{% if documento.atualizado_em %} · {{ documento.atualizado_em|date:"d/m/Y" }}{% endif %}</p>
-                            </div>
-                            <div class="record-meta">
-                                <span class="pill pill-gold">{% if documento.arquivo %}Arquivo{% elif documento.link %}Link{% else %}Cadastro{% endif %}</span>
-                            </div>
-                        </a>
-                        {% endfor %}
-                    </div>
-                    {% else %}
-                    <p class="empty">Nenhum documento publicado.</p>
-                    {% endif %}
-                </div>
-            </div>
-        </main>
+    .imm-section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-block-end: 14px;
+      gap: 12px;
+    }
+
+    .imm-section-eyebrow {
+      font-size: 9px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: rgba(245, 200, 0, 0.6);
+      margin-block-end: 3px;
+    }
+
+    .imm-section-head h2 {
+      font-size: 14px;
+      font-weight: 800;
+      color: #edf4ee;
+      letter-spacing: -0.2px;
+      margin: 0;
+    }
+
+    .imm-action-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .imm-action-card {
+      background: linear-gradient(180deg, rgba(14, 34, 19, 0.96), rgba(11, 27, 16, 0.96));
+      border: 1px solid rgba(245, 200, 0, 0.1);
+      border-radius: 18px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .imm-action-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(245, 200, 0, 0.22);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+    }
+
+    .imm-action-card h3 {
+      font-size: 13px;
+      font-weight: 800;
+      color: #edf4ee;
+      margin: 0 0 4px;
+    }
+
+    .imm-action-card p {
+      font-size: 11.5px;
+      color: rgba(237, 244, 238, 0.5);
+      line-height: 1.55;
+      margin: 0;
+    }
+
+    .imm-action-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .imm-content-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+    }
+
+    .imm-panel {
+      background: linear-gradient(180deg, rgba(14, 34, 19, 0.96), rgba(11, 27, 16, 0.96));
+      border: 1px solid rgba(245, 200, 0, 0.1);
+      border-radius: 18px;
+      padding: 22px;
+    }
+
+    .imm-record-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-block-start: 4px;
+    }
+
+    .imm-record-item {
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 12px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255,255,255,0.015);
+      text-decoration: none;
+      color: inherit;
+      transition: transform 0.2s, border-color 0.2s, background 0.2s;
+    }
+
+    .imm-record-item:hover {
+      transform: translateX(3px);
+      border-color: rgba(245, 200, 0, 0.15);
+      background: rgba(245, 200, 0, 0.05);
+      color: inherit;
+    }
+
+    .imm-record-item strong {
+      font-size: 13px;
+      font-weight: 700;
+      color: #edf4ee;
+      display: block;
+      margin-block-end: 2px;
+    }
+
+    .imm-record-item p {
+      font-size: 11.5px;
+      color: rgba(237, 244, 238, 0.45);
+      margin: 0;
+    }
+
+    .imm-record-meta {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    .imm-record-date {
+      font-size: 10.5px;
+      color: rgba(237, 244, 238, 0.45);
+    }
+
+    .imm-pill {
+      border-radius: 999px;
+      padding: 3px 10px;
+      font-size: 10.5px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .imm-pill-ok   { background: rgba(74,222,128,0.1); border: 1px solid rgba(74,222,128,0.22); color: #4ade80; }
+    .imm-pill-warn { background: rgba(251,146,60,0.1); border: 1px solid rgba(251,146,60,0.22); color: #fb923c; }
+    .imm-pill-gold { background: rgba(245,200,0,0.12); border: 1px solid rgba(245,200,0,0.22); color: #f5c800; }
+    .imm-pill-muted { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: #edf4ee; }
+
+    .imm-btn {
+      display: inline-flex;
+      align-items: center;
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+      white-space: nowrap;
+      border: none;
+    }
+
+    .imm-btn-gold {
+      background: #f5c800;
+      color: #071008;
+      box-shadow: 0 4px 14px rgba(245,200,0,0.3);
+    }
+
+    .imm-btn-gold:hover { filter: brightness(1.08); transform: translateY(-1px); color: #071008; }
+
+    .imm-btn-outline {
+      background: transparent;
+      border: 1px solid rgba(245,200,0,0.3);
+      color: #f5c800;
+    }
+
+    .imm-btn-outline:hover { background: rgba(245,200,0,0.1); color: #f5c800; }
+
+    .imm-btn-ghost {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #edf4ee;
+    }
+
+    .imm-btn-ghost:hover { background: rgba(255,255,255,0.09); color: #edf4ee; }
+
+    .imm-empty {
+      padding-block: 20px;
+      padding-inline: 0;
+      text-align: center;
+      color: rgba(237,244,238,0.4);
+      font-size: 13px;
+    }
+
+    @media (max-width: 1100px) {
+      .imm-dash-stats    { grid-template-columns: repeat(2, 1fr); }
+      .imm-action-grid   { grid-template-columns: repeat(2, 1fr); }
+      .imm-content-grid  { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 600px) {
+      .imm-dash-stats    { grid-template-columns: 1fr; }
+      .imm-action-grid   { grid-template-columns: 1fr; }
+    }
+  </style>
+{% endblock %}
+
+{% block content_title %}
+  <h1>Dashboard</h1>
+{% endblock %}
+
+{% block content %}
+<div class="imm-dash-stats">
+  <div class="imm-stat-card">
+    <div class="imm-stat-label">Pedidos e-SIC</div>
+    <div class="imm-stat-value" data-count="{{ esic_count }}">0</div>
+    <div class="imm-stat-sub">Total recebidos</div>
+    <div class="imm-progress-bar">
+      <div class="imm-progress-fill" style="width:0%" data-w="{% if esic_count %}100{% else %}0{% endif %}"></div>
     </div>
+  </div>
+  <div class="imm-stat-card">
+    <div class="imm-stat-label">Aguardando resposta</div>
+    <div class="imm-stat-value warn" data-count="{{ pending_esic_count }}">0</div>
+    <div class="imm-stat-sub">Protocolos em tratamento</div>
+    <div class="imm-progress-bar">
+      <div class="imm-progress-fill is-warn" style="width:0%" data-w="{% if esic_count %}{% widthratio pending_esic_count esic_count 100 %}{% else %}0{% endif %}"></div>
+    </div>
+  </div>
+  <div class="imm-stat-card">
+    <div class="imm-stat-label">Projetos</div>
+    <div class="imm-stat-value ok" data-count="{{ project_count }}">0</div>
+    <div class="imm-stat-sub">Cadastros disponíveis no painel</div>
+    <div class="imm-progress-bar">
+      <div class="imm-progress-fill is-ok" style="width:0%" data-w="{% if project_count %}100{% else %}0{% endif %}"></div>
+    </div>
+  </div>
+  <div class="imm-stat-card">
+    <div class="imm-stat-label">Documentos</div>
+    <div class="imm-stat-value" data-count="{{ document_count }}">0</div>
+    <div class="imm-stat-sub">Itens publicados na transparência</div>
+    <div class="imm-progress-bar">
+      <div class="imm-progress-fill" style="width:0%" data-w="{% if document_count %}100{% else %}0{% endif %}"></div>
+    </div>
+  </div>
+</div>
 
-    <script>
-        const titles = {
-            dashboard: 'Dashboard',
-            esic: 'Pedidos e-SIC',
-            projetos: 'Projetos',
-            documentos: 'Documentos'
-        };
+<div class="imm-dash-section">
+  <div class="imm-section-head">
+    <div>
+      <div class="imm-section-eyebrow">Ações rápidas</div>
+      <h2>O que deseja fazer?</h2>
+    </div>
+  </div>
+  <div class="imm-action-grid">
+    {% for item in dashboard_links %}
+    <div class="imm-action-card">
+      <div>
+        <h3>{{ item.label }}</h3>
+        <p>{{ item.hint }}</p>
+      </div>
+      <div class="imm-action-row">
+        <a href="{{ item.url }}" class="imm-btn imm-btn-gold"{% if item.label == 'Portal Público' %} target="_blank" rel="noopener"{% endif %}>Abrir</a>
+        <a href="{{ item.add_url }}" class="imm-btn imm-btn-outline"{% if item.label == 'Portal Público' %} target="_blank" rel="noopener"{% endif %}>Ir direto</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
 
-        function showView(id, trigger) {
-            document.querySelectorAll('.view').forEach((el) => el.classList.remove('active'));
-            document.querySelectorAll('[data-view]').forEach((el) => el.classList.remove('active'));
+<div class="imm-content-grid imm-dash-section">
+  <div class="imm-panel">
+    <div class="imm-section-head">
+      <div>
+        <div class="imm-section-eyebrow">e-SIC</div>
+        <h2>Pedidos recentes</h2>
+      </div>
+      <a href="{% url 'admin:core_esicpedido_changelist' %}" class="imm-btn imm-btn-ghost">Ver todos</a>
+    </div>
+    {% if recent_esic %}
+    <div class="imm-record-list">
+      {% for pedido in recent_esic %}
+      <a href="{% url 'admin:core_esicpedido_change' pedido.id %}" class="imm-record-item">
+        <div>
+          <strong>#{{ pedido.protocolo }}</strong>
+          <p>{{ pedido.email|default:"Sem e-mail informado" }}</p>
+        </div>
+        <div class="imm-record-meta">
+          <span class="imm-pill {% if pedido.status == 'ABERTO' %}imm-pill-warn{% else %}imm-pill-muted{% endif %}">{{ pedido.get_status_display }}</span>
+          {% if pedido.prazo %}
+          <span class="imm-record-date">{{ pedido.prazo|date:"d/m/Y" }}</span>
+          {% endif %}
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p class="imm-empty">Nenhum pedido registrado até agora.</p>
+    {% endif %}
+  </div>
 
-            const target = document.getElementById(`view-${id}`);
-            if (target) {
-                target.classList.add('active');
-            }
+  <div class="imm-panel">
+    <div class="imm-section-head">
+      <div>
+        <div class="imm-section-eyebrow">Projetos</div>
+        <h2>Status dos projetos</h2>
+      </div>
+      <a href="{% url 'admin:core_projeto_changelist' %}" class="imm-btn imm-btn-ghost">Ver todos</a>
+    </div>
+    {% if recent_projects %}
+    <div class="imm-record-list">
+      {% for projeto in recent_projects %}
+      <a href="{% url 'admin:core_projeto_change' projeto.id %}" class="imm-record-item">
+        <div>
+          <strong>{{ projeto.titulo }}</strong>
+          <p>{{ projeto.instrumento|default:"Sem instrumento" }}{% if projeto.valor %} · R$ {{ projeto.valor }}{% endif %}</p>
+        </div>
+        <div class="imm-record-meta">
+          <span class="imm-pill {% if projeto.status == 'EM_ANDAMENTO' %}imm-pill-ok{% else %}imm-pill-muted{% endif %}">{{ projeto.get_status_display }}</span>
+          {% if projeto.data_inicio %}
+          <span class="imm-record-date">{{ projeto.data_inicio }}</span>
+          {% endif %}
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p class="imm-empty">Nenhum projeto encontrado.</p>
+    {% endif %}
+  </div>
+</div>
 
-            if (trigger) {
-                trigger.classList.add('active');
-            }
+<script>
+(function () {
+  var canvas = document.createElement('canvas');
+  canvas.id = 'adminStars';
+  document.body.prepend(canvas);
 
-            document.getElementById('page-title').textContent = titles[id] || 'Dashboard';
-            document.getElementById('sidebar').classList.remove('open');
-        }
+  var ctx = canvas.getContext('2d');
+  var w = 0, h = 0, stars = [], t = 0;
 
-        document.querySelectorAll('[data-view]').forEach((button) => {
-            button.addEventListener('click', () => showView(button.dataset.view, button));
-        });
+  function resize() {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+    stars = Array.from({ length: Math.floor((w * h) / 6000) }, function () {
+      return {
+        x: Math.random() * w, y: Math.random() * h,
+        r: Math.random() * 1.1 + 0.2,
+        alpha: Math.random() * 0.45 + 0.1,
+        phase: Math.random() * Math.PI * 2,
+        speed: Math.random() * 0.01 + 0.003
+      };
+    });
+  }
 
-        function updateClock() {
-            const now = new Date();
-            document.getElementById('clock').textContent = now.toLocaleTimeString('pt-BR', {
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            });
-        }
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    t += 0.016;
+    stars.forEach(function (s) {
+      var a = s.alpha * (0.5 + 0.5 * Math.sin(t * s.speed * 60 + s.phase));
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = '#ffffff';
+      ctx.globalAlpha = a;
+      ctx.fill();
+    });
+    ctx.globalAlpha = 1;
+    requestAnimationFrame(draw);
+  }
 
-        function animateCounters() {
-            document.querySelectorAll('[data-count]').forEach((el) => {
-                if (el.dataset.animated) return;
-                el.dataset.animated = '1';
-                const target = Number(el.dataset.count || 0);
-                let current = 0;
-                const step = target > 0 ? Math.max(target / 40, 1) : 1;
-                const timer = setInterval(() => {
-                    current = Math.min(current + step, target);
-                    el.textContent = Math.floor(current);
-                    if (current >= target) {
-                        clearInterval(timer);
-                    }
-                }, 28);
-            });
-        }
+  window.addEventListener('resize', resize);
+  resize();
+  draw();
 
-        function animateProgress() {
-            document.querySelectorAll('.progress-fill[data-w]').forEach((el) => {
-                if (el.dataset.animated) return;
-                el.dataset.animated = '1';
-                setTimeout(() => {
-                    el.style.width = `${el.dataset.w}%`;
-                }, 180);
-            });
-        }
+  document.querySelectorAll('[data-count]').forEach(function (el) {
+    var target = Number(el.dataset.count || 0);
+    var current = 0;
+    var step = target > 0 ? Math.max(target / 40, 1) : 0;
+    if (step === 0) return;
+    var timer = setInterval(function () {
+      current = Math.min(current + step, target);
+      el.textContent = Math.floor(current);
+      if (current >= target) clearInterval(timer);
+    }, 28);
+  });
 
-        const menuButton = document.getElementById('menu-btn');
-        const sidebar = document.getElementById('sidebar');
-
-        function syncMenuButton() {
-            menuButton.style.display = window.innerWidth <= 860 ? 'flex' : 'none';
-            if (window.innerWidth > 860) {
-                sidebar.classList.remove('open');
-            }
-        }
-
-        menuButton.addEventListener('click', () => sidebar.classList.toggle('open'));
-        window.addEventListener('resize', syncMenuButton);
-
-        (function initStars() {
-            const canvas = document.getElementById('adminStars');
-            const ctx = canvas.getContext('2d');
-            let width = 0;
-            let height = 0;
-            let stars = [];
-
-            function resize() {
-                width = canvas.width = window.innerWidth;
-                height = canvas.height = window.innerHeight;
-                stars = Array.from({ length: Math.floor((width * height) / 5000) }, () => ({
-                    x: Math.random() * width,
-                    y: Math.random() * height,
-                    r: Math.random() * 1.2 + 0.2,
-                    alpha: Math.random() * 0.5 + 0.1,
-                    phase: Math.random() * Math.PI * 2,
-                    speed: Math.random() * 0.01 + 0.003
-                }));
-            }
-
-            let t = 0;
-            function draw() {
-                ctx.clearRect(0, 0, width, height);
-                t += 0.016;
-                stars.forEach((star) => {
-                    const alpha = star.alpha * (0.5 + 0.5 * Math.sin(t * star.speed * 60 + star.phase));
-                    ctx.beginPath();
-                    ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
-                    ctx.fillStyle = '#ffffff';
-                    ctx.globalAlpha = alpha;
-                    ctx.fill();
-                });
-                ctx.globalAlpha = 1;
-                requestAnimationFrame(draw);
-            }
-
-            window.addEventListener('resize', resize);
-            resize();
-            draw();
-        })();
-
-        updateClock();
-        syncMenuButton();
-        animateCounters();
-        animateProgress();
-        setInterval(updateClock, 1000);
-    </script>
-</body>
-</html>
+  setTimeout(function () {
+    document.querySelectorAll('.imm-progress-fill[data-w]').forEach(function (el) {
+      el.style.width = el.dataset.w + '%';
+    });
+  }, 200);
+}());
+</script>
+{% endblock %}
