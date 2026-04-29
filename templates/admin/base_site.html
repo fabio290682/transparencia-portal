@@ -3,15 +3,29 @@
 
 {% block title %}Painel Administrativo | Instituto Meio do Mundo{% endblock %}
 
+{% block extrastyle %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'css/admin-global.css' %}">
+{% endblock %}
+
 {% block branding %}
-<a href="{% url 'admin:index' %}" style="display:inline-flex;align-items:center;">
+<a href="{% url 'admin:index' %}" class="imm-admin-brand">
   <img
     src="{% static 'img/logo-header.png' %}"
     alt="Instituto Meio do Mundo"
-    style="height:42px;width:auto;display:block;"
+    class="imm-admin-brand__logo"
     onerror="this.onerror=null; this.src='{% static 'img/logo-portal.svg' %}';"
   >
+  <span class="imm-admin-brand__copy">
+    <strong>Instituto Meio do Mundo</strong>
+    <span>Painel Administrativo</span>
+  </span>
 </a>
 {% endblock %}
 
-{% block nav-global %}{% endblock %}
+{% block nav-global %}
+  <div class="imm-admin-toplinks">
+    <a href="{% url 'admin:index' %}">Dashboard</a>
+    <a href="/" target="_blank" rel="noopener">Portal Público</a>
+  </div>
+{% endblock %}

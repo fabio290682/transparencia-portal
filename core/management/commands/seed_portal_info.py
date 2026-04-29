@@ -24,7 +24,6 @@ class Command(BaseCommand):
                 "ordem": 2,
                 "ativo": True,
             },
-
             {
                 "secao": "PRESTACAO",
                 "titulo": "Relatório de Execução - Conexão Amazônia",
@@ -112,7 +111,7 @@ class Command(BaseCommand):
         for item in defaults:
             obj, was_created = PortalInformacao.objects.update_or_create(
                 secao=item["secao"],
-                titulo=item["titulo"],
+                link=item["link"],
                 defaults=item,
             )
             if was_created:
@@ -331,7 +330,7 @@ class Command(BaseCommand):
         projetos_atualizados = 0
         for item in projetos:
             projeto, criado = Projeto.objects.update_or_create(
-                titulo=item["titulo"],
+                instrumento=item["instrumento"],
                 defaults=item,
             )
             if criado:

@@ -174,7 +174,6 @@ class SeedPortalInfoCommandTests(TestCase):
             ).exists(),
         )
 
-
     def test_sync_wordpress_portal_imports_projects_and_oficios_from_local_files(self):
         categories_path = Path("test-wordpress-categories.json")
         posts_path = Path("test-wordpress-posts.json")
@@ -262,7 +261,7 @@ class PortalInformacaoArquivoTests(APITestCase):
         )
         info = PortalInformacao(
             secao="FINANCEIROS",
-            titulo="Balançete Mensal",
+            titulo="Balancete Mensal",
             descricao="Arquivo importado pelo admin.",
             arquivo=xlsx,
         )

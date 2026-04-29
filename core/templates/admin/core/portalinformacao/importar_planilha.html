@@ -1,11 +1,17 @@
-﻿{% extends "admin/base_site.html" %}
+{% extends "admin/base_site.html" %}
 
 {% block content %}
-  <h1>Importar Planilha - Portal Informacoes</h1>
-  <p>Formato aceito: <strong>.xlsx</strong></p>
-  <p>Colunas obrigatorias: <code>secao</code>, <code>titulo</code>, <code>descricao</code></p>
-  <p>Colunas opcionais: <code>link</code>, <code>ordem</code>, <code>ativo</code></p>
-  <p>Valores validos em <code>secao</code>: FINANCEIROS, PRESTACAO, CONTRATACOES, POLITICAS</p>
+  <div class="imm-admin-pagehead">
+    <p class="imm-admin-pagehead__eyebrow">Portal de Informações</p>
+    <h1>Importar Planilha</h1>
+    <p class="imm-admin-pagehead__text">Use um arquivo <strong>.xlsx</strong> para cadastrar documentos em lote nas áreas do portal.</p>
+  </div>
+
+  <div class="imm-admin-callout">
+    <p><strong>Colunas obrigatórias:</strong> <code>secao</code>, <code>titulo</code>, <code>descricao</code></p>
+    <p><strong>Colunas opcionais:</strong> <code>link</code>, <code>ordem</code>, <code>ativo</code></p>
+    <p><strong>Valores válidos para <code>secao</code>:</strong> FINANCEIROS, PRESTACAO, CONTRATACOES, POLITICAS</p>
+  </div>
 
   <form method="post" enctype="multipart/form-data" novalidate>
     {% csrf_token %}
@@ -14,7 +20,7 @@
       {{ form.as_p }}
     </fieldset>
     <div class="submit-row">
-      <input type="submit" class="default" value="Importar" />
+      <input type="submit" class="default" value="Importar">
       <a href="{% url 'admin:core_portalinformacao_changelist' %}" class="button cancel-link">Cancelar</a>
     </div>
   </form>
