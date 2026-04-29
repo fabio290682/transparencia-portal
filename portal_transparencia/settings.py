@@ -287,15 +287,21 @@ USE_TZ = True
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 WHITENOISE_USE_FINDERS = False
 
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+
 if IS_VERCEL:
-    # In Vercel serverless, we serve static files directly from the bundled
-    # source folder to avoid requiring a separate collectstatic step.
     STATIC_ROOT = BASE_DIR / "static"
-    STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
     WHITENOISE_USE_FINDERS = True
+    STORAGES["staticfiles"]["BACKEND"] = "whitenoise.storage.CompressedStaticFilesStorage"
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
@@ -313,24 +319,19 @@ _R2_PUBLIC_DOMAIN = os.getenv("R2_PUBLIC_DOMAIN", "")  # e.g. pub-xxx.r2.dev
 
 if _R2_ACCESS_KEY and _R2_SECRET_KEY and _R2_BUCKET and _R2_ENDPOINT:
     _r2_use_public = bool(_R2_PUBLIC_DOMAIN)
-    STORAGES = {
-        "default": {
-            "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
-            "OPTIONS": {
-                "access_key": _R2_ACCESS_KEY,
-                "secret_key": _R2_SECRET_KEY,
-                "bucket_name": _R2_BUCKET,
-                "endpoint_url": _R2_ENDPOINT,
-                "region_name": "auto",
-                "default_acl": None,
-                "querystring_auth": not _r2_use_public,
-                "querystring_expire": 604800,  # 7 days (boto3 max)
-                "file_overwrite": False,
-                **({"custom_domain": _R2_PUBLIC_DOMAIN} if _r2_use_public else {}),
-            },
-        },
-        "staticfiles": {
-            "BACKEND": STATICFILES_STORAGE,
+    STORAGES["default"] = {
+        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+        "OPTIONS": {
+            "access_key": _R2_ACCESS_KEY,
+            "secret_key": _R2_SECRET_KEY,
+            "bucket_name": _R2_BUCKET,
+            "endpoint_url": _R2_ENDPOINT,
+            "region_name": "auto",
+            "default_acl": None,
+            "querystring_auth": not _r2_use_public,
+            "querystring_expire": 604800,
+            "file_overwrite": False,
+            **({"custom_domain": _R2_PUBLIC_DOMAIN} if _r2_use_public else {}),
         },
     }
     if _r2_use_public:
