@@ -301,6 +301,39 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
 if IS_VERCEL:
-    # Vercel serverless cannot reliably write into the bundled project tree.
     MEDIA_ROOT = Path(os.getenv("DJANGO_MEDIA_ROOT", "/tmp/django-media"))
     MEDIA_ROOT.mkdir(parents=True, exist_ok=True)
+
+# Cloudflare R2 / S3-compatible storage for uploaded files
+_R2_ACCESS_KEY = os.getenv("R2_ACCESS_KEY_ID", "")
+_R2_SECRET_KEY = os.getenv("R2_SECRET_ACCESS_KEY", "")
+_R2_BUCKET = os.getenv("R2_BUCKET_NAME", "")
+_R2_ENDPOINT = os.getenv("R2_ENDPOINT_URL", "")
+_R2_PUBLIC_DOMAIN = os.getenv("R2_PUBLIC_DOMAIN", "")  # e.g. pub-xxx.r2.dev
+
+if _R2_ACCESS_KEY and _R2_SECRET_KEY and _R2_BUCKET and _R2_ENDPOINT:
+    _r2_use_public = bool(_R2_PUBLIC_DOMAIN)
+    STORAGES = {
+        "default": {
+            "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+            "OPTIONS": {
+                "access_key": _R2_ACCESS_KEY,
+                "secret_key": _R2_SECRET_KEY,
+                "bucket_name": _R2_BUCKET,
+                "endpoint_url": _R2_ENDPOINT,
+                "region_name": "auto",
+                "default_acl": None,
+                "querystring_auth": not _r2_use_public,
+                "querystring_expire": 604800,  # 7 days (boto3 max)
+                "file_overwrite": False,
+                **({"custom_domain": _R2_PUBLIC_DOMAIN} if _r2_use_public else {}),
+            },
+        },
+        "staticfiles": {
+            "BACKEND": STATICFILES_STORAGE,
+        },
+    }
+    if _r2_use_public:
+        MEDIA_URL = f"https://{_R2_PUBLIC_DOMAIN}/"
+    else:
+        MEDIA_URL = f"{_R2_ENDPOINT}/{_R2_BUCKET}/"

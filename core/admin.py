@@ -106,8 +106,12 @@ class PortalInformacaoAdmin(admin.ModelAdmin):
         (
             "Documento para o Portal",
             {
-                "fields": ("arquivo", "link", "tipo_documento"),
-                "description": "Envie PDF/XLS/XLSX para a aba selecionada. O arquivo tem prioridade sobre o link.",
+                "fields": ("link", "tipo_documento"),
+                "description": (
+                    "Cole aqui o link do documento. "
+                    "No Google Drive: abra o arquivo → Compartilhar → "
+                    "'Qualquer pessoa com o link' → copiar link."
+                ),
             },
         ),
         ("Controle", {"fields": ("id", "criado_em", "atualizado_em")}),
@@ -242,14 +246,7 @@ class PortalInformacaoAdmin(admin.ModelAdmin):
 
     @admin.display(description="Tipo de Documento")
     def tipo_documento(self, obj: PortalInformacao) -> str:
-        if not obj.arquivo:
-            return "Link Externo" if obj.link else "Sem documento"
-        nome = obj.arquivo.name.lower()
-        if nome.endswith(".pdf"):
-            return "PDF"
-        if nome.endswith((".xls", ".xlsx")):
-            return "Excel"
-        return "Arquivo"
+        return "Link Externo" if obj.link else "Sem documento"
 
 
 @admin.register(Projeto)
@@ -302,8 +299,13 @@ class ProjetoAdmin(admin.ModelAdmin):
         (
             "Documento para o Portal",
             {
-                "fields": ("arquivo", "documento_link", "documento_label", "tipo_documento"),
-                "description": "Envie um PDF/XLS/XLSX ou informe um link externo. O arquivo tem prioridade.",
+                "fields": ("documento_link", "documento_label", "tipo_documento"),
+                "description": (
+                    "Cole aqui o link do documento (PDF, planilha, etc). "
+                    "No Google Drive: abra o arquivo → Compartilhar → "
+                    "'Qualquer pessoa com o link' → copiar link. "
+                    "Em 'Rótulo do documento' escreva o nome que vai aparecer no botão (ex: 'Ver Relatório')."
+                ),
             },
         ),
         ("Controle", {"fields": ("id", "criado_em", "atualizado_em")}),
@@ -311,14 +313,7 @@ class ProjetoAdmin(admin.ModelAdmin):
 
     @admin.display(description="Tipo de Documento")
     def tipo_documento(self, obj: Projeto) -> str:
-        if not obj.arquivo:
-            return "Link Externo" if obj.documento_link else "Sem documento"
-        nome = obj.arquivo.name.lower()
-        if nome.endswith(".pdf"):
-            return "PDF"
-        if nome.endswith((".xls", ".xlsx")):
-            return "Excel"
-        return "Arquivo"
+        return "Link Externo" if obj.documento_link else "Sem documento"
 
 
 def _build_dashboard_context() -> dict[str, object]:
