@@ -1,14 +1,24 @@
 from __future__ import annotations
 
+import logging
 from types import MethodType
+
+logger = logging.getLogger(__name__)
+
+_XLSX_CONTENT_TYPES = {
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "application/octet-stream",
+}
+_MAX_IMPORT_FILE_SIZE = 50 * 1024 * 1024  # 50 MB
 
 from django import forms
 from django.contrib import admin, messages
 from django.core.files.uploadedfile import UploadedFile
 from django.db import OperationalError, ProgrammingError, transaction
+from django.db.models import Count, Q
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
-from django.urls import path, reverse
+from django.urls import NoReverseMatch, path, reverse
 
 from .models import (
     Despesa,
@@ -24,6 +34,7 @@ admin.site.site_header = "Instituto Meio do Mundo"
 admin.site.site_title = "Admin IMM"
 admin.site.index_title = "Painel Administrativo"
 
+_ESIC_STATUS_ABERTO = "ABERTO"
 
 SECAO_MAP = {
     "FINANCEIROS": "FINANCEIROS",
@@ -95,7 +106,7 @@ class PortalInformacaoAdmin(admin.ModelAdmin):
         "atualizado_em",
     )
     list_filter = ("secao", "ativo")
-    search_fields = ("titulo", "descricao", "link", "arquivo")
+    search_fields = ("titulo", "descricao", "link")
     list_editable = ("ordem", "ativo")
     list_display_links = ("titulo",)
     readonly_fields = ("id", "tipo_documento", "criado_em", "atualizado_em")
@@ -117,7 +128,7 @@ class PortalInformacaoAdmin(admin.ModelAdmin):
         ("Controle", {"fields": ("id", "criado_em", "atualizado_em")}),
     )
 
-    def get_urls(self) -> list[object]:
+    def get_urls(self) -> list:
         urls = super().get_urls()
         custom_urls = [
             path(
@@ -133,24 +144,23 @@ class PortalInformacaoAdmin(admin.ModelAdmin):
             return value
         if value is None:
             return True
-        texto = str(value).strip().lower()
-        return texto in {"1", "true", "sim", "s", "yes", "y", "ativo"}
+        return str(value).strip().lower() in {"1", "true", "sim", "s", "yes", "y", "ativo"}
 
     def _normalizar_secao(self, secao: object) -> str | None:
         if secao is None:
             return None
-        chave = str(secao).strip().upper()
-        return SECAO_MAP.get(chave)
+        return SECAO_MAP.get(str(secao).strip().upper())
 
     @transaction.atomic
     def _importar_planilha(self, arquivo: UploadedFile) -> int:
         try:
             from openpyxl import load_workbook
         except ModuleNotFoundError as exc:
-            message = "Dependencia ausente: instale openpyxl para usar a importacao de planilhas."
-            raise RuntimeError(message) from exc
+            raise RuntimeError(
+                "Dependencia ausente: instale openpyxl para usar a importacao de planilhas."
+            ) from exc
 
-        wb = load_workbook(filename=arquivo, data_only=True)
+        wb = load_workbook(filename=arquivo, data_only=True, read_only=True)
         ws = wb.active
 
         header = [
@@ -162,25 +172,24 @@ class PortalInformacaoAdmin(admin.ModelAdmin):
         required = {"secao", "titulo", "descricao"}
         missing = sorted(required - set(header_map.keys()))
         if missing:
-            message = f'Colunas obrigatorias ausentes: {", ".join(missing)}'
-            raise ValueError(message)
+            raise ValueError(f'Colunas obrigatorias ausentes: {", ".join(missing)}')
 
-        created = 0
+        objects: list[PortalInformacao] = []
         for row_index, row in enumerate(ws.iter_rows(min_row=2, values_only=True), start=2):
             if not any(cell is not None and str(cell).strip() for cell in row):
                 continue
 
-            secao_raw = row[header_map["secao"]] if header_map.get("secao") is not None else None
+            secao_raw = row[header_map["secao"]] if "secao" in header_map else None
             secao = self._normalizar_secao(secao_raw)
             if not secao:
-                message = f"Seção inválida na linha {row_index}: {secao_raw}"
-                raise ValueError(message)
+                raise ValueError(f"Seção inválida na linha {row_index}: {secao_raw}")
 
-            titulo = str(row[header_map["titulo"]]).strip() if row[header_map["titulo"]] is not None else ""
-            descricao = str(row[header_map["descricao"]]).strip() if row[header_map["descricao"]] is not None else ""
+            titulo_raw = row[header_map["titulo"]]
+            titulo = str(titulo_raw).strip() if titulo_raw is not None else ""
+            descricao_raw = row[header_map["descricao"]]
+            descricao = str(descricao_raw).strip() if descricao_raw is not None else ""
             if not titulo or not descricao:
-                message = f"Titulo e descricao sao obrigatorios na linha {row_index}"
-                raise ValueError(message)
+                raise ValueError(f"Titulo e descricao sao obrigatorios na linha {row_index}")
 
             link = ""
             if "link" in header_map:
@@ -194,38 +203,47 @@ class PortalInformacaoAdmin(admin.ModelAdmin):
                     try:
                         ordem = int(raw_ordem)
                     except (TypeError, ValueError) as exc:
-                        message = f"Ordem invalida na linha {row_index}: {raw_ordem}"
-                        raise ValueError(message) from exc
+                        raise ValueError(
+                            f"Ordem invalida na linha {row_index}: {raw_ordem}"
+                        ) from exc
 
             ativo = True
             if "ativo" in header_map:
                 ativo = self._to_bool(row[header_map["ativo"]])
 
-            PortalInformacao.objects.create(
-                secao=secao,
-                titulo=titulo,
-                descricao=descricao,
-                link=link or None,
-                ordem=ordem,
-                ativo=ativo,
+            objects.append(
+                PortalInformacao(
+                    secao=secao,
+                    titulo=titulo,
+                    descricao=descricao,
+                    link=link,
+                    ordem=ordem,
+                    ativo=ativo,
+                )
             )
-            created += 1
 
-        return created
+        PortalInformacao.objects.bulk_create(objects, batch_size=500)
+        return len(objects)
 
     def importar_planilha_view(self, request: HttpRequest) -> HttpResponse:
         if request.method == "POST":
             form = PortalInformacaoImportForm(request.POST, request.FILES)
             if form.is_valid():
                 arquivo = form.cleaned_data["arquivo"]
-                nome = arquivo.name.lower()
-                if not nome.endswith(".xlsx"):
+                if arquivo.size > _MAX_IMPORT_FILE_SIZE:
+                    form.add_error("arquivo", "Arquivo muito grande. Máximo permitido: 50 MB.")
+                elif not arquivo.name.lower().endswith(".xlsx"):
                     form.add_error("arquivo", "Formato invalido. Envie um arquivo .xlsx")
+                elif arquivo.content_type not in _XLSX_CONTENT_TYPES:
+                    form.add_error("arquivo", "Tipo de arquivo inválido. Envie um .xlsx real.")
                 else:
                     try:
                         created = self._importar_planilha(arquivo)
-                    except (ValueError, RuntimeError) as exc:
-                        form.add_error(None, f"Falha ao importar: {exc}")
+                    except ValueError as exc:
+                        form.add_error(None, f"Dados inválidos na planilha: {exc}")
+                    except RuntimeError as exc:
+                        logger.error("Falha ao importar planilha: %s", exc, exc_info=True)
+                        form.add_error(None, "Erro ao processar o arquivo. Verifique o formato e tente novamente.")
                     else:
                         self.message_user(
                             request,
@@ -316,15 +334,74 @@ class ProjetoAdmin(admin.ModelAdmin):
         return "Link Externo" if obj.documento_link else "Sem documento"
 
 
-def _build_dashboard_context() -> dict[str, object]:
+def _safe_reverse(viewname: str) -> str:
+    try:
+        return reverse(viewname)
+    except NoReverseMatch:
+        return "#"
+
+
+_dashboard_links_cache: list | None = None
+
+
+def _get_dashboard_links() -> list:
+    global _dashboard_links_cache
+    if _dashboard_links_cache is None:
+        _dashboard_links_cache = [
+            {
+                "label": "Projetos",
+                "hint": "Cadastre, edite e organize os termos e projetos do portal.",
+                "url": _safe_reverse("admin:core_projeto_changelist"),
+                "add_url": _safe_reverse("admin:core_projeto_add"),
+            },
+            {
+                "label": "Documentos",
+                "hint": "Gerencie arquivos e links das áreas de transparência.",
+                "url": _safe_reverse("admin:core_portalinformacao_changelist"),
+                "add_url": _safe_reverse("admin:core_portalinformacao_add"),
+            },
+            {
+                "label": "e-SIC",
+                "hint": "Acompanhe protocolos, respostas e status dos pedidos.",
+                "url": _safe_reverse("admin:core_esicpedido_changelist"),
+                "add_url": _safe_reverse("admin:core_esicpedido_add"),
+            },
+            {
+                "label": "Importar Planilha",
+                "hint": "Faça carga em lote de documentos do portal.",
+                "url": _safe_reverse("admin:core_portalinformacao_importar_planilha"),
+                "add_url": _safe_reverse("admin:core_portalinformacao_importar_planilha"),
+            },
+            {
+                "label": "Usuários",
+                "hint": "Controle quem pode acessar e administrar o sistema.",
+                "url": _safe_reverse("admin:auth_user_changelist"),
+                "add_url": _safe_reverse("admin:auth_user_add"),
+            },
+            {
+                "label": "Portal Público",
+                "hint": "Abra o portal publicado para revisar as alterações.",
+                "url": "/",
+                "add_url": "/",
+            },
+        ]
+    return _dashboard_links_cache
+
+
+def _build_dashboard_context() -> dict:
     try:
         recent_projects = list(Projeto.objects.order_by("-atualizado_em")[:5])
         recent_documents = list(PortalInformacao.objects.order_by("-atualizado_em")[:5])
         recent_esic = list(EsicPedido.objects.order_by("-prazo")[:5])
+
+        esic_counts = EsicPedido.objects.aggregate(
+            total=Count("id"),
+            pending=Count("id", filter=Q(status=_ESIC_STATUS_ABERTO)),
+        )
         project_count = Projeto.objects.count()
         document_count = PortalInformacao.objects.count()
-        esic_count = EsicPedido.objects.count()
-        pending_esic_count = EsicPedido.objects.filter(status="ABERTO").count()
+        esic_count = esic_counts["total"] or 0
+        pending_esic_count = esic_counts["pending"] or 0
     except (OperationalError, ProgrammingError):
         recent_projects = []
         recent_documents = []
@@ -343,44 +420,7 @@ def _build_dashboard_context() -> dict[str, object]:
         "recent_documents": recent_documents,
         "recent_esic": recent_esic,
         "portal_public_url": "/",
-        "dashboard_links": [
-            {
-                "label": "Projetos",
-                "hint": "Cadastre, edite e organize os termos e projetos do portal.",
-                "url": reverse("admin:core_projeto_changelist"),
-                "add_url": reverse("admin:core_projeto_add"),
-            },
-            {
-                "label": "Documentos",
-                "hint": "Gerencie arquivos e links das áreas de transparência.",
-                "url": reverse("admin:core_portalinformacao_changelist"),
-                "add_url": reverse("admin:core_portalinformacao_add"),
-            },
-            {
-                "label": "e-SIC",
-                "hint": "Acompanhe protocolos, respostas e status dos pedidos.",
-                "url": reverse("admin:core_esicpedido_changelist"),
-                "add_url": reverse("admin:core_esicpedido_add"),
-            },
-            {
-                "label": "Importar Planilha",
-                "hint": "Faça carga em lote de documentos do portal.",
-                "url": reverse("admin:core_portalinformacao_importar_planilha"),
-                "add_url": reverse("admin:core_portalinformacao_importar_planilha"),
-            },
-            {
-                "label": "Usuários",
-                "hint": "Controle quem pode acessar e administrar o sistema.",
-                "url": reverse("admin:auth_user_changelist"),
-                "add_url": reverse("admin:auth_user_add"),
-            },
-            {
-                "label": "Portal Público",
-                "hint": "Abra o portal publicado para revisar as alterações.",
-                "url": "/",
-                "add_url": "/",
-            },
-        ],
+        "dashboard_links": _get_dashboard_links(),
     }
 
 
@@ -390,7 +430,7 @@ _original_admin_index = admin.site.index
 def _custom_admin_index(
     self: admin.AdminSite,
     request: HttpRequest,
-    extra_context: dict[str, object] | None = None,
+    extra_context: dict | None = None,
 ) -> HttpResponse:
     context = _build_dashboard_context()
     if extra_context:

@@ -33,7 +33,7 @@ from .serializers import (
     ServidorSerializer,
     UnidadeGestoraSerializer,
 )
-from .throttles import RegisterAnonThrottle
+from .throttles import EsicAnonThrottle, RegisterAnonThrottle
 
 logger = logging.getLogger(__name__)
 
@@ -197,6 +197,7 @@ def register_user(request):
 
 @api_view(["POST"])
 @permission_classes([AllowAny])
+@throttle_classes([EsicAnonThrottle])
 def submit_esic_request(request):
     tipo_input = (request.data.get("tipo") or "").strip()
     descricao = (request.data.get("descricao") or "").strip()

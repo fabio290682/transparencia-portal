@@ -147,6 +147,10 @@ SECURE_HSTS_PRELOAD = _env_bool(
     default=not DEBUG,
 )
 
+X_FRAME_OPTIONS = "DENY"
+FILE_UPLOAD_MAX_MEMORY_SIZE = 52_428_800  # 50 MB
+DATA_UPLOAD_MAX_MEMORY_SIZE = 52_428_800  # 50 MB
+
 
 # Application definition
 
@@ -158,8 +162,12 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "storages",
     "core",
 ]
+
+if DEBUG:
+    INSTALLED_APPS += ["debug_toolbar"]
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
@@ -171,6 +179,7 @@ REST_FRAMEWORK = {
     ],
     "DEFAULT_THROTTLE_RATES": {
         "register": os.getenv("REGISTER_THROTTLE_RATE", "5/hour"),
+        "esic": os.getenv("ESIC_THROTTLE_RATE", "10/hour"),
     },
 }
 
@@ -184,6 +193,10 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+if DEBUG:
+    MIDDLEWARE.insert(2, "debug_toolbar.middleware.DebugToolbarMiddleware")
+    INTERNAL_IPS = ["127.0.0.1", "localhost"]
 
 ROOT_URLCONF = "portal_transparencia.urls"
 
@@ -272,9 +285,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "pt-br"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "America/Sao_Paulo"
 
 USE_I18N = True
 
