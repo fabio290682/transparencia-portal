@@ -117,11 +117,10 @@ class PortalInformacaoAdmin(admin.ModelAdmin):
         (
             "Documento para o Portal",
             {
-                "fields": ("link", "tipo_documento"),
+                "fields": ("arquivo", "link", "tipo_documento"),
                 "description": (
-                    "Cole aqui o link do documento. "
-                    "No Google Drive: abra o arquivo → Compartilhar → "
-                    "'Qualquer pessoa com o link' → copiar link."
+                    "Faça upload de um PDF diretamente OU cole um link do Google Drive. "
+                    "Se ambos estiverem preenchidos, o arquivo enviado tem prioridade."
                 ),
             },
         ),
@@ -264,7 +263,11 @@ class PortalInformacaoAdmin(admin.ModelAdmin):
 
     @admin.display(description="Tipo de Documento")
     def tipo_documento(self, obj: PortalInformacao) -> str:
-        return "Link Externo" if obj.link else "Sem documento"
+        if obj.arquivo:
+            return "PDF / Arquivo"
+        if obj.link:
+            return "Link Externo"
+        return "Sem documento"
 
 
 @admin.register(Projeto)
@@ -317,11 +320,10 @@ class ProjetoAdmin(admin.ModelAdmin):
         (
             "Documento para o Portal",
             {
-                "fields": ("documento_link", "documento_label", "tipo_documento"),
+                "fields": ("arquivo", "documento_link", "documento_label", "tipo_documento"),
                 "description": (
-                    "Cole aqui o link do documento (PDF, planilha, etc). "
-                    "No Google Drive: abra o arquivo → Compartilhar → "
-                    "'Qualquer pessoa com o link' → copiar link. "
+                    "Faça upload de um PDF diretamente OU cole um link do Google Drive. "
+                    "Se ambos estiverem preenchidos, o arquivo enviado tem prioridade. "
                     "Em 'Rótulo do documento' escreva o nome que vai aparecer no botão (ex: 'Ver Relatório')."
                 ),
             },
@@ -331,7 +333,11 @@ class ProjetoAdmin(admin.ModelAdmin):
 
     @admin.display(description="Tipo de Documento")
     def tipo_documento(self, obj: Projeto) -> str:
-        return "Link Externo" if obj.documento_link else "Sem documento"
+        if obj.arquivo:
+            return "PDF / Arquivo"
+        if obj.documento_link:
+            return "Link Externo"
+        return "Sem documento"
 
 
 def _safe_reverse(viewname: str) -> str:
